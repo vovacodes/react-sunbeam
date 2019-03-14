@@ -8,7 +8,7 @@ export interface FocusableTreeContextValue {
     unregisterFocusable: (focusKey: string) => void
 }
 
-export default createContext<FocusableTreeContextValue>({
+export const FocusableTreeContext = createContext<FocusableTreeContextValue>({
     focusPath: [],
     parentFocusableNode: {
         focusKey: "",

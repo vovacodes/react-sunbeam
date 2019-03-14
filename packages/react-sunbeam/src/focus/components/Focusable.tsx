@@ -1,5 +1,5 @@
 import * as React from "react"
-import FocusableTreeContext from "../FocusableTreeContext"
+import { FocusableTreeContext } from "../FocusableTreeContext"
 import { BoundingBox } from "../../spatialNavigation"
 import { ChildrenMap, FocusableTreeNode } from "../types"
 import registerFocusableIn from "../registerFocusableIn"

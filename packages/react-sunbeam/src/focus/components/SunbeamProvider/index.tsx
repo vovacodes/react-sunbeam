@@ -1,20 +1,21 @@
 import * as React from "react"
-import { FOCUSABLE_TREE_ROOT_KEY } from "../Constants"
-import FocusableTreeContext from "../FocusableTreeContext"
-import { ChildrenMap } from "../types"
-import registerFocusableIn from "../registerFocusableIn"
-import unregisterFocusableIn from "../unregisterFocusableIn"
-import { FocusManager } from "../FocusManager"
-import { BoundingBox } from "../../spatialNavigation"
-import useFocusPath from "../hooks/useFocusPath"
-import getPreferredNodeAmong from "../getPreferredNodeAmong"
+import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants"
+import { FocusableTreeContext } from "../../FocusableTreeContext"
+import { SunbeamContext } from "../../SunbeamContext"
+import { ChildrenMap } from "../../types"
+import registerFocusableIn from "../../registerFocusableIn"
+import unregisterFocusableIn from "../../unregisterFocusableIn"
+import { FocusManager } from "../../FocusManager"
+import { BoundingBox } from "../../../spatialNavigation"
+import getPreferredNodeAmong from "../../getPreferredNodeAmong"
+import useFocusPath from "./useFocusPath"
 
 interface Props {
     focusManager: FocusManager
     children: React.ReactNode
 }
 
-export function FocusProvider({ focusManager, children }: Props) {
+export function SunbeamProvider({ focusManager, children }: Props) {
     const focusPath = useFocusPath(focusManager)
 
     const wrapperRef = React.useRef<HTMLDivElement | null>(null)
@@ -67,9 +68,21 @@ export function FocusProvider({ focusManager, children }: Props) {
         [focusPath.join(), focusableTreeRoot]
     )
 
+    const sunbeamContextValue = React.useMemo(
+        () => ({
+            moveFocusLeft: () => focusManager.moveLeft(),
+            moveFocusRight: () => focusManager.moveRight(),
+            moveFocusUp: () => focusManager.moveUp(),
+            moveFocusDown: () => focusManager.moveDown(),
+        }),
+        [focusManager]
+    )
+
     return (
-        <FocusableTreeContext.Provider value={focusableTreeContextValue}>
-            <div ref={wrapperRef}>{children}</div>
-        </FocusableTreeContext.Provider>
+        <SunbeamContext.Provider value={sunbeamContextValue}>
+            <FocusableTreeContext.Provider value={focusableTreeContextValue}>
+                <div ref={wrapperRef}>{children}</div>
+            </FocusableTreeContext.Provider>
+        </SunbeamContext.Provider>
     )
 }

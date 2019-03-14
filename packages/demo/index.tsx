@@ -1,38 +1,35 @@
 import * as React from "react"
 import { useCallback, useEffect, useState } from "react"
 import { render } from "react-dom"
-import { Focusable, FocusProvider, FocusManager } from "react-sunbeam"
+import { Focusable, SunbeamProvider, FocusManager, useSunbeam } from "react-sunbeam"
 
 import { Box } from "./Box"
 import { Menu } from "./Menu"
 import { Grid } from "./Grid"
 
-interface Props {
-    focusManager: FocusManager
-}
-
-export function App({ focusManager }: Props) {
+export function App() {
     const [selectedItem, setSelectedItem] = useState<string | null>(null)
 
+    const { moveFocusLeft, moveFocusRight, moveFocusUp, moveFocusDown } = useSunbeam()
     const onKeyDown = useCallback(
         (event: Event) => {
             if (!(event instanceof KeyboardEvent)) return
 
             switch (event.key) {
                 case "ArrowRight":
-                    focusManager.moveRight()
+                    moveFocusRight()
                     return
 
                 case "ArrowLeft":
-                    focusManager.moveLeft()
+                    moveFocusLeft()
                     return
 
                 case "ArrowUp":
-                    focusManager.moveUp()
+                    moveFocusUp()
                     return
 
                 case "ArrowDown":
-                    focusManager.moveDown()
+                    moveFocusDown()
                     return
 
                 case " ":
@@ -149,8 +146,8 @@ const focusManager = new FocusManager({
 })
 
 render(
-    <FocusProvider focusManager={focusManager}>
-        <App focusManager={focusManager} />
-    </FocusProvider>,
+    <SunbeamProvider focusManager={focusManager}>
+        <App />
+    </SunbeamProvider>,
     document.getElementById("app")
 )

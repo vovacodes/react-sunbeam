@@ -1,10 +1,10 @@
 import { createContext } from "react"
 
-interface SunbeamContextValue {
-    moveRight(): void
-    moveLeft(): void
-    moveUp(): void
-    moveDown(): void
+export interface SunbeamContextValue {
+    moveFocusRight(): void
+    moveFocusLeft(): void
+    moveFocusUp(): void
+    moveFocusDown(): void
     //setFocus:
 }
 
