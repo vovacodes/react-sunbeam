@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "ES2017",
+        "sourceMap": true,
+        "jsx": "react"
+    },
+    "exclude": ["node_modules"]
+}

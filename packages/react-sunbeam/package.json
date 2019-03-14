@@ -1,0 +1,42 @@
+{
+    "name": "react-sunbeam",
+    "version": "0.0.0",
+    "description": "Spatial navigation and focus management for React",
+    "main": "dist/cjs/index.js",
+    "module": "dist/es/index.js",
+    "types": "dist/es/index.d.ts",
+    "repository": "git+https://github.com/wzrdzl/react-sunbeam.git",
+    "author": "Vladimir Guguiev <vladimir.guguiev@gmail.com>",
+    "license": "MIT",
+    "scripts": {
+        "build": "yarn build:es && yarn build:cjs",
+        "build:es": "tsc --outDir dist/es",
+        "build:cjs": "tsc --outDir dist/cjs --module CommonJS",
+        "clean": "rimraf dist",
+        "dev": "concurrently 'yarn build:es --watch' 'yarn build:cjs --watch' -n ES2017,CommonJS -c cyan,magenta",
+        "lint": "eslint ./src --ext .ts,.tsx",
+        "prebuild": "npm run clean",
+        "type-check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@types/react": "^16.8.8",
+        "@typescript-eslint/eslint-plugin": "^1.4.2",
+        "@typescript-eslint/parser": "^1.4.2",
+        "concurrently": "^4.1.0",
+        "eslint": "^5.15.1",
+        "eslint-config-prettier": "^4.1.0",
+        "eslint-plugin-react": "^7.12.4",
+        "eslint-plugin-react-hooks": "^1.5.0",
+        "react": "^16.8.4",
+        "typescript": "^3.3.3333"
+    },
+    "peerDependencies": {
+        "react": "^16.8.4"
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ]
+}

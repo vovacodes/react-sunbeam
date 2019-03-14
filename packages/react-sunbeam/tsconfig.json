@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "target": "es2017",
+        "moduleResolution": "node",
+        "strict": true,
+        "esModuleInterop": true,
+        "jsx": "react"
+    },
+    "include": ["src"]
+}
