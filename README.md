@@ -1,2 +1,3 @@
 # react-sunbeam
-Spatial focus management system
+
+Spatial navigation and focus management system for React apps
