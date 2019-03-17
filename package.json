@@ -8,6 +8,7 @@
         "dev": "yarn build && lerna run --parallel --stream dev",
         "clean": "lerna run clean",
         "lint": "lerna run lint",
+        "release": "yarn build && lerna publish",
         "type-check": "lerna run type-check",
         "uninstall": "lerna clean && rimraf ./node_modules"
     },
