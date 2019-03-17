@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants"
 import { FocusableTreeContext } from "../../FocusableTreeContext"
 import { SunbeamContext } from "../../SunbeamContext"
@@ -17,9 +18,8 @@ interface Props {
 
 export function SunbeamProvider({ focusManager, children }: Props) {
     const focusPath = useFocusPath(focusManager)
-
-    const wrapperRef = React.useRef<HTMLDivElement | null>(null)
-    const getBoundingBox = React.useCallback((): BoundingBox => {
+    const wrapperRef = useRef<HTMLDivElement | null>(null)
+    const getBoundingBox = useCallback((): BoundingBox => {
         const wrapperElement = wrapperRef.current
 
         if (!wrapperElement) {
@@ -31,15 +31,11 @@ export function SunbeamProvider({ focusManager, children }: Props) {
 
         return { left, top, right, bottom }
     }, [])
-
-    const focusableChildrenRef = React.useRef<ChildrenMap>(new Map())
-    const focusableChildren = focusableChildrenRef.current
-
-    const getChildren = React.useCallback(() => focusableChildren, [focusableChildren])
-
-    const getPreferredChild = React.useCallback(getPreferredNodeAmong(focusableChildren), [focusableChildren])
-
-    const focusableTreeRoot = React.useMemo(
+    const focusableChildrenRef = useRef<ChildrenMap>(new Map())
+    const getChildren = useCallback(() => focusableChildrenRef.current, [])
+    const getPreferredChild = useCallback(getPreferredNodeAmong(focusableChildrenRef.current), [])
+    const path = useMemo(() => [], [])
+    const focusableTreeRoot = useMemo(
         () => ({
             focusKey: FOCUSABLE_TREE_ROOT_KEY,
             getParent: () => undefined,
@@ -50,25 +46,25 @@ export function SunbeamProvider({ focusManager, children }: Props) {
         [getChildren, getPreferredChild, getBoundingBox]
     )
 
-    React.useEffect(() => {
+    useEffect(() => {
         focusManager.setFocusableRoot(focusableTreeRoot)
-
         return () => {
             focusManager.clearFocusableRoot()
         }
     })
 
-    const focusableTreeContextValue = React.useMemo(
+    const focusableTreeContextValue = useMemo(
         () => ({
+            parentPath: path,
             focusPath,
             parentFocusableNode: focusableTreeRoot,
-            registerFocusable: registerFocusableIn(focusableChildren),
-            unregisterFocusable: unregisterFocusableIn(focusableChildren),
+            registerFocusable: registerFocusableIn(focusableChildrenRef.current),
+            unregisterFocusable: unregisterFocusableIn(focusableChildrenRef.current),
         }),
-        [focusPath.join(), focusableTreeRoot]
+        [focusPath.join(), focusableTreeRoot, path]
     )
 
-    const sunbeamContextValue = React.useMemo(
+    const sunbeamContextValue = useMemo(
         () => ({
             moveFocusLeft: () => focusManager.moveLeft(),
             moveFocusRight: () => focusManager.moveRight(),

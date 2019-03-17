@@ -2,6 +2,7 @@ import { createContext } from "react"
 import { FocusableTreeNode } from "./types"
 
 export interface FocusableTreeContextValue {
+    parentPath: ReadonlyArray<string>
     focusPath: ReadonlyArray<string>
     parentFocusableNode: FocusableTreeNode
     registerFocusable: (focusableTreeNode: FocusableTreeNode) => void
@@ -9,6 +10,7 @@ export interface FocusableTreeContextValue {
 }
 
 export const FocusableTreeContext = createContext<FocusableTreeContextValue>({
+    parentPath: [],
     focusPath: [],
     parentFocusableNode: {
         focusKey: "",

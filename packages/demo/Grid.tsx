@@ -6,7 +6,7 @@ import { times } from "./times"
 
 interface Props {
     size: number
-    onItemFocus?: (itemFocusKey: string) => void
+    onItemFocus?: (itemFocusPath: ReadonlyArray<string>) => void
 }
 
 export const Grid = React.memo(({ size, onItemFocus }: Props) => (
@@ -16,11 +16,11 @@ export const Grid = React.memo(({ size, onItemFocus }: Props) => (
 
             return (
                 <Focusable key={i} focusKey={focusKey} style={{ margin: "10px" }}>
-                    {focused => (
+                    {({ focused, path }) => (
                         <Box
                             focused={focused}
                             onFocus={() => {
-                                if (onItemFocus) onItemFocus(focusKey)
+                                if (onItemFocus) onItemFocus(path)
                             }}
                             color="salmon"
                         >

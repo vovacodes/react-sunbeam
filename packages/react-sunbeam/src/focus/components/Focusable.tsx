@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useMemo, useRef, useCallback, useEffect } from "react"
 import { FocusableTreeContext } from "../FocusableTreeContext"
 import { BoundingBox } from "../../spatialNavigation"
 import { ChildrenMap, FocusableTreeNode } from "../types"
@@ -8,41 +9,31 @@ import getPreferredNodeAmong from "../getPreferredNodeAmong"
 
 interface Props {
     focusKey: string
-    children: (focused: boolean) => React.ReactNode
+    children: (param: { focused: boolean; path: ReadonlyArray<string> }) => React.ReactNode
     style?: React.CSSProperties
     className?: string
 }
 
 export function Focusable(props: Props) {
-    const focusableChildrenRef = React.useRef<ChildrenMap>(new Map())
-    const focusableChildren = focusableChildrenRef.current
-
     const { focusKey } = props
-
-    const wrapperRef = React.useRef<HTMLDivElement | null>(null)
+    const focusableChildrenRef = useRef<ChildrenMap>(new Map())
+    const wrapperRef = useRef<HTMLDivElement | null>(null)
     const getBoundingBox = React.useCallback((): BoundingBox => {
         const wrapperElement = wrapperRef.current
-
         if (!wrapperElement) {
-            throw new Error(
-                `Attempting to get a bounding box of a not mounted ` + `Focusable with focusKey: ${focusKey}`
-            )
+            throw new Error(`Attempting to get a bounding box of a not mounted Focusable with focusKey: ${focusKey}`)
         }
 
         const { left, top, right, bottom } = wrapperElement.getBoundingClientRect()
-
         return { left, top, right, bottom }
     }, [focusKey])
-
-    const getChildren = React.useCallback(() => focusableChildren, [focusableChildren])
-
-    const getPreferredChild = React.useCallback(getPreferredNodeAmong(focusableChildren), [focusableChildren])
-
-    const focusContextValue = React.useContext(FocusableTreeContext)
-
-    const { focusPath, parentFocusableNode, registerFocusable, unregisterFocusable } = focusContextValue
-
-    const focusableTreeNode: FocusableTreeNode = React.useMemo(
+    const getChildren = useCallback(() => focusableChildrenRef.current, [])
+    const getPreferredChild = useCallback(getPreferredNodeAmong(focusableChildrenRef.current), [])
+    const { parentPath, focusPath, parentFocusableNode, registerFocusable, unregisterFocusable } = React.useContext(
+        FocusableTreeContext
+    )
+    const path = useMemo(() => [...parentPath, focusKey], [parentPath, focusKey])
+    const focusableTreeNode: FocusableTreeNode = useMemo(
         () => ({
             focusKey,
             getParent: () => parentFocusableNode,
@@ -53,7 +44,7 @@ export function Focusable(props: Props) {
         [focusKey, parentFocusableNode, getChildren, getPreferredChild, getBoundingBox]
     )
 
-    React.useEffect(() => {
+    useEffect(() => {
         registerFocusable(focusableTreeNode)
 
         return () => unregisterFocusable(focusKey)
@@ -63,19 +54,22 @@ export function Focusable(props: Props) {
     const isFocused = focusedSiblingFocusKey === focusKey
     const childrenFocusPath = isFocused ? restOfFocusPath : []
 
-    const childContextValue = React.useMemo(() => {
+    const childFocusableTreeContextValue = useMemo(() => {
         return {
             focusPath: childrenFocusPath,
+            parentPath: path,
             parentFocusableNode: focusableTreeNode,
             registerFocusable: registerFocusableIn(focusableChildrenRef.current),
             unregisterFocusable: unregisterFocusableIn(focusableChildrenRef.current),
         }
-    }, [childrenFocusPath.join(), focusableTreeNode])
+    }, [childrenFocusPath.join(), focusableTreeNode, path])
+
+    const renderCallbackArgument = useMemo(() => ({ focused: isFocused, path }), [isFocused, path])
 
     return (
-        <FocusableTreeContext.Provider value={childContextValue}>
+        <FocusableTreeContext.Provider value={childFocusableTreeContextValue}>
             <div ref={wrapperRef} className={props.className} style={props.style}>
-                {props.children(isFocused)}
+                {props.children(renderCallbackArgument)}
             </div>
         </FocusableTreeContext.Provider>
     )
