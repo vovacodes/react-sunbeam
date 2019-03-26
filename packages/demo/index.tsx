@@ -61,6 +61,7 @@ export function App() {
                                                 focused={focused}
                                                 onFocus={() => setSelectedItem(path.join("->"))}
                                                 color="darkgray"
+                                                path={path}
                                             >
                                                 Movies
                                             </Box>
@@ -72,6 +73,7 @@ export function App() {
                                                 focused={focused}
                                                 onFocus={() => setSelectedItem(path.join("->"))}
                                                 color="darkgray"
+                                                path={path}
                                             >
                                                 Series
                                             </Box>
@@ -83,6 +85,7 @@ export function App() {
                                                 focused={focused}
                                                 onFocus={() => setSelectedItem(path.join("->"))}
                                                 color="darkgray"
+                                                path={path}
                                             >
                                                 Sports
                                             </Box>
@@ -94,6 +97,7 @@ export function App() {
                                                 focused={focused}
                                                 onFocus={() => setSelectedItem(path.join("->"))}
                                                 color="darkgray"
+                                                path={path}
                                             >
                                                 Kids
                                             </Box>

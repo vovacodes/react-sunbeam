@@ -23,6 +23,7 @@ export const Menu = React.memo(({ size, onItemFocus }: Props) => (
                                 if (onItemFocus) onItemFocus(path)
                             }}
                             color="deepskyblue"
+                            path={path}
                         >
                             Menu item {i}
                         </Box>

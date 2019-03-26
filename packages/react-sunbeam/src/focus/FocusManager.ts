@@ -30,12 +30,17 @@ export class FocusManager {
         const fixedFocusPath = validateAndFixFocusPathIfNeeded(this.focusPath, this.focusableRoot)
 
         if (fixedFocusPath) {
-            this.setFocusPath(fixedFocusPath)
+            this.setFocus(fixedFocusPath)
         }
     }
 
     public clearFocusableRoot(): void {
         this.focusableRoot = undefined
+    }
+
+    public setFocus(focusPath: FocusPath): void {
+        this.focusPath = focusPath
+        this.notifySubscribers()
     }
 
     public getFocusPath(): FocusPath {
@@ -74,11 +79,6 @@ export class FocusManager {
         this.subscribers.forEach(subscriber => {
             subscriber()
         })
-    }
-
-    private setFocusPath(focusPath: FocusPath): void {
-        this.focusPath = focusPath
-        this.notifySubscribers()
     }
 
     private moveFocusInDirection(direction: Direction): void {
@@ -137,7 +137,7 @@ export class FocusManager {
         const bestCandidate = findBestCandidateAmongSiblingsOf(focusOrigin, focusOrigin, direction)
 
         if (bestCandidate) {
-            this.setFocusPath(getPathToNode(bestCandidate))
+            this.setFocus(getPathToNode(bestCandidate))
         }
     }
 }

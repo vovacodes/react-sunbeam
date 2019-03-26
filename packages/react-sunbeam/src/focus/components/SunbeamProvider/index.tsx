@@ -70,6 +70,7 @@ export function SunbeamProvider({ focusManager, children }: Props) {
             moveFocusRight: () => focusManager.moveRight(),
             moveFocusUp: () => focusManager.moveUp(),
             moveFocusDown: () => focusManager.moveDown(),
+            setFocus: focusManager.setFocus.bind(focusManager),
         }),
         [focusManager]
     )

@@ -23,6 +23,7 @@ export const Grid = React.memo(({ size, onItemFocus }: Props) => (
                                 if (onItemFocus) onItemFocus(path)
                             }}
                             color="salmon"
+                            path={path}
                         >
                             Grid item {i}
                         </Box>

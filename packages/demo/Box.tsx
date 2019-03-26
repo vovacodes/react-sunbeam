@@ -1,5 +1,6 @@
 import * as React from "react"
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
+import { useSunbeam } from "react-sunbeam"
 
 interface Props {
     children: React.ReactNode
@@ -7,9 +8,11 @@ interface Props {
     focused: boolean
     onFocus?: () => void
     onBlur?: () => void
+    path: string[]
 }
 
-export function Box({ focused, color, children, onFocus, onBlur }: Props) {
+export function Box({ focused, color, children, onFocus, onBlur, path }: Props) {
+    const { setFocus } = useSunbeam()
     const prevFocused = usePrevious(focused, focused)
 
     useEffect(() => {
@@ -26,6 +29,10 @@ export function Box({ focused, color, children, onFocus, onBlur }: Props) {
         }
     }, [prevFocused, focused, onFocus, onBlur])
 
+    const onClick = useCallback(() => {
+        setFocus(path)
+    }, [path])
+
     return (
         <div
             style={{
@@ -38,6 +45,7 @@ export function Box({ focused, color, children, onFocus, onBlur }: Props) {
                 transform: focused ? "scale(1.2)" : "scale(1)",
                 transition: "transform 100ms ease-in-out",
             }}
+            onClick={onClick}
         >
             {children}
         </div>
