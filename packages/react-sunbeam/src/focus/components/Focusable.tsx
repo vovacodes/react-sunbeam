@@ -16,8 +16,8 @@ interface Props {
 
 export function Focusable(props: Props) {
     const { focusKey } = props
-    const focusableChildrenRef = useRef<ChildrenMap>(new Map())
     const wrapperRef = useRef<HTMLDivElement | null>(null)
+    const focusableChildrenRef = useRef<ChildrenMap>(new Map())
     const getBoundingBox = React.useCallback((): BoundingBox => {
         const wrapperElement = wrapperRef.current
         if (!wrapperElement) {

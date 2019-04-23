@@ -1,6 +1,7 @@
 import * as React from "react"
 import { useCallback, useEffect, useRef } from "react"
 import { useSunbeam } from "react-sunbeam"
+import { usePrevious } from "./usePrevious"
 
 interface Props {
     children: React.ReactNode
@@ -8,7 +9,7 @@ interface Props {
     focused: boolean
     onFocus?: () => void
     onBlur?: () => void
-    path: string[]
+    path: ReadonlyArray<string>
 }
 
 export function Box({ focused, color, children, onFocus, onBlur, path }: Props) {
@@ -23,10 +24,7 @@ export function Box({ focused, color, children, onFocus, onBlur, path }: Props) 
             return
         }
 
-        if (onBlur) {
-            onBlur()
-            return
-        }
+        if (onBlur) onBlur()
     }, [prevFocused, focused, onFocus, onBlur])
 
     const onClick = useCallback(() => {
@@ -50,16 +48,4 @@ export function Box({ focused, color, children, onFocus, onBlur, path }: Props) 
             {children}
         </div>
     )
-}
-
-function usePrevious<T, I>(value: T, initialValue?: I): T | I {
-    const ref = useRef<T | I>(initialValue)
-
-    // Store current value in ref
-    useEffect(() => {
-        ref.current = value
-    }, [value])
-
-    // Return previous value (happens before update in useEffect above)
-    return ref.current
 }

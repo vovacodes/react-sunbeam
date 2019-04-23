@@ -6,6 +6,7 @@ import { Focusable, SunbeamProvider, FocusManager, useSunbeam } from "react-sunb
 import { Box } from "./Box"
 import { Menu } from "./Menu"
 import { Grid } from "./Grid"
+import { FocusableCircle } from "./FocusableCircle"
 
 export function App() {
     const [selectedItem, setSelectedItem] = useState<string | null>(null)
@@ -40,12 +41,18 @@ export function App() {
         },
         [focusManager, selectedItem]
     )
-
     useEffect(() => {
         document.addEventListener("keydown", onKeyDown)
 
         return () => document.removeEventListener("keydown", onKeyDown)
     }, [onKeyDown])
+
+    const handleItemFocus = useCallback(
+        (itemFocusPath: string[]) => {
+            setSelectedItem(itemFocusPath.join("->"))
+        },
+        [setSelectedItem]
+    )
 
     return (
         <Focusable focusKey="app">
@@ -130,12 +137,14 @@ export function App() {
                         </Focusable>
                         <Focusable focusKey="rightMenu">
                             {({ focused }) => (
-                                <Menu
-                                    size={5}
-                                    onItemFocus={itemFocusPath => {
-                                        setSelectedItem(itemFocusPath.join("->"))
-                                    }}
-                                />
+                                <>
+                                    <FocusableCircle focusKey="goat" onFocus={handleItemFocus}>
+                                        🐐
+                                    </FocusableCircle>
+                                    <FocusableCircle focusKey="sheep" onFocus={handleItemFocus}>
+                                        🐑
+                                    </FocusableCircle>
+                                </>
                             )}
                         </Focusable>
                     </div>

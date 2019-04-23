@@ -1,1 +1,1 @@
-export { Focusable, SunbeamProvider, FocusManager, useSunbeam } from "./focus"
+export { Focusable, SunbeamProvider, FocusManager, useSunbeam, useFocusable } from "./focus"
