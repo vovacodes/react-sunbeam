@@ -6,7 +6,7 @@ import { usePrevious } from "./usePrevious"
 type Props = {
     children: React.ReactNode
     focusKey: string
-    onFocus?: (focusPath: ReadonlyArray<string>) => void
+    onFocus?: (params: { focusPath: ReadonlyArray<string>; element: HTMLDivElement }) => void
 }
 
 export function FocusableCircle({ focusKey, children, onFocus }: Props) {
@@ -16,7 +16,7 @@ export function FocusableCircle({ focusKey, children, onFocus }: Props) {
     const prevFocused = usePrevious(focused, focused)
 
     useEffect(() => {
-        if (prevFocused !== focused && focused && onFocus) onFocus(path)
+        if (prevFocused !== focused && focused && onFocus) onFocus({ focusPath: path, element: circleRef.current })
     }, [prevFocused, focused, onFocus])
 
     return (
@@ -32,8 +32,7 @@ export function FocusableCircle({ focusKey, children, onFocus }: Props) {
                 borderRadius: "50%",
                 fontSize: "48px",
                 marginBottom: "10px",
-                transform: `rotate(${focused ? "360" : "0"}deg)`,
-                transition: "transform 300ms ease-out, border-color 300ms ease-out",
+                transition: "border-color 300ms ease-out",
             }}
         >
             {children}

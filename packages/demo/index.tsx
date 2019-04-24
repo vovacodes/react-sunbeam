@@ -6,6 +6,7 @@ import { Focusable, SunbeamProvider, FocusManager, useSunbeam } from "react-sunb
 import { Box } from "./Box"
 import { Menu } from "./Menu"
 import { Grid } from "./Grid"
+import { ScrollableMenu } from "./ScrollableMenu"
 import { FocusableCircle } from "./FocusableCircle"
 
 export function App() {
@@ -18,23 +19,28 @@ export function App() {
 
             switch (event.key) {
                 case "ArrowRight":
+                    event.preventDefault()
                     moveFocusRight()
                     return
 
                 case "ArrowLeft":
+                    event.preventDefault()
                     moveFocusLeft()
                     return
 
                 case "ArrowUp":
+                    event.preventDefault()
                     moveFocusUp()
                     return
 
                 case "ArrowDown":
+                    event.preventDefault()
                     moveFocusDown()
                     return
 
                 case " ":
                 case "Enter":
+                    event.preventDefault()
                     alert(`Selected item: ${selectedItem}`)
                     return
             }
@@ -116,36 +122,13 @@ export function App() {
                     </div>
                     <div style={{ display: "flex" }}>
                         <Focusable focusKey="leftMenu">
-                            {({ focused }) => (
-                                <Menu
-                                    size={5}
-                                    onItemFocus={itemFocusPath => {
-                                        setSelectedItem(itemFocusPath.join("->"))
-                                    }}
-                                />
-                            )}
+                            {({ focused }) => <Menu size={5} onItemFocus={handleItemFocus} />}
                         </Focusable>
                         <Focusable focusKey="grid">
-                            {({ focused }) => (
-                                <Grid
-                                    size={30}
-                                    onItemFocus={itemFocusPath => {
-                                        setSelectedItem(itemFocusPath.join("->"))
-                                    }}
-                                />
-                            )}
+                            {({ focused }) => <Grid size={30} onItemFocus={handleItemFocus} />}
                         </Focusable>
                         <Focusable focusKey="rightMenu">
-                            {({ focused }) => (
-                                <>
-                                    <FocusableCircle focusKey="goat" onFocus={handleItemFocus}>
-                                        🐐
-                                    </FocusableCircle>
-                                    <FocusableCircle focusKey="sheep" onFocus={handleItemFocus}>
-                                        🐑
-                                    </FocusableCircle>
-                                </>
-                            )}
+                            {({ focused }) => <ScrollableMenu onItemFocus={handleItemFocus} />}
                         </Focusable>
                     </div>
                 </div>
