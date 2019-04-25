@@ -3,11 +3,9 @@ import { useCallback, useEffect, useState } from "react"
 import { render } from "react-dom"
 import { Focusable, SunbeamProvider, FocusManager, useSunbeam } from "react-sunbeam"
 
-import { Box } from "./Box"
-import { Menu } from "./Menu"
-import { Grid } from "./Grid"
-import { ScrollableMenu } from "./ScrollableMenu"
-import { FocusableCircle } from "./FocusableCircle"
+import { ProfilesMenu } from "./ProfilesMenu"
+import { GamesGallery } from "./GamesGallery"
+import { NavigationMenu } from "./NavigationMenu"
 
 export function App() {
     const [selectedItem, setSelectedItem] = useState<string | null>(null)
@@ -54,85 +52,33 @@ export function App() {
     }, [onKeyDown])
 
     const handleItemFocus = useCallback(
-        (itemFocusPath: string[]) => {
+        (itemFocusPath: ReadonlyArray<string>) => {
             setSelectedItem(itemFocusPath.join("->"))
         },
         [setSelectedItem]
     )
 
     return (
-        <Focusable focusKey="app">
-            {({ focused }) => (
-                <div>
-                    <div style={{ display: "flex" }}>
-                        <Focusable focusKey="navigation">
-                            {({ focused }) => (
-                                <div style={{ display: "flex" }}>
-                                    <Focusable focusKey="movies" style={{ margin: "20px" }}>
-                                        {({ focused, path }) => (
-                                            <Box
-                                                focused={focused}
-                                                onFocus={() => setSelectedItem(path.join("->"))}
-                                                color="darkgray"
-                                                path={path}
-                                            >
-                                                Movies
-                                            </Box>
-                                        )}
-                                    </Focusable>
-                                    <Focusable focusKey="series" style={{ margin: "20px" }}>
-                                        {({ focused, path }) => (
-                                            <Box
-                                                focused={focused}
-                                                onFocus={() => setSelectedItem(path.join("->"))}
-                                                color="darkgray"
-                                                path={path}
-                                            >
-                                                Series
-                                            </Box>
-                                        )}
-                                    </Focusable>
-                                    <Focusable focusKey="sports" style={{ margin: "20px" }}>
-                                        {({ focused, path }) => (
-                                            <Box
-                                                focused={focused}
-                                                onFocus={() => setSelectedItem(path.join("->"))}
-                                                color="darkgray"
-                                                path={path}
-                                            >
-                                                Sports
-                                            </Box>
-                                        )}
-                                    </Focusable>
-                                    <Focusable focusKey="kids" style={{ margin: "20px" }}>
-                                        {({ focused, path }) => (
-                                            <Box
-                                                focused={focused}
-                                                onFocus={() => setSelectedItem(path.join("->"))}
-                                                color="darkgray"
-                                                path={path}
-                                            >
-                                                Kids
-                                            </Box>
-                                        )}
-                                    </Focusable>
-                                </div>
-                            )}
-                        </Focusable>
-                    </div>
-                    <div style={{ display: "flex" }}>
-                        <Focusable focusKey="leftMenu">
-                            {({ focused }) => <Menu size={5} onItemFocus={handleItemFocus} />}
-                        </Focusable>
-                        <Focusable focusKey="grid">
-                            {({ focused }) => <Grid size={30} onItemFocus={handleItemFocus} />}
-                        </Focusable>
-                        <Focusable focusKey="rightMenu">
-                            {({ focused }) => <ScrollableMenu onItemFocus={handleItemFocus} />}
-                        </Focusable>
-                    </div>
-                </div>
-            )}
+        <Focusable
+            focusKey="app"
+            style={{
+                backgroundColor: "#2D2D2D",
+                display: "flex",
+                flexDirection: "column",
+                height: "720px",
+                width: "1280px",
+                overflow: "hidden",
+            }}
+        >
+            <div style={{ marginTop: "32px", marginLeft: "60px" }}>
+                <ProfilesMenu onItemFocus={handleItemFocus} />
+            </div>
+            <div style={{ marginTop: "94px", alignSelf: "center" }}>
+                <GamesGallery onItemFocus={handleItemFocus} />
+            </div>
+            <div style={{ marginTop: "94px", alignSelf: "center" }}>
+                <NavigationMenu onItemFocus={handleItemFocus} />
+            </div>
         </Focusable>
     )
 }
