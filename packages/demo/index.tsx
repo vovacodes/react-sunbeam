@@ -6,6 +6,7 @@ import { Focusable, SunbeamProvider, FocusManager, useSunbeam } from "react-sunb
 import { ProfilesMenu } from "./ProfilesMenu"
 import { GamesGallery } from "./GamesGallery"
 import { NavigationMenu } from "./NavigationMenu"
+import { FocusEvent } from "./FocusableItem"
 
 export function App() {
     const [selectedItem, setSelectedItem] = useState<string | null>(null)
@@ -52,8 +53,8 @@ export function App() {
     }, [onKeyDown])
 
     const handleItemFocus = useCallback(
-        (itemFocusPath: ReadonlyArray<string>) => {
-            setSelectedItem(itemFocusPath.join("->"))
+        (event: FocusEvent) => {
+            setSelectedItem(event.focusPath.join("->"))
         },
         [setSelectedItem]
     )

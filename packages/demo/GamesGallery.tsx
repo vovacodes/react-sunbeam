@@ -1,21 +1,21 @@
 import * as React from "react"
 import { memo, useCallback, useRef, useState, useEffect } from "react"
-import { useFocusable, Focusable, useSunbeam } from "react-sunbeam"
-import { usePrevious } from "./usePrevious"
+import { Focusable, useSunbeam } from "react-sunbeam"
+import { FocusableItem, FocusEvent } from "./FocusableItem"
 
 type Props = {
-    onItemFocus: (itemFocusPath: ReadonlyArray<string>) => void
+    onItemFocus: (event: FocusEvent) => void
 }
 
 export const GamesGallery = memo(function GamesGallery({ onItemFocus }: Props) {
     const viewportRef = useRef<HTMLDivElement>(null)
     const [scrollX, setScrollX] = useState<number>(0)
     const handleItemFocus = useCallback(
-        ({ focusPath, element }: { focusPath: ReadonlyArray<string>; element: HTMLDivElement }) => {
+        (event: { focusPath: ReadonlyArray<string>; element: HTMLDivElement }) => {
             const viewport = viewportRef.current
             const { width: viewportWidth, left: viewportLeft } = viewport.getBoundingClientRect()
 
-            const { left: elementLeft, width: elementWidth } = element.getBoundingClientRect()
+            const { left: elementLeft, width: elementWidth } = event.element.getBoundingClientRect()
             const elementOffsetLeft = elementLeft - viewportLeft
             const elementRightEdge = elementOffsetLeft + elementWidth
 
@@ -25,7 +25,7 @@ export const GamesGallery = memo(function GamesGallery({ onItemFocus }: Props) {
                 setScrollX(scrollX + (elementRightEdge - viewportWidth))
             }
 
-            onItemFocus(focusPath)
+            onItemFocus(event)
         },
         [scrollX]
     )
@@ -71,35 +71,23 @@ function GameTile({
     color,
     focusKey,
     onFocus,
-    onClick,
 }: {
     color: string
     focusKey: string
     onClick: (focusPath: ReadonlyArray<string>) => void
-    onFocus: (args: { element: HTMLDivElement; focusPath: ReadonlyArray<string> }) => void
+    onFocus: (event: FocusEvent) => void
 }) {
-    const elementRef = useRef<HTMLDivElement>(null)
-    const { focused, path } = useFocusable(focusKey, elementRef)
-
-    const prevFocused = usePrevious(focused, focused)
-    useEffect(() => {
-        if (prevFocused !== focused && focused && onFocus) onFocus({ element: elementRef.current, focusPath: path })
-    }, [prevFocused, focused, onFocus])
-
-    const handleClick = useCallback(() => {
-        onClick(path)
-    }, [path])
-
     return (
-        <div
-            style={{
+        <FocusableItem
+            focusKey={focusKey}
+            style={focused => ({
                 border: focused ? "4px solid cyan" : "4px solid transparent",
                 borderRadius: "2px",
                 transition: "border-color 100ms ease-out",
-            }}
+            })}
+            onFocus={onFocus}
         >
             <div
-                ref={elementRef}
                 style={{
                     height: "260px",
                     width: "260px",
@@ -108,8 +96,7 @@ function GameTile({
                     border: "2px solid black",
                     borderRadius: "2px",
                 }}
-                onClick={handleClick}
             />
-        </div>
+        </FocusableItem>
     )
 }

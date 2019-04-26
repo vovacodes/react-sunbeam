@@ -1,71 +1,47 @@
 import * as React from "react"
-import { memo, useRef, useEffect, useCallback } from "react"
-import { Focusable, useFocusable, useSunbeam } from "react-sunbeam"
-import { usePrevious } from "./usePrevious"
+import { memo } from "react"
+import { Focusable } from "react-sunbeam"
+import { FocusEvent, FocusableItem } from "./FocusableItem"
 
 type Props = {
-    onItemFocus: (itemFocusPath: ReadonlyArray<string>) => void
+    onItemFocus: (event: FocusEvent) => void
 }
 
 export const NavigationMenu = memo(function NavigationMenu({ onItemFocus }: Props) {
-    const { setFocus } = useSunbeam()
-    const handleItemClick = useCallback((itemFocusPath: ReadonlyArray<string>) => {
-        setFocus(itemFocusPath)
-    }, [])
-
     return (
         <Focusable focusKey="navigationMenu" style={{ display: "flex" }}>
             <div style={{ marginRight: "8px" }}>
-                <NavMenuItem focusKey="1" onClick={handleItemClick} onFocus={onItemFocus} />
+                <NavMenuItem focusKey="1" onFocus={onItemFocus} />
             </div>
             <div style={{ marginRight: "8px" }}>
-                <NavMenuItem focusKey="2" onClick={handleItemClick} onFocus={onItemFocus} />
+                <NavMenuItem focusKey="2" onFocus={onItemFocus} />
             </div>
             <div style={{ marginRight: "8px" }}>
-                <NavMenuItem focusKey="3" onClick={handleItemClick} onFocus={onItemFocus} />
+                <NavMenuItem focusKey="3" onFocus={onItemFocus} />
             </div>
             <div style={{ marginRight: "8px" }}>
-                <NavMenuItem focusKey="4" onClick={handleItemClick} onFocus={onItemFocus} />
+                <NavMenuItem focusKey="4" onFocus={onItemFocus} />
             </div>
             <div style={{ marginRight: "8px" }}>
-                <NavMenuItem focusKey="5" onClick={handleItemClick} onFocus={onItemFocus} />
+                <NavMenuItem focusKey="5" onFocus={onItemFocus} />
             </div>
-            <NavMenuItem focusKey="6" onClick={handleItemClick} onFocus={onItemFocus} />
+            <NavMenuItem focusKey="6" onFocus={onItemFocus} />
         </Focusable>
     )
 })
 
-function NavMenuItem({
-    focusKey,
-    onClick,
-    onFocus,
-}: {
-    focusKey: string
-    onClick: (focusPath: ReadonlyArray<string>) => void
-    onFocus: (focusPath: ReadonlyArray<string>) => void
-}) {
-    const elementRef = useRef<HTMLDivElement>(null)
-    const { focused, path } = useFocusable(focusKey, elementRef)
-
-    const prevFocused = usePrevious(focused, focused)
-    useEffect(() => {
-        if (prevFocused !== focused && focused && onFocus) onFocus(path)
-    }, [prevFocused, focused, onFocus])
-
-    const handleClick = useCallback(() => {
-        onClick(path)
-    }, [path])
-
+function NavMenuItem({ focusKey, onFocus }: { focusKey: string; onFocus: (event: FocusEvent) => void }) {
     return (
-        <div
-            style={{
+        <FocusableItem
+            focusKey={focusKey}
+            style={focused => ({
                 border: focused ? "4px solid cyan" : "4px solid transparent",
                 borderRadius: "50%",
                 transition: "border-color 100ms ease-out",
-            }}
+            })}
+            onFocus={onFocus}
         >
             <div
-                ref={elementRef}
                 style={{
                     backgroundColor: "#505050",
                     boxSizing: "border-box",
@@ -74,8 +50,7 @@ function NavMenuItem({
                     height: "92px",
                     width: "92px",
                 }}
-                onClick={handleClick}
             />
-        </div>
+        </FocusableItem>
     )
 }
