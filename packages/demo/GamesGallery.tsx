@@ -1,5 +1,5 @@
 import * as React from "react"
-import { memo, useCallback, useRef, useState, useEffect } from "react"
+import { memo, useCallback, useRef, useState } from "react"
 import { Focusable, useSunbeam } from "react-sunbeam"
 import { FocusableItem, FocusEvent } from "./FocusableItem"
 
@@ -9,6 +9,7 @@ type Props = {
 
 export const GamesGallery = memo(function GamesGallery({ onItemFocus }: Props) {
     const viewportRef = useRef<HTMLDivElement>(null)
+    const trackRef = useRef<HTMLDivElement>(null)
     const [scrollX, setScrollX] = useState<number>(0)
     const handleItemFocus = useCallback(
         (event: { focusPath: ReadonlyArray<string>; element: HTMLDivElement }) => {
@@ -19,16 +20,28 @@ export const GamesGallery = memo(function GamesGallery({ onItemFocus }: Props) {
             const elementOffsetLeft = elementLeft - viewportLeft
             const elementRightEdge = elementOffsetLeft + elementWidth
 
+            let deltaScrollX = 0
             if (elementLeft < viewportLeft) {
-                setScrollX(scrollX - (viewportLeft - elementLeft))
+                deltaScrollX = elementLeft - viewportLeft
             } else if (elementRightEdge > viewportWidth) {
-                setScrollX(scrollX + (elementRightEdge - viewportWidth))
+                deltaScrollX = elementRightEdge - viewportWidth
             }
+
+            const newScrollX = ensureScrollXWithinBounds(scrollX + deltaScrollX)
+            function ensureScrollXWithinBounds(value: number): number {
+                const minScrollX = 0
+                const maxScrollX = trackRef.current.scrollWidth - viewportWidth
+                if (value < minScrollX) return minScrollX
+                if (value > maxScrollX) return maxScrollX
+                return value
+            }
+            if (newScrollX !== scrollX) setScrollX(newScrollX)
 
             onItemFocus(event)
         },
         [scrollX]
     )
+
     const { setFocus } = useSunbeam()
     const handleItemClick = useCallback((itemFocusPath: ReadonlyArray<string>) => {
         setFocus(itemFocusPath)
@@ -38,9 +51,10 @@ export const GamesGallery = memo(function GamesGallery({ onItemFocus }: Props) {
         <Focusable focusKey="gallery">
             <div ref={viewportRef} style={{ width: "1078px" }}>
                 <div
+                    ref={trackRef}
                     style={{
                         display: "flex",
-                        transform: `translateX(-${scrollX}px)`,
+                        transform: `translateX(${-scrollX}px)`,
                         transition: "transform 100ms ease-out",
                         willChange: "transform",
                     }}
