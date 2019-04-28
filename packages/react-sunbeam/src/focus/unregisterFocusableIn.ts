@@ -1,6 +1,6 @@
-import { ChildrenMap } from "./types"
+import { FocusableNodesMap } from "./types"
 
-export default function unregisterFocusableIn(focusableChildrenMap: ChildrenMap) {
+export default function unregisterFocusableIn(focusableChildrenMap: FocusableNodesMap) {
     return (childFocusKey: string) => {
         if (!focusableChildrenMap.has(childFocusKey)) {
             throw new Error(

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react"
 import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants"
 import { FocusableTreeContext } from "../../FocusableTreeContext"
 import { SunbeamContext } from "../../SunbeamContext"
-import { ChildrenMap } from "../../types"
+import { FocusableNodesMap } from "../../types"
 import registerFocusableIn from "../../registerFocusableIn"
 import unregisterFocusableIn from "../../unregisterFocusableIn"
 import { FocusManager } from "../../FocusManager"
@@ -31,7 +31,7 @@ export function SunbeamProvider({ focusManager, children }: Props) {
 
         return { left, top, right, bottom }
     }, [])
-    const focusableChildrenRef = useRef<ChildrenMap>(new Map())
+    const focusableChildrenRef = useRef<FocusableNodesMap>(new Map())
     const getChildren = useCallback(() => focusableChildrenRef.current, [])
     const getPreferredChild = useCallback(getPreferredNodeAmong(focusableChildrenRef.current), [])
     const path = useMemo(() => [], [])

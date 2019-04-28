@@ -1,16 +1,20 @@
-import { ChildrenMap } from "./types"
+import { FocusableNodesMap } from "./types"
 import { Direction, BoundingBox } from "../spatialNavigation"
-import { getClosestFocusableChildInDirection } from "./getClosestFocusableChildInDirection"
+import { getClosestFocusableNodeInDirection } from "./getClosestFocusableNodeInDirection"
 
-export default function getPreferredNodeAmong(nodes: ChildrenMap) {
+export default function getPreferredNodeAmong(nodes: FocusableNodesMap) {
     return (focusOrigin?: BoundingBox, direction?: Direction) => {
         if (!focusOrigin || !direction) {
             // pick the child that was mounted first
             return nodes.values().next().value
         }
 
-        const preferredChild = getClosestFocusableChildInDirection(nodes, focusOrigin, direction)
+        const preferredFocusableNode = getClosestFocusableNodeInDirection(nodes, focusOrigin, direction)
+        if (!preferredFocusableNode) {
+            // pick the child that was mounted first
+            return nodes.values().next().value
+        }
 
-        return preferredChild ? preferredChild : nodes.values().next().value
+        return preferredFocusableNode
     }
 }

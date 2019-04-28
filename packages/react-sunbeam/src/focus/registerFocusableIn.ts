@@ -1,6 +1,6 @@
-import { ChildrenMap, FocusableTreeNode } from "./types"
+import { FocusableNodesMap, FocusableTreeNode } from "./types"
 
-export default function registerFocusableIn(focusableChildrenMap: ChildrenMap) {
+export default function registerFocusableIn(focusableChildrenMap: FocusableNodesMap) {
     return (focusableTreeNode: FocusableTreeNode) => {
         const { focusKey } = focusableTreeNode
 

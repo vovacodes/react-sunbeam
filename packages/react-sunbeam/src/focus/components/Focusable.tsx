@@ -2,7 +2,7 @@ import * as React from "react"
 import { useMemo, useRef, useCallback, useEffect } from "react"
 import { FocusableTreeContext } from "../FocusableTreeContext"
 import { BoundingBox } from "../../spatialNavigation"
-import { ChildrenMap, FocusableTreeNode } from "../types"
+import { FocusableNodesMap, FocusableTreeNode } from "../types"
 import registerFocusableIn from "../registerFocusableIn"
 import unregisterFocusableIn from "../unregisterFocusableIn"
 import getPreferredNodeAmong from "../getPreferredNodeAmong"
@@ -17,7 +17,7 @@ interface Props {
 export function Focusable(props: Props) {
     const { focusKey } = props
     const wrapperRef = useRef<HTMLDivElement | null>(null)
-    const focusableChildrenRef = useRef<ChildrenMap>(new Map())
+    const focusableChildrenRef = useRef<FocusableNodesMap>(new Map())
     const getBoundingBox = React.useCallback((): BoundingBox => {
         const wrapperElement = wrapperRef.current
         if (!wrapperElement) {

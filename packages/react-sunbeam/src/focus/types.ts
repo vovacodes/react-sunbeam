@@ -14,6 +14,6 @@ export interface FocusableTreeNode {
     getPreferredChild: GetPreferredChildFn
 }
 
-export type ChildrenMap = Map<string, FocusableTreeNode>
+export type FocusableNodesMap = Map<string, FocusableTreeNode>
 
-export type GetChildrenFn = () => ChildrenMap
+export type GetChildrenFn = () => FocusableNodesMap
