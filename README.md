@@ -59,7 +59,7 @@ function App() {
     }, [onKeyDown])
 
     return (
-        <Focusable focusKey="app">
+        <div>
             <Focusable focusKey="item1">
                 {({ focused }) => <div>{focused ? "I am focused" : "I am not focused"}</div>}
             </Focusable>
@@ -94,7 +94,7 @@ function App() {
 }
 
 const focusManager = new FocusManager({
-    initialFocusPath: ["app", "menuContainer", "menuItem2"],
+    initialFocusPath: ["menuContainer", "menuItem2"],
 })
 
 render(

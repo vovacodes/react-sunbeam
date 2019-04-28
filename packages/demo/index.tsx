@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useCallback, useEffect, useState } from "react"
 import { render } from "react-dom"
-import { Focusable, SunbeamProvider, FocusManager, useSunbeam } from "react-sunbeam"
+import { SunbeamProvider, FocusManager, useSunbeam } from "react-sunbeam"
 
 import { ProfilesMenu } from "./ProfilesMenu"
 import { GamesGallery } from "./GamesGallery"
@@ -60,8 +60,7 @@ export function App() {
     )
 
     return (
-        <Focusable
-            focusKey="app"
+        <div
             style={{
                 backgroundColor: "#2D2D2D",
                 display: "flex",
@@ -80,7 +79,7 @@ export function App() {
             <div style={{ marginTop: "94px", alignSelf: "center" }}>
                 <NavigationMenu onItemFocus={handleItemFocus} />
             </div>
-        </Focusable>
+        </div>
     )
 }
 

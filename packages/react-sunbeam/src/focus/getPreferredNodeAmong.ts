@@ -1,5 +1,6 @@
 import { ChildrenMap } from "./types"
-import { BoundingBox, Direction, getBestCandidate } from "../spatialNavigation"
+import { Direction, BoundingBox } from "../spatialNavigation"
+import { getClosestFocusableChildInDirection } from "./getClosestFocusableChildInDirection"
 
 export default function getPreferredNodeAmong(nodes: ChildrenMap) {
     return (focusOrigin?: BoundingBox, direction?: Direction) => {
@@ -8,18 +9,8 @@ export default function getPreferredNodeAmong(nodes: ChildrenMap) {
             return nodes.values().next().value
         }
 
-        const childNodesArray = Array.from(nodes.values())
-        const childBoxes = childNodesArray.map(node => node.getBoundingBox())
+        const preferredChild = getClosestFocusableChildInDirection(nodes, focusOrigin, direction)
 
-        const bestChildCandidateBox = getBestCandidate(focusOrigin, childBoxes, direction)
-
-        if (!bestChildCandidateBox) {
-            // pick the child that was mounted first
-            return nodes.values().next().value
-        }
-
-        const bestChildCandidateBoxIndex = childBoxes.indexOf(bestChildCandidateBox)
-
-        return childNodesArray[bestChildCandidateBoxIndex]
+        return preferredChild ? preferredChild : nodes.values().next().value
     }
 }

@@ -86,11 +86,11 @@ export class FocusManager {
 
         // 1. get current focus origin
         const focusOrigin = getNodeByPath(this.focusPath, this.focusableRoot)
-
         if (!focusOrigin) {
             throw new Error(`focusOrigin is not found, looks like the focusPath: ${this.focusPath} is invalid`)
         }
 
+        const bestCandidate = findBestCandidateAmongSiblingsOf(focusOrigin, focusOrigin, direction)
         function findBestCandidateAmongSiblingsOf(
             treeNode: FocusableTreeNode,
             focusOrigin: FocusableTreeNode,
@@ -101,12 +101,9 @@ export class FocusManager {
 
             // 3. getBestCandidate(origin, candidates, Direction.RIGHT)
             const siblingBoxes = focusableSiblings.map(node => node.getBoundingBox())
-
             const bestCandidateBox = getBestCandidate(focusOrigin.getBoundingBox(), siblingBoxes, direction)
-
             if (!bestCandidateBox) {
                 const parent = treeNode.getParent()
-
                 if (!parent) return undefined
 
                 return findBestCandidateAmongSiblingsOf(parent, focusOrigin, direction)
@@ -114,7 +111,6 @@ export class FocusManager {
 
             const bestCandidateIndex = siblingBoxes.indexOf(bestCandidateBox)
             let bestCandidateNode = focusableSiblings[bestCandidateIndex]
-
             while (bestCandidateNode) {
                 if (bestCandidateNode.getChildren().size === 0) {
                     // we found the bestCandidate
@@ -122,7 +118,6 @@ export class FocusManager {
                 }
 
                 const preferredChild = bestCandidateNode.getPreferredChild(focusOrigin.getBoundingBox(), direction)
-
                 if (!preferredChild) {
                     throw new Error(
                         "`focusableTreeNode.getPreferredChild()` should " +
@@ -133,8 +128,6 @@ export class FocusManager {
                 bestCandidateNode = preferredChild
             }
         }
-
-        const bestCandidate = findBestCandidateAmongSiblingsOf(focusOrigin, focusOrigin, direction)
 
         if (bestCandidate) {
             this.setFocus(getPathToNode(bestCandidate))
