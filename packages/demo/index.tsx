@@ -88,7 +88,23 @@ const focusManager = new FocusManager({
 })
 
 render(
-    <SunbeamProvider focusManager={focusManager}>
+    <SunbeamProvider
+        focusManager={focusManager}
+        findBestCandidate={(focusableChildren, focusOrigin, direction) => {
+            if (direction === Direction.LEFT || direction === Direction.RIGHT) {
+                return KEEP_FOCUS_UNCHANGED
+            }
+
+            return defaultFindBestCandidate(focusableChildren, focusableChildren, direction)
+        }}
+        getPreferredChild={(focusableChildren, focusOrigin, direction) => {
+            if (!focusOrigin || !direction) {
+                return focusableChildren.get("gamesGallery")
+            }
+
+            return defaultGetPreferredChild(focusableChildren, focusOrigin, direction)
+        }}
+    >
         <App />
     </SunbeamProvider>,
     document.getElementById("app")
