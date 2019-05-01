@@ -6,10 +6,11 @@
     "scripts": {
         "build": "lerna run build",
         "commit": "git-cz",
+        "commit:retry": "git-cz --retry",
         "dev": "yarn build && lerna run --parallel --stream dev",
         "clean": "lerna run clean",
         "lint": "lerna run lint",
-        "release": "yarn build && lerna publish",
+        "release": "yarn build && lerna publish --conventional-commits",
         "type-check": "lerna run type-check",
         "uninstall": "lerna clean && rimraf ./node_modules"
     },
