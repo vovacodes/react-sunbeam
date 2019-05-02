@@ -84,7 +84,7 @@ export function App() {
 }
 
 const focusManager = new FocusManager({
-    initialFocusPath: [],
+    initialFocusPath: ["gallery", "1"],
 })
 
 render(

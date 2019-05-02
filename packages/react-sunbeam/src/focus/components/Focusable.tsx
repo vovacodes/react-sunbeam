@@ -29,9 +29,14 @@ export function Focusable(props: Props) {
     }, [focusKey])
     const getChildren = useCallback(() => focusableChildrenRef.current, [])
     const getPreferredChild = useCallback(getPreferredNodeAmong(focusableChildrenRef.current), [])
-    const { parentPath, focusPath, parentFocusableNode, registerFocusable, unregisterFocusable } = React.useContext(
-        FocusableTreeContext
-    )
+    const {
+        focusPath,
+        onFocusableUnmount,
+        parentPath,
+        parentFocusableNode,
+        registerFocusable,
+        unregisterFocusable,
+    } = React.useContext(FocusableTreeContext)
     const path = useMemo(() => [...parentPath, focusKey], [parentPath, focusKey])
     const focusableTreeNode: FocusableTreeNode = useMemo(
         () => ({
@@ -47,8 +52,11 @@ export function Focusable(props: Props) {
     useEffect(() => {
         registerFocusable(focusableTreeNode)
 
-        return () => unregisterFocusable(focusKey)
-    }, [focusableTreeNode, focusKey])
+        return () => {
+            unregisterFocusable(focusKey)
+            onFocusableUnmount(path)
+        }
+    }, [focusableTreeNode, focusKey, path])
 
     const [focusedSiblingFocusKey, ...restOfFocusPath] = focusPath
     const isFocused = focusedSiblingFocusKey === focusKey
@@ -57,6 +65,7 @@ export function Focusable(props: Props) {
     const childFocusableTreeContextValue = useMemo(() => {
         return {
             focusPath: childrenFocusPath,
+            onFocusableUnmount,
             parentPath: path,
             parentFocusableNode: focusableTreeNode,
             registerFocusable: registerFocusableIn(focusableChildrenRef.current),

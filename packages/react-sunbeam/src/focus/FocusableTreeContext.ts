@@ -4,6 +4,7 @@ import { FocusableTreeNode } from "./types"
 export interface FocusableTreeContextValue {
     parentPath: ReadonlyArray<string>
     focusPath: ReadonlyArray<string>
+    onFocusableUnmount: (focusableNodePath: ReadonlyArray<string>) => void
     parentFocusableNode: FocusableTreeNode
     registerFocusable: (focusableTreeNode: FocusableTreeNode) => void
     unregisterFocusable: (focusKey: string) => void
@@ -12,6 +13,7 @@ export interface FocusableTreeContextValue {
 export const FocusableTreeContext = createContext<FocusableTreeContextValue>({
     parentPath: [],
     focusPath: [],
+    onFocusableUnmount: () => {},
     parentFocusableNode: {
         focusKey: "",
         getParent: () => undefined,

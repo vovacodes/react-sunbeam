@@ -2,62 +2,46 @@ import { FocusableNodesMap, FocusableTreeNode, FocusPath } from "./types"
 import { FOCUSABLE_TREE_ROOT_KEY } from "./Constants"
 
 export function validateAndFixFocusPathIfNeeded(focusPath: FocusPath, treeRoot: FocusableTreeNode): FocusPath | null {
-    let fixedFocusPath: string[] | null = null
-
-    function addFixToFocusPath(index: number, focusKey: string | null) {
-        // lazily initialize fixedFocusPath
-        if (!fixedFocusPath) {
-            fixedFocusPath = Array.from(focusPath)
-        }
-
-        if (focusKey === null) {
-            // delete the rest of the path starting with `index`
-            fixedFocusPath.splice(index)
-            return
-        }
-
-        fixedFocusPath[index] = focusKey
-    }
-
+    let fixedFocusPath: string[] | null = null // only initialize if we need to fix the path
+    let focusedNode: FocusableTreeNode = treeRoot
     let focusPathSegmentIndex = 0
-    let focusedNode: FocusableTreeNode | undefined = treeRoot
-    while (focusedNode) {
-        const focusedChildKey: string | undefined = focusPath[focusPathSegmentIndex]
-        const children: FocusableNodesMap = focusedNode.getChildren()
 
-        if (children.size === 0) {
-            // we reached the focused leaf of the tree
-            if (focusedChildKey != null) {
-                addFixToFocusPath(focusPathSegmentIndex, null)
+    while (focusedNode) {
+        const focusedChildKey: string | undefined = fixedFocusPath
+            ? fixedFocusPath[focusPathSegmentIndex]
+            : focusPath[focusPathSegmentIndex]
+        const focusableChildren: FocusableNodesMap = focusedNode.getChildren()
+        if (focusableChildren.size === 0) {
+            // leaf node
+            if (focusPath.length >= focusPathSegmentIndex + 1 && !fixedFocusPath) {
+                // discard the rest of the path starting with `focusPathSegmentIndex` as invalid
+                fixedFocusPath = focusPath.slice(0, focusPathSegmentIndex)
             }
             break
         }
 
-        if (children.has(focusedChildKey)) {
-            // move to the next focused child
-            focusedNode = children.get(focusedChildKey)
+        if (!focusableChildren.has(focusedChildKey)) {
+            const preferredChild: FocusableTreeNode | undefined = focusedNode.getPreferredChild()
+            if (!preferredChild) {
+                throw new Error(
+                    `can not find a preferred child to focus ` + `in node with focusKey=${focusedNode.focusKey}`
+                )
+            }
+            if (!fixedFocusPath) {
+                fixedFocusPath = focusPath.slice(0, focusPathSegmentIndex)
+            }
+            fixedFocusPath.push(preferredChild.focusKey)
+            focusedNode = preferredChild
             focusPathSegmentIndex++
             continue
         }
 
-        const preferredChild = focusedNode.getPreferredChild()
-
-        if (!preferredChild) {
-            throw new Error(
-                `can not find a preferred child to focus ` + `in node with focusKey=${focusedNode.focusKey}`
-            )
-        }
-
-        addFixToFocusPath(focusPathSegmentIndex, preferredChild.focusKey)
-        focusedNode = preferredChild
+        // move to the next focused child
+        focusedNode = focusableChildren.get(focusedChildKey) as FocusableTreeNode // we already checked for existence above
         focusPathSegmentIndex++
     }
 
-    if (fixedFocusPath !== null) {
-        return fixedFocusPath
-    }
-
-    return null
+    return fixedFocusPath ? fixedFocusPath : null
 }
 
 export function getNodeByPath(path: FocusPath, treeRoot: FocusableTreeNode): FocusableTreeNode | undefined {

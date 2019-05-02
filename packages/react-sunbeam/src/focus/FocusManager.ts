@@ -27,11 +27,7 @@ export class FocusManager {
     public setFocusableRoot(focusableRoot: FocusableTreeNode): void {
         this.focusableRoot = focusableRoot
 
-        const fixedFocusPath = validateAndFixFocusPathIfNeeded(this.focusPath, this.focusableRoot)
-
-        if (fixedFocusPath) {
-            this.setFocus(fixedFocusPath)
-        }
+        this.revalidateFocusPath()
     }
 
     public clearFocusableRoot(): void {
@@ -45,6 +41,18 @@ export class FocusManager {
 
     public getFocusPath(): FocusPath {
         return this.focusPath
+    }
+
+    public revalidateFocusPath() {
+        if (!this.focusableRoot) {
+            this.setFocus([])
+            return
+        }
+
+        const fixedFocusPath = validateAndFixFocusPathIfNeeded(this.focusPath, this.focusableRoot)
+        if (fixedFocusPath) {
+            this.setFocus(fixedFocusPath)
+        }
     }
 
     public subscribe(subscriber: () => void): () => void {

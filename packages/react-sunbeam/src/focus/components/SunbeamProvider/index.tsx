@@ -51,12 +51,19 @@ export function SunbeamProvider({ focusManager, children }: Props) {
         return () => {
             focusManager.clearFocusableRoot()
         }
-    })
+    }, [focusManager, focusableTreeRoot])
 
     const focusableTreeContextValue = useMemo(
         () => ({
-            parentPath: path,
             focusPath,
+            onFocusableUnmount: (focusableNodePath: ReadonlyArray<string>) => {
+                const focusPath = focusManager.getFocusPath()
+                const isNodeFocused = pathStartsWith(focusPath, focusableNodePath)
+                if (isNodeFocused) {
+                    focusManager.revalidateFocusPath()
+                }
+            },
+            parentPath: path,
             parentFocusableNode: focusableTreeRoot,
             registerFocusable: registerFocusableIn(focusableChildrenRef.current),
             unregisterFocusable: unregisterFocusableIn(focusableChildrenRef.current),
@@ -82,4 +89,14 @@ export function SunbeamProvider({ focusManager, children }: Props) {
             </FocusableTreeContext.Provider>
         </SunbeamContext.Provider>
     )
+}
+
+function pathStartsWith(path: ReadonlyArray<string>, segment: ReadonlyArray<string>): boolean {
+    if (path.length === 0 && segment.length === 0) return true
+
+    for (let i = 0; i < segment.length; i++) {
+        if (path[i] !== segment[i]) return false
+    }
+
+    return true
 }
