@@ -26,8 +26,10 @@ yarn add react-sunbeam
 ## Usage
 
 ```js
+// app.js
 import React, { useCallback, useEffect } from "react"
 import { Focusable, SunbeamProvider, FocusManager, useSunbeam } from "react-sunbeam"
+import { FocusableCard } from "./FocusableCard"
 
 function App() {
     const { setFocus, moveFocusLeft, moveFocusRight, moveFocusUp, moveFocusDown } = useSunbeam()
@@ -60,6 +62,7 @@ function App() {
 
     return (
         <div>
+            <FocusableCard focusKey="card-1" />
             <Focusable focusKey="item1">
                 {({ focused }) => <div>{focused ? "I am focused" : "I am not focused"}</div>}
             </Focusable>
@@ -89,7 +92,7 @@ function App() {
                     </div>
                 )}
             </Focusable>
-        </Focusable>
+        </div>
     )
 }
 
@@ -103,6 +106,21 @@ render(
     </SunbeamProvider>,
     document.getElementById("app")
 )
+
+// FocusableCard.js
+import React, { useRef } from "react"
+import { useFocusable } from "react-sunbeam"
+
+export function FocusableCard({ focusKey }) {
+    const elementRef = useRef(null)
+    const { focused } = useFocusable(focusKey, elementRef)
+
+    return (
+        <div ref={elementRef} style={{ border: focused ? "1px solid salmon" : "1px solid transparent" }}>
+            Card
+        </div>
+    )
+}
 ```
 
 ## API
