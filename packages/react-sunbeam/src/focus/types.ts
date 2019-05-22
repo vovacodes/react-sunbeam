@@ -2,7 +2,10 @@ import { BoundingBox, Direction } from "../spatialNavigation"
 
 export type GetBoundingBoxFn = () => BoundingBox
 
-export type GetPreferredChildFn = (focusOrigin?: BoundingBox, direction?: Direction) => FocusableTreeNode | undefined
+export type GetPreferredChildFn = (
+    focusOrigin?: FocusableTreeNode,
+    direction?: Direction
+) => FocusableTreeNode | undefined
 
 export type FocusPath = ReadonlyArray<string>
 

@@ -1,7 +1,12 @@
 import * as React from "react"
 import { useCallback, useEffect, useState } from "react"
 import { render } from "react-dom"
-import { SunbeamProvider, FocusManager, useSunbeam } from "react-sunbeam"
+import {
+    SunbeamProvider,
+    FocusManager,
+    useSunbeam,
+    unstable_defaultGetPreferredChildOnFocusReceive,
+} from "react-sunbeam"
 
 import { ProfilesMenu } from "./ProfilesMenu"
 import { GamesGallery } from "./GamesGallery"
@@ -88,7 +93,24 @@ const focusManager = new FocusManager({
 })
 
 render(
-    <SunbeamProvider focusManager={focusManager}>
+    <SunbeamProvider
+        focusManager={focusManager}
+        // unstable_passFocusBetweenChildren={({ focusableChildren, focusOrigin, direction }) => {
+        //     if (direction === "LEFT" || direction === "RIGHT") {
+        //         return "KEEP_FOCUS_UNCHANGED"
+        //     }
+        //
+        //     return unstable_defaultPassFocusBetweenChildren({focusableChildren, focusOrigin, direction})
+        // }}
+        unstable_getPreferredChildOnFocusReceive={({ focusableChildren, focusOrigin, direction }) => {
+            if (!focusOrigin || !direction) {
+                // focus the gallery initially
+                return focusableChildren.get("gamesGallery")
+            }
+
+            return unstable_defaultGetPreferredChildOnFocusReceive({ focusableChildren, focusOrigin, direction })
+        }}
+    >
         <App />
     </SunbeamProvider>,
     document.getElementById("app")

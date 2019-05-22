@@ -1,21 +1,26 @@
 import * as React from "react"
 import { useMemo, useRef, useCallback, useEffect } from "react"
 import { FocusableTreeContext } from "../FocusableTreeContext"
-import { BoundingBox } from "../../spatialNavigation"
+import { BoundingBox, Direction } from "../../spatialNavigation"
 import { FocusableNodesMap, FocusableTreeNode } from "../types"
 import registerFocusableIn from "../registerFocusableIn"
 import unregisterFocusableIn from "../unregisterFocusableIn"
-import getPreferredNodeAmong from "../getPreferredNodeAmong"
+import getPreferredNode from "../getPreferredNode"
 
 interface Props {
     focusKey: string
     children: React.ReactNode | ((param: { focused: boolean; path: ReadonlyArray<string> }) => React.ReactNode)
     style?: React.CSSProperties
     className?: string
+    unstable_getPreferredChildOnFocusReceive?: (args: {
+        focusableChildren: FocusableNodesMap
+        focusOrigin?: FocusableTreeNode
+        direction?: Direction
+    }) => FocusableTreeNode | undefined
 }
 
-export function Focusable(props: Props) {
-    const { focusKey } = props
+/* eslint-disable @typescript-eslint/camelcase */
+export function Focusable({ children, className, style, focusKey, unstable_getPreferredChildOnFocusReceive }: Props) {
     const wrapperRef = useRef<HTMLDivElement | null>(null)
     const focusableChildrenRef = useRef<FocusableNodesMap>(new Map())
     const getBoundingBox = React.useCallback((): BoundingBox => {
@@ -28,7 +33,18 @@ export function Focusable(props: Props) {
         return { left, top, right, bottom }
     }, [focusKey])
     const getChildren = useCallback(() => focusableChildrenRef.current, [])
-    const getPreferredChild = useCallback(getPreferredNodeAmong(focusableChildrenRef.current), [])
+    const getPreferredChild = useCallback(
+        (focusOrigin?: FocusableTreeNode, direction?: Direction) => {
+            return unstable_getPreferredChildOnFocusReceive
+                ? unstable_getPreferredChildOnFocusReceive({
+                      focusableChildren: focusableChildrenRef.current,
+                      focusOrigin,
+                      direction,
+                  })
+                : getPreferredNode({ nodes: focusableChildrenRef.current, focusOrigin, direction })
+        },
+        [unstable_getPreferredChildOnFocusReceive]
+    )
     const {
         focusPath,
         onFocusableUnmount,
@@ -77,8 +93,8 @@ export function Focusable(props: Props) {
 
     return (
         <FocusableTreeContext.Provider value={childFocusableTreeContextValue}>
-            <div ref={wrapperRef} className={props.className} style={props.style}>
-                {typeof props.children === "function" ? props.children(renderCallbackArgument) : props.children}
+            <div ref={wrapperRef} className={className} style={style}>
+                {typeof children === "function" ? children(renderCallbackArgument) : children}
             </div>
         </FocusableTreeContext.Provider>
     )

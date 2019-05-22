@@ -24,7 +24,17 @@
     "commitlint": {
         "extends": [
             "@commitlint/config-conventional"
-        ]
+        ],
+        "rules": {
+            "scope-case": [
+                0
+            ],
+            "header-max-length": [
+                2,
+                "always",
+                100
+            ]
+        }
     },
     "config": {
         "commitizen": {
