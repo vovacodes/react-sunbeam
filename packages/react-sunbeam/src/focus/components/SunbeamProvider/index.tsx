@@ -3,20 +3,31 @@ import { useCallback, useEffect, useMemo, useRef } from "react"
 import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants"
 import { FocusableTreeContext } from "../../FocusableTreeContext"
 import { SunbeamContext } from "../../SunbeamContext"
-import { FocusableNodesMap } from "../../types"
+import { FocusableNodesMap, FocusableTreeNode } from "../../types"
 import registerFocusableIn from "../../registerFocusableIn"
 import unregisterFocusableIn from "../../unregisterFocusableIn"
 import { FocusManager } from "../../FocusManager"
-import { BoundingBox } from "../../../spatialNavigation"
-import getPreferredNodeAmong from "../../getPreferredNodeAmong"
+import { BoundingBox, Direction } from "../../../spatialNavigation"
+import getPreferredNode from "../../getPreferredNode"
 import useFocusPath from "./useFocusPath"
 
 interface Props {
     focusManager: FocusManager
     children: React.ReactNode
+    // unstable_passFocusBetweenChildren?: (args: {
+    //     focusableChildren: FocusableNodesMap
+    //     focusOrigin: FocusableTreeNode
+    //     direction: Direction
+    // }) => FocusableTreeNode | "KEEP_FOCUS_UNCHANGED" | "CANDIDATE_NOT_FOUND"
+    unstable_getPreferredChildOnFocusReceive?: (args: {
+        focusableChildren: FocusableNodesMap
+        focusOrigin?: FocusableTreeNode
+        direction?: Direction
+    }) => FocusableTreeNode | undefined
 }
 
-export function SunbeamProvider({ focusManager, children }: Props) {
+/* eslint-disable @typescript-eslint/camelcase */
+export function SunbeamProvider({ focusManager, children, unstable_getPreferredChildOnFocusReceive }: Props) {
     const focusPath = useFocusPath(focusManager)
     const wrapperRef = useRef<HTMLDivElement | null>(null)
     const getBoundingBox = useCallback((): BoundingBox => {
@@ -33,7 +44,18 @@ export function SunbeamProvider({ focusManager, children }: Props) {
     }, [])
     const focusableChildrenRef = useRef<FocusableNodesMap>(new Map())
     const getChildren = useCallback(() => focusableChildrenRef.current, [])
-    const getPreferredChild = useCallback(getPreferredNodeAmong(focusableChildrenRef.current), [])
+    const getPreferredChild = useCallback(
+        (focusOrigin?: FocusableTreeNode, direction?: Direction) => {
+            return unstable_getPreferredChildOnFocusReceive
+                ? unstable_getPreferredChildOnFocusReceive({
+                      focusableChildren: focusableChildrenRef.current,
+                      focusOrigin,
+                      direction,
+                  })
+                : getPreferredNode({ nodes: focusableChildrenRef.current, focusOrigin, direction })
+        },
+        [unstable_getPreferredChildOnFocusReceive]
+    )
     const path = useMemo(() => [], [])
     const focusableTreeRoot = useMemo(
         () => ({

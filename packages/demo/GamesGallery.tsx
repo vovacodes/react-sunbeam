@@ -48,7 +48,7 @@ export const GamesGallery = memo(function GamesGallery({ onItemFocus }: Props) {
     }, [])
 
     return (
-        <Focusable focusKey="gallery">
+        <Focusable focusKey="gamesGallery">
             <div ref={viewportRef} style={{ width: "1078px" }}>
                 <div
                     ref={trackRef}

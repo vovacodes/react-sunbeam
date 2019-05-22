@@ -136,7 +136,7 @@ function findBestCandidateAmongSiblingsOf(
             break
         }
 
-        const preferredChild = bestCandidateNode.getPreferredChild(focusOrigin.getBoundingBox(), direction)
+        const preferredChild = bestCandidateNode.getPreferredChild(focusOrigin, direction)
         if (!preferredChild) {
             throw new Error(
                 "`focusableTreeNode.getPreferredChild()` should " +

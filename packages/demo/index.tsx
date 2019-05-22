@@ -1,7 +1,12 @@
 import * as React from "react"
 import { useCallback, useEffect, useState } from "react"
 import { render } from "react-dom"
-import { SunbeamProvider, FocusManager, useSunbeam } from "react-sunbeam"
+import {
+    SunbeamProvider,
+    FocusManager,
+    useSunbeam,
+    unstable_defaultGetPreferredChildOnFocusReceive,
+} from "react-sunbeam"
 
 import { ProfilesMenu } from "./ProfilesMenu"
 import { GamesGallery } from "./GamesGallery"
@@ -90,19 +95,20 @@ const focusManager = new FocusManager({
 render(
     <SunbeamProvider
         focusManager={focusManager}
-        findBestCandidate={(focusableChildren, focusOrigin, direction) => {
-            if (direction === Direction.LEFT || direction === Direction.RIGHT) {
-                return KEEP_FOCUS_UNCHANGED
-            }
-
-            return defaultFindBestCandidate(focusableChildren, focusableChildren, direction)
-        }}
-        getPreferredChild={(focusableChildren, focusOrigin, direction) => {
+        // unstable_passFocusBetweenChildren={({ focusableChildren, focusOrigin, direction }) => {
+        //     if (direction === "LEFT" || direction === "RIGHT") {
+        //         return "KEEP_FOCUS_UNCHANGED"
+        //     }
+        //
+        //     return unstable_defaultPassFocusBetweenChildren({focusableChildren, focusOrigin, direction})
+        // }}
+        unstable_getPreferredChildOnFocusReceive={({ focusableChildren, focusOrigin, direction }) => {
             if (!focusOrigin || !direction) {
+                // focus the gallery initially
                 return focusableChildren.get("gamesGallery")
             }
 
-            return defaultGetPreferredChild(focusableChildren, focusOrigin, direction)
+            return unstable_defaultGetPreferredChildOnFocusReceive({ focusableChildren, focusOrigin, direction })
         }}
     >
         <App />
