@@ -6,6 +6,8 @@ import {
     FocusManager,
     useSunbeam,
     unstable_defaultGetPreferredChildOnFocusReceive,
+    FocusableTreeNode,
+    Direction,
 } from "react-sunbeam"
 
 import { ProfilesMenu } from "./ProfilesMenu"
@@ -102,7 +104,15 @@ render(
         //
         //     return unstable_defaultPassFocusBetweenChildren({focusableChildren, focusOrigin, direction})
         // }}
-        unstable_getPreferredChildOnFocusReceive={({ focusableChildren, focusOrigin, direction }) => {
+        unstable_getPreferredChildOnFocusReceive={({
+            focusableChildren,
+            focusOrigin,
+            direction,
+        }: {
+            focusableChildren: Map<string, FocusableTreeNode>
+            focusOrigin?: FocusableTreeNode
+            direction?: Direction
+        }) => {
             if (!focusOrigin || !direction) {
                 // focus the gallery initially
                 return focusableChildren.get("gamesGallery")
