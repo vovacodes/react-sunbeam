@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react"
 import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants"
 import { FocusableTreeContext } from "../../FocusableTreeContext"
 import { SunbeamContext } from "../../SunbeamContext"
-import { FocusableNodesMap, FocusableTreeNode } from "../../types"
+import { FocusableNodesMap, FocusableTreeNode, FocusPath } from "../../types"
 import registerFocusableIn from "../../registerFocusableIn"
 import unregisterFocusableIn from "../../unregisterFocusableIn"
 import { FocusManager } from "../../FocusManager"
@@ -19,6 +19,7 @@ interface Props {
     //     focusOrigin: FocusableTreeNode
     //     direction: Direction
     // }) => FocusableTreeNode | "KEEP_FOCUS_UNCHANGED" | "CANDIDATE_NOT_FOUND"
+    onFocusUpdate?: (event: { focusPath: FocusPath }) => void
     unstable_getPreferredChildOnFocusReceive?: (args: {
         focusableChildren: FocusableNodesMap
         focusOrigin?: FocusableTreeNode
@@ -27,8 +28,13 @@ interface Props {
 }
 
 /* eslint-disable @typescript-eslint/camelcase */
-export function SunbeamProvider({ focusManager, children, unstable_getPreferredChildOnFocusReceive }: Props) {
-    const focusPath = useFocusPath(focusManager)
+export function SunbeamProvider({
+    focusManager,
+    children,
+    onFocusUpdate,
+    unstable_getPreferredChildOnFocusReceive,
+}: Props) {
+    const focusPath = useFocusPath(focusManager, onFocusUpdate)
     const wrapperRef = useRef<HTMLDivElement | null>(null)
     const getBoundingBox = useCallback((): BoundingBox => {
         const wrapperElement = wrapperRef.current

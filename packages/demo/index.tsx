@@ -94,9 +94,15 @@ const focusManager = new FocusManager({
     initialFocusPath: ["gallery", "1"],
 })
 
+function handleFocusUpdate({ focusPath }) {
+    // e.g. report an analytics event
+    console.log(`focus is updated, the new focusPath is: ${focusPath}`)
+}
+
 render(
     <SunbeamProvider
         focusManager={focusManager}
+        onFocusUpdate={handleFocusUpdate}
         // unstable_passFocusBetweenChildren={({ focusableChildren, focusOrigin, direction }) => {
         //     if (direction === "LEFT" || direction === "RIGHT") {
         //         return "KEEP_FOCUS_UNCHANGED"

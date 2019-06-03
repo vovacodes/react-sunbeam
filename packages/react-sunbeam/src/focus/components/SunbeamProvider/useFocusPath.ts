@@ -1,14 +1,21 @@
 import { useState, useEffect } from "react"
 import { FocusManager } from "../../FocusManager"
+import { FocusPath } from "../../types"
 
-export default function useFocusPath(focusManager: FocusManager) {
+export default function useFocusPath(
+    focusManager: FocusManager,
+    onFocusUpdate?: (event: { focusPath: FocusPath }) => void
+) {
     const [focusPath, setFocusPath] = useState(() => focusManager.getFocusPath())
 
     useEffect(() => {
         return focusManager.subscribe(() => {
-            setFocusPath(focusManager.getFocusPath())
+            const newFocusPath = focusManager.getFocusPath()
+
+            setFocusPath(newFocusPath)
+            if (onFocusUpdate) onFocusUpdate({ focusPath: newFocusPath })
         })
-    }, [focusManager])
+    }, [focusManager, onFocusUpdate])
 
     return focusPath
 }
