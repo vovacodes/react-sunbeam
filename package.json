@@ -11,14 +11,15 @@
         "clean": "lerna run clean",
         "lint": "lerna run lint",
         "release": "yarn build && lerna publish --conventional-commits",
+        "test": "lerna run test",
         "type-check": "lerna run type-check",
         "uninstall": "lerna clean && rimraf ./node_modules"
     },
     "husky": {
         "hooks": {
-            "pre-commit": "pretty-quick --staged && yarn type-check && yarn lint",
+            "pre-commit": "pretty-quick --staged && yarn type-check && yarn lint && yarn test",
             "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-            "pre-push": "yarn type-check && yarn lint"
+            "pre-push": "yarn type-check && yarn lint && yarn test"
         }
     },
     "commitlint": {

@@ -7,74 +7,6 @@ interface Line {
     c: number
 }
 
-function getTopLeftFrustumEdge(box: BoundingBox): Line {
-    // top-left frustum edge is a line that goes
-    // through (box.left, box.top) point
-    // and makes a 45 degrees angle with X axis
-    // so the line equation for it has a form of:
-    //
-    // x - y + c = 0
-    //
-    // knowing a point on this line: x = box.left; y = box.top
-    // we can calculate `c`:
-    return {
-        a: 1,
-        b: -1,
-        c: box.top - box.left,
-    }
-}
-
-function getTopRightFrustumEdge(box: BoundingBox): Line {
-    // top-right frustum edge is a line that goes
-    // through (box.right, box.top) point
-    // and makes a -45 degrees angle with X axis
-    // so the line equation for it has a form of:
-    //
-    // x + y + c = 0
-    //
-    // knowing a point on this line: x = box.right; y = box.top
-    // we can calculate `c`:
-    return {
-        a: 1,
-        b: 1,
-        c: -(box.right + box.top),
-    }
-}
-
-function getBottomRightFrustumEdge(box: BoundingBox): Line {
-    // bottom-right frustum edge is a line that goes
-    // through (box.right, box.bottom) point
-    // and makes a 45 degrees angle with X axis
-    // so the line equation for it has a form of:
-    //
-    // x - y + c = 0
-    //
-    // knowing a point on this line: x = box.right; y = box.bottom
-    // we can calculate `c`:
-    return {
-        a: 1,
-        b: -1,
-        c: box.bottom - box.right,
-    }
-}
-
-function getBottomLeftFrustumEdge(box: BoundingBox): Line {
-    // bottom-left frustum edge is a line that goes
-    // through (box.left, box.bottom) point
-    // and makes a -45 degrees angle with X axis
-    // so the line equation for it has a form of:
-    //
-    // x + y + c = 0
-    //
-    // knowing a point on this line: x = box.left; y = box.bottom
-    // we can calculate `c`:
-    return {
-        a: 1,
-        b: 1,
-        c: -(box.left + box.bottom),
-    }
-}
-
 export function isWithinTopFrustumOf(originBox: BoundingBox) {
     return (testBox: BoundingBox): boolean => {
         // test for Y-axis intersection
@@ -172,5 +104,73 @@ export function isWithinLeftFrustumOf(originBox: BoundingBox) {
         if (testBox.top >= frustumYMax) return false
 
         return true
+    }
+}
+
+function getTopLeftFrustumEdge(box: BoundingBox): Line {
+    // top-left frustum edge is a line that goes
+    // through (box.left, box.top) point
+    // and makes a 45 degrees angle with X axis
+    // so the line equation for it has a form of:
+    //
+    // x - y + c = 0
+    //
+    // knowing a point on this line: x = box.left; y = box.top
+    // we can calculate `c`:
+    return {
+        a: 1,
+        b: -1,
+        c: box.top - box.left,
+    }
+}
+
+function getTopRightFrustumEdge(box: BoundingBox): Line {
+    // top-right frustum edge is a line that goes
+    // through (box.right, box.top) point
+    // and makes a -45 degrees angle with X axis
+    // so the line equation for it has a form of:
+    //
+    // x + y + c = 0
+    //
+    // knowing a point on this line: x = box.right; y = box.top
+    // we can calculate `c`:
+    return {
+        a: 1,
+        b: 1,
+        c: -(box.right + box.top),
+    }
+}
+
+function getBottomRightFrustumEdge(box: BoundingBox): Line {
+    // bottom-right frustum edge is a line that goes
+    // through (box.right, box.bottom) point
+    // and makes a 45 degrees angle with X axis
+    // so the line equation for it has a form of:
+    //
+    // x - y + c = 0
+    //
+    // knowing a point on this line: x = box.right; y = box.bottom
+    // we can calculate `c`:
+    return {
+        a: 1,
+        b: -1,
+        c: box.bottom - box.right,
+    }
+}
+
+function getBottomLeftFrustumEdge(box: BoundingBox): Line {
+    // bottom-left frustum edge is a line that goes
+    // through (box.left, box.bottom) point
+    // and makes a -45 degrees angle with X axis
+    // so the line equation for it has a form of:
+    //
+    // x + y + c = 0
+    //
+    // knowing a point on this line: x = box.left; y = box.bottom
+    // we can calculate `c`:
+    return {
+        a: 1,
+        b: 1,
+        c: -(box.left + box.bottom),
     }
 }
