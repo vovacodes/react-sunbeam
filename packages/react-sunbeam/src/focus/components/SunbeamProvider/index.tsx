@@ -84,7 +84,7 @@ export function SunbeamProvider({
     const focusableTreeContextValue = useMemo(
         () => ({
             focusPath,
-            onFocusableUnmount: (focusableNodePath: ReadonlyArray<string>) => {
+            onFocusableUnmount: (focusableNodePath: readonly string[]) => {
                 const focusPath = focusManager.getFocusPath()
                 const isNodeFocused = pathStartsWith(focusPath, focusableNodePath)
                 if (isNodeFocused) {
@@ -119,7 +119,7 @@ export function SunbeamProvider({
     )
 }
 
-function pathStartsWith(path: ReadonlyArray<string>, segment: ReadonlyArray<string>): boolean {
+function pathStartsWith(path: readonly string[], segment: readonly string[]): boolean {
     if (path.length === 0 && segment.length === 0) return true
 
     for (let i = 0; i < segment.length; i++) {

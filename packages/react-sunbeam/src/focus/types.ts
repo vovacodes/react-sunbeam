@@ -7,7 +7,7 @@ export type GetPreferredChildFn = (
     direction?: Direction
 ) => FocusableTreeNode | undefined
 
-export type FocusPath = ReadonlyArray<string>
+export type FocusPath = readonly string[]
 
 export interface FocusableTreeNode {
     focusKey: string

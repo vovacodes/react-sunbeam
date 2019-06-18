@@ -14,7 +14,7 @@ export class FocusManager {
     /**
      * path from the focusableRoot to the focusTarget.
      */
-    private focusPath: ReadonlyArray<string>
+    private focusPath: readonly string[]
     private focusableRoot: FocusableTreeNode | undefined
     private subscribers: Set<Function>
 

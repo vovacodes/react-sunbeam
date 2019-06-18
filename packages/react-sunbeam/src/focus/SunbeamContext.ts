@@ -5,7 +5,7 @@ export interface SunbeamContextValue {
     moveFocusLeft(): void
     moveFocusUp(): void
     moveFocusDown(): void
-    setFocus: (focusPath: ReadonlyArray<string>) => void
+    setFocus: (focusPath: readonly string[]) => void
 }
 
 export const SunbeamContext = createContext<SunbeamContextValue | null>(null)
