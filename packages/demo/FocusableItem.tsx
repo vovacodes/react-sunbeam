@@ -3,7 +3,7 @@ import { useRef, useCallback, useEffect } from "react"
 import { useFocusable, useSunbeam } from "react-sunbeam"
 import { usePrevious } from "./usePrevious"
 
-export type FocusEvent = { element: HTMLElement; focusPath: ReadonlyArray<string> }
+export type FocusEvent = { element: HTMLElement; focusPath: readonly string[] }
 
 type Props = {
     children?: React.ReactNode

@@ -21,22 +21,22 @@
     },
     "devDependencies": {
         "@types/jest": "^24.0.15",
-        "@types/react": "^16.8.8",
-        "@typescript-eslint/eslint-plugin": "^1.4.2",
-        "@typescript-eslint/parser": "^1.4.2",
+        "@types/react": "^16.8.20",
+        "@typescript-eslint/eslint-plugin": "^1.10.2",
+        "@typescript-eslint/parser": "^1.10.2",
         "concurrently": "^4.1.0",
-        "eslint": "^5.15.1",
-        "eslint-config-prettier": "^4.1.0",
-        "eslint-plugin-react": "^7.12.4",
-        "eslint-plugin-react-hooks": "^1.5.0",
+        "eslint": "^5.16.0",
+        "eslint-config-prettier": "^5.0.0",
+        "eslint-plugin-react": "^7.13.0",
+        "eslint-plugin-react-hooks": "^1.6.0",
         "jest": "^24.8.0",
-        "react": "^16.8.4",
+        "react": "^16.8.6",
         "react-testing-library": "^6.1.2",
         "ts-jest": "^24.0.2",
-        "typescript": "^3.3.3333"
+        "typescript": "^3.5.2"
     },
     "peerDependencies": {
-        "react": "^16.8.4"
+        "react": "^16.8.6"
     },
     "browserslist": [
         ">0.2%",

@@ -70,7 +70,7 @@ export function getPathToNode(treeNode: FocusableTreeNode): FocusPath {
     return path
 }
 
-export function getSiblings(focusableTreeNode: FocusableTreeNode): ReadonlyArray<FocusableTreeNode> {
+export function getSiblings(focusableTreeNode: FocusableTreeNode): readonly FocusableTreeNode[] {
     const parent = focusableTreeNode.getParent()
     const siblings: FocusableTreeNode[] = []
 

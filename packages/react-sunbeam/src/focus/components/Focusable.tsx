@@ -9,7 +9,7 @@ import getPreferredNode from "../getPreferredNode"
 
 interface Props {
     focusKey: string
-    children: React.ReactNode | ((param: { focused: boolean; path: ReadonlyArray<string> }) => React.ReactNode)
+    children: React.ReactNode | ((param: { focused: boolean; path: readonly string[] }) => React.ReactNode)
     style?: React.CSSProperties
     className?: string
     unstable_getPreferredChildOnFocusReceive?: (args: {

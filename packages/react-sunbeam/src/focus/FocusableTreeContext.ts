@@ -2,9 +2,9 @@ import { createContext } from "react"
 import { FocusableTreeNode } from "./types"
 
 export interface FocusableTreeContextValue {
-    parentPath: ReadonlyArray<string>
-    focusPath: ReadonlyArray<string>
-    onFocusableUnmount: (focusableNodePath: ReadonlyArray<string>) => void
+    parentPath: readonly string[]
+    focusPath: readonly string[]
+    onFocusableUnmount: (focusableNodePath: readonly string[]) => void
     parentFocusableNode: FocusableTreeNode
     registerFocusable: (focusableTreeNode: FocusableTreeNode) => void
     unregisterFocusable: (focusKey: string) => void

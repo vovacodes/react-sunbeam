@@ -111,7 +111,7 @@ function getDistanceFromMiddleOfOriginEdgeToBox(origin: BoundingBox, box: Boundi
 
 export default function getBestCandidate(
     origin: BoundingBox,
-    candidates: ReadonlyArray<BoundingBox>,
+    candidates: readonly BoundingBox[],
     direction: Direction
 ): BoundingBox | null {
     if (candidates.length === 0) return null
