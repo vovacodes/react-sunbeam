@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.1](https://github.com/vovaguguiev/react-sunbeam/compare/v0.6.0...v0.6.1) (2019-07-01)
+
+### Bug Fixes
+
+-   properly update focus after changes to the focusable tree ([eb332e2](https://github.com/vovaguguiev/react-sunbeam/commit/eb332e2))
+
 # [0.6.0](https://github.com/vovaguguiev/react-sunbeam/compare/v0.5.0...v0.6.0) (2019-06-03)
 
 ### Features
