@@ -3,8 +3,6 @@ import { useMemo, useRef, useCallback, useEffect } from "react"
 import { FocusableTreeContext } from "../FocusableTreeContext"
 import { BoundingBox, Direction } from "../../spatialNavigation"
 import { FocusableNodesMap, FocusableTreeNode } from "../types"
-import registerFocusableIn from "../registerFocusableIn"
-import unregisterFocusableIn from "../unregisterFocusableIn"
 import getPreferredNode from "../getPreferredNode"
 
 interface Props {
@@ -46,8 +44,9 @@ export function Focusable({ children, className, style, focusKey, unstable_getPr
         [unstable_getPreferredChildOnFocusReceive]
     )
     const {
+        addFocusableToMap,
+        removeFocusableFromMap,
         focusPath,
-        onFocusableUnmount,
         parentPath,
         parentFocusableNode,
         registerFocusable,
@@ -70,9 +69,8 @@ export function Focusable({ children, className, style, focusKey, unstable_getPr
 
         return () => {
             unregisterFocusable(focusKey)
-            onFocusableUnmount(path)
         }
-    }, [focusableTreeNode, focusKey, path])
+    }, [focusableTreeNode, focusKey])
 
     const [focusedSiblingFocusKey, ...restOfFocusPath] = focusPath
     const isFocused = focusedSiblingFocusKey === focusKey
@@ -80,12 +78,17 @@ export function Focusable({ children, className, style, focusKey, unstable_getPr
 
     const childFocusableTreeContextValue = useMemo(() => {
         return {
+            addFocusableToMap,
+            removeFocusableFromMap,
             focusPath: childrenFocusPath,
-            onFocusableUnmount,
             parentPath: path,
             parentFocusableNode: focusableTreeNode,
-            registerFocusable: registerFocusableIn(focusableChildrenRef.current),
-            unregisterFocusable: unregisterFocusableIn(focusableChildrenRef.current),
+            registerFocusable: (focusableTreeNode: FocusableTreeNode) => {
+                addFocusableToMap(focusableChildrenRef.current, focusableTreeNode)
+            },
+            unregisterFocusable: (focusKey: string) => {
+                removeFocusableFromMap(focusableChildrenRef.current, focusKey)
+            },
         }
     }, [childrenFocusPath.join(), focusableTreeNode, path])
 

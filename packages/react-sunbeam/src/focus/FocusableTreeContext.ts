@@ -1,19 +1,21 @@
 import { createContext } from "react"
-import { FocusableTreeNode } from "./types"
+import { FocusableNodesMap, FocusableTreeNode } from "./types"
 
 export interface FocusableTreeContextValue {
-    parentPath: readonly string[]
+    addFocusableToMap: (focusableChildrenMap: FocusableNodesMap, focusableTreeNode: FocusableTreeNode) => void
+    removeFocusableFromMap: (focusableChildrenMap: FocusableNodesMap, focusKey: string) => void
     focusPath: readonly string[]
-    onFocusableUnmount: (focusableNodePath: readonly string[]) => void
+    parentPath: readonly string[]
     parentFocusableNode: FocusableTreeNode
     registerFocusable: (focusableTreeNode: FocusableTreeNode) => void
     unregisterFocusable: (focusKey: string) => void
 }
 
 export const FocusableTreeContext = createContext<FocusableTreeContextValue>({
-    parentPath: [],
+    addFocusableToMap: () => {},
+    removeFocusableFromMap: () => {},
     focusPath: [],
-    onFocusableUnmount: () => {},
+    parentPath: [],
     parentFocusableNode: {
         focusKey: "",
         getParent: () => undefined,

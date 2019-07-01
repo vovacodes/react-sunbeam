@@ -9,14 +9,9 @@ type Element = MutableRefObject<{
 }>
 
 export function useFocusable(focusKey: string, elementRef: Element): { focused: boolean; path: string[] } {
-    const {
-        focusPath,
-        onFocusableUnmount,
-        parentPath,
-        parentFocusableNode,
-        registerFocusable,
-        unregisterFocusable,
-    } = React.useContext(FocusableTreeContext)
+    const { focusPath, parentPath, parentFocusableNode, registerFocusable, unregisterFocusable } = React.useContext(
+        FocusableTreeContext
+    )
     const [focusedSiblingFocusKey] = focusPath
     const path = useMemo(() => [...parentPath, focusKey], [parentPath, focusKey])
 
@@ -47,9 +42,8 @@ export function useFocusable(focusKey: string, elementRef: Element): { focused: 
 
         return () => {
             unregisterFocusable(focusKey)
-            onFocusableUnmount(path)
         }
-    }, [focusableTreeNode, focusKey, path])
+    }, [focusableTreeNode, focusKey])
 
     return { focused: focusedSiblingFocusKey === focusKey, path }
 }

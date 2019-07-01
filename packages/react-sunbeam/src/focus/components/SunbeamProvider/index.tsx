@@ -4,8 +4,6 @@ import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants"
 import { FocusableTreeContext } from "../../FocusableTreeContext"
 import { SunbeamContext } from "../../SunbeamContext"
 import { FocusableNodesMap, FocusableTreeNode, FocusPath } from "../../types"
-import registerFocusableIn from "../../registerFocusableIn"
-import unregisterFocusableIn from "../../unregisterFocusableIn"
 import { FocusManager } from "../../FocusManager"
 import { BoundingBox, Direction } from "../../../spatialNavigation"
 import getPreferredNode from "../../getPreferredNode"
@@ -81,20 +79,41 @@ export function SunbeamProvider({
         }
     }, [focusManager, focusableTreeRoot])
 
+    const revalidateFocus = useCallback(() => focusManager.revalidateFocusPath(), [focusManager])
+    const debouncedRevalidateFocus = useDebounce(revalidateFocus)
+    function addFocusableToMap(focusableChildrenMap: FocusableNodesMap, focusableTreeNode: FocusableTreeNode) {
+        const { focusKey } = focusableTreeNode
+        if (focusableChildrenMap.has(focusKey)) {
+            throw new Error(
+                `can't register Focusable child with focusKey=${focusKey}. ` + `This key is already registered`
+            )
+        }
+        focusableChildrenMap.set(focusKey, focusableTreeNode)
+        debouncedRevalidateFocus()
+    }
+    function removeFocusableFromMap(focusableChildrenMap: FocusableNodesMap, focusKey: string) {
+        if (!focusableChildrenMap.has(focusKey)) {
+            throw new Error(
+                `can't unregister Focusable child with focusKey=${focusKey}. There is no Focusable with such key registered`
+            )
+        }
+        focusableChildrenMap.delete(focusKey)
+        debouncedRevalidateFocus()
+    }
+
     const focusableTreeContextValue = useMemo(
         () => ({
+            addFocusableToMap,
+            removeFocusableFromMap,
             focusPath,
-            onFocusableUnmount: (focusableNodePath: readonly string[]) => {
-                const focusPath = focusManager.getFocusPath()
-                const isNodeFocused = pathStartsWith(focusPath, focusableNodePath)
-                if (isNodeFocused) {
-                    focusManager.revalidateFocusPath()
-                }
-            },
             parentPath: path,
             parentFocusableNode: focusableTreeRoot,
-            registerFocusable: registerFocusableIn(focusableChildrenRef.current),
-            unregisterFocusable: unregisterFocusableIn(focusableChildrenRef.current),
+            registerFocusable: (focusableTreeNode: FocusableTreeNode) => {
+                addFocusableToMap(focusableChildrenRef.current, focusableTreeNode)
+            },
+            unregisterFocusable: (focusKey: string) => {
+                removeFocusableFromMap(focusableChildrenRef.current, focusKey)
+            },
         }),
         [focusPath.join(), focusableTreeRoot, path]
     )
@@ -119,12 +138,17 @@ export function SunbeamProvider({
     )
 }
 
-function pathStartsWith(path: readonly string[], segment: readonly string[]): boolean {
-    if (path.length === 0 && segment.length === 0) return true
+function useDebounce(fn: () => void, timeout: number = 0) {
+    const timerIdRef = useRef<number | undefined>(undefined)
 
-    for (let i = 0; i < segment.length; i++) {
-        if (path[i] !== segment[i]) return false
-    }
+    const debouncedFn = useCallback(() => {
+        clearTimeout(timerIdRef.current)
+        timerIdRef.current = setTimeout(fn, timeout)
+    }, [fn, timeout])
 
-    return true
+    useEffect(() => {
+        return () => clearTimeout(timerIdRef.current)
+    }, [timeout])
+
+    return debouncedFn
 }

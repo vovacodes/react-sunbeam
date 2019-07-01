@@ -8,6 +8,7 @@ import {
     unstable_defaultGetPreferredChildOnFocusReceive,
     FocusableTreeNode,
     Direction,
+    Focusable,
 } from "react-sunbeam"
 
 import { ProfilesMenu } from "./ProfilesMenu"
@@ -17,6 +18,7 @@ import { FocusEvent } from "./FocusableItem"
 
 export function App() {
     const [selectedItem, setSelectedItem] = useState<string | null>(null)
+    const [screen, setScreen] = useState("home")
 
     const { moveFocusLeft, moveFocusRight, moveFocusUp, moveFocusDown } = useSunbeam()
     const onKeyDown = useCallback(
@@ -47,11 +49,15 @@ export function App() {
                 case " ":
                 case "Enter":
                     event.preventDefault()
-                    alert(`Selected item: ${selectedItem}`)
+                    if (screen !== "detail") setScreen("detail")
+                    return
+                case "Backspace":
+                    event.preventDefault()
+                    if (screen !== "home") setScreen("home")
                     return
             }
         },
-        [focusManager, selectedItem]
+        [focusManager, selectedItem, screen]
     )
     useEffect(() => {
         document.addEventListener("keydown", onKeyDown)
@@ -65,6 +71,22 @@ export function App() {
         },
         [setSelectedItem]
     )
+
+    if (screen === "detail") {
+        // TODO: implement Detail screen
+        return (
+            <div>
+                <Focusable focusKey="detail-focusable" style={{ display: "flex" }}>
+                    {({ focused }) => (
+                        <div>
+                            <h1>Detail page for {selectedItem}</h1>
+                            <div>Focused: {JSON.stringify(focused)}</div>
+                        </div>
+                    )}
+                </Focusable>
+            </div>
+        )
+    }
 
     return (
         <div
@@ -121,7 +143,7 @@ render(
         }) => {
             if (!focusOrigin || !direction) {
                 // focus the gallery initially
-                return focusableChildren.get("gamesGallery")
+                if (focusableChildren.has("gamesGallery")) return focusableChildren.get("gamesGallery")
             }
 
             return unstable_defaultGetPreferredChildOnFocusReceive({ focusableChildren, focusOrigin, direction })
