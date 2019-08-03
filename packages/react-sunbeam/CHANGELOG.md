@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/wzrdzl/react-sunbeam/compare/v0.6.1...v0.7.0) (2019-08-03)
+
+### Features
+
+-   **useSunbeam:** returns null instead of throwing when there is no SunbeamContext.Provider in the t ([76c25cc](https://github.com/wzrdzl/react-sunbeam/commit/76c25cc))
+
 ## [0.6.1](https://github.com/wzrdzl/react-sunbeam/compare/v0.6.0...v0.6.1) (2019-07-01)
 
 ### Bug Fixes
