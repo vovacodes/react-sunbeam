@@ -76,7 +76,7 @@ export function getSiblings(focusableTreeNode: FocusableTreeNode): readonly Focu
 
     if (!parent) return siblings
 
-    for (let child of parent.getChildren().values()) {
+    for (const child of parent.getChildren().values()) {
         if (child !== focusableTreeNode) {
             siblings.push(child)
         }

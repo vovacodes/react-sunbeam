@@ -194,7 +194,7 @@ export function SunbeamProvider({
     )
 }
 
-function useDebounce(fn: () => void, timeout: number = 0) {
+function useDebounce(fn: () => void, timeout = 0) {
     const timerIdRef = useRef<number | null>(null)
 
     const debouncedFn = useCallback(() => {

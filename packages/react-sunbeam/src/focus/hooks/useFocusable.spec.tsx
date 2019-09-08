@@ -6,26 +6,24 @@ import { useFocusable } from "./useFocusable"
 import { Focusable } from ".."
 
 describe("useFocusable", () => {
-    // @ts-ignore
-    const originalGetBoundingClientRect = global.Element.prototype.getBoundingClientRect
+    const originalGetBoundingClientRect = window.Element.prototype.getBoundingClientRect
     beforeAll(() => {
         // JSDOM doesn't implement element.getBoundingClientRect()
         // so we provide a mock implementation that uses element style values
-        // @ts-ignore
-        global.Element.prototype.getBoundingClientRect = function() {
+        window.Element.prototype.getBoundingClientRect = function() {
+            const { style } = this as HTMLElement
             return {
-                bottom: Number.isNaN(parseInt(this.style.bottom)) ? 0 : parseInt(this.style.bottom),
-                height: Number.isNaN(parseInt(this.style.height)) ? 0 : parseInt(this.style.height),
-                left: Number.isNaN(parseInt(this.style.left)) ? 0 : parseInt(this.style.left),
-                right: Number.isNaN(parseInt(this.style.right)) ? 0 : parseInt(this.style.right),
-                top: Number.isNaN(parseInt(this.style.top)) ? 0 : parseInt(this.style.top),
-                width: Number.isNaN(parseInt(this.style.width)) ? 0 : parseInt(this.style.width),
+                bottom: style.bottom == null ? 0 : parseInt(style.bottom),
+                height: style.height == null ? 0 : parseInt(style.height),
+                left: style.left == null ? 0 : parseInt(style.left),
+                right: style.right == null ? 0 : parseInt(style.right),
+                top: style.top == null ? 0 : parseInt(style.top),
+                width: style.width == null ? 0 : parseInt(style.width),
             }
         }
     })
     afterAll(() => {
-        // @ts-ignore
-        global.Element.prototype.getBoundingClientRect = originalGetBoundingClientRect
+        window.Element.prototype.getBoundingClientRect = originalGetBoundingClientRect
     })
 
     afterEach(cleanup)
