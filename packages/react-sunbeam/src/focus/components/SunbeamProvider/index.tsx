@@ -101,6 +101,60 @@ export function SunbeamProvider({
         debouncedRevalidateFocus()
     }
 
+    // ====================================
+    // onFocus/onBlur scheduling
+    //
+    // all the dispatchOnFocus/dispatchOnBlur calls happen synchronously in the same macrotask
+    // their order is defined by the order of useEffect() execution by React, which is child -> parent
+    //
+    // the code below will accumulate all the calls and fire the callbacks in the right order
+    // at the end of the current macrotask:
+    //
+    // childOnBlur -> parentOnBlur -> parentOnFocus -> childOnFocus
+    // ====================================
+    const onFocusDispatchQueueRef = useRef<(() => void)[]>([])
+    const onBlurDispatchQueueRef = useRef<(() => void)[]>([])
+    const shouldExhaustEventQueuesRef = useRef<boolean>(true)
+    const dispatchOnFocus = useCallback((onFocusHandler: () => void) => {
+        onFocusDispatchQueueRef.current.push(onFocusHandler)
+        scheduleEventQueuesProcessingIfNeeded()
+    }, [])
+    const dispatchOnBlur = useCallback((onBlurHandler: () => void) => {
+        onBlurDispatchQueueRef.current.push(onBlurHandler)
+        scheduleEventQueuesProcessingIfNeeded()
+    }, [])
+    function scheduleEventQueuesProcessingIfNeeded() {
+        // make sure the queues are processed only once during the same macrotask
+        if (!shouldExhaustEventQueuesRef.current) return
+        shouldExhaustEventQueuesRef.current = false
+
+        // schedule as microtask at the end of the current macrotask
+        Promise.resolve().then(() => {
+            // 1. first process onBlur in FIFO order (child -> parent)
+            let onBlur = onBlurDispatchQueueRef.current.shift()
+            while (onBlur) {
+                try {
+                    onBlur()
+                } catch (err) {
+                    console.error("There was an error in onBlur handler", err)
+                }
+                onBlur = onBlurDispatchQueueRef.current.shift()
+            }
+
+            // 2. then onFocus in FILO order (parent -> child)
+            let onFocus = onFocusDispatchQueueRef.current.pop()
+            while (onFocus) {
+                try {
+                    onFocus()
+                } catch (err) {
+                    console.error("There was an error in onFocus handler", err)
+                }
+                onFocus = onFocusDispatchQueueRef.current.pop()
+            }
+            shouldExhaustEventQueuesRef.current = true
+        })
+    }
+
     const focusableTreeContextValue = useMemo(
         () => ({
             addFocusableToMap,
@@ -114,6 +168,8 @@ export function SunbeamProvider({
             unregisterFocusable: (focusKey: string) => {
                 removeFocusableFromMap(focusableChildrenRef.current, focusKey)
             },
+            dispatchOnFocus,
+            dispatchOnBlur,
         }),
         [focusPath.join(), focusableTreeRoot, path]
     )
@@ -139,15 +195,19 @@ export function SunbeamProvider({
 }
 
 function useDebounce(fn: () => void, timeout: number = 0) {
-    const timerIdRef = useRef<number | undefined>(undefined)
+    const timerIdRef = useRef<number | null>(null)
 
     const debouncedFn = useCallback(() => {
-        clearTimeout(timerIdRef.current)
-        timerIdRef.current = setTimeout(fn, timeout)
+        const timerId = timerIdRef.current
+        if (timerId) clearTimeout(timerId)
+
+        timerIdRef.current = window.setTimeout(fn, timeout)
     }, [fn, timeout])
 
     useEffect(() => {
-        return () => clearTimeout(timerIdRef.current)
+        return () => {
+            if (timerIdRef.current != null) window.clearTimeout(timerIdRef.current)
+        }
     }, [timeout])
 
     return debouncedFn

@@ -5,6 +5,7 @@ export {
     useSunbeam,
     useFocusable,
     FocusableTreeNode,
+    FocusEvent,
     // eslint-disable-next-line @typescript-eslint/camelcase
     unstable_defaultGetPreferredChildOnFocusReceive,
 } from "./focus"

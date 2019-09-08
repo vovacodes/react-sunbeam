@@ -1,26 +1,34 @@
 import * as React from "react"
 import { memo } from "react"
-import { Focusable } from "react-sunbeam"
-import { FocusableItem, FocusEvent } from "./FocusableItem"
+import { Focusable, FocusEvent } from "react-sunbeam"
+import { FocusableItem } from "./FocusableItem"
 
 type Props = {
+    onFocus: (event: FocusEvent) => void
+    onBlur: (event: FocusEvent) => void
     onItemFocus: (event: FocusEvent) => void
+    onItemBlur: (event: FocusEvent) => void
 }
 
-export const ProfilesMenu = memo(function ProfilesMenu({ onItemFocus }: Props) {
+export const ProfilesMenu = memo(function ProfilesMenu({ onFocus, onBlur, onItemFocus, onItemBlur }: Props) {
     return (
-        <Focusable focusKey="profiles" style={{ display: "flex", marginRight: "100px" }}>
+        <Focusable
+            focusKey="profiles"
+            onFocus={onFocus}
+            onBlur={onBlur}
+            style={{ display: "flex", marginRight: "100px" }}
+        >
             <div style={{ marginRight: "4px" }}>
-                <Avatar color="#66BB66" focusKey="1" onFocus={onItemFocus} />
+                <Avatar color="#66BB66" focusKey="1" onFocus={onItemFocus} onBlur={onItemBlur} />
             </div>
             <div style={{ marginRight: "4px" }}>
-                <Avatar color="#22CCDD" focusKey="2" onFocus={onItemFocus} />
+                <Avatar color="#22CCDD" focusKey="2" onFocus={onItemFocus} onBlur={onItemBlur} />
             </div>
             <div style={{ marginRight: "4px" }}>
-                <Avatar color="#FFEE66" focusKey="3" onFocus={onItemFocus} />
+                <Avatar color="#FFEE66" focusKey="3" onFocus={onItemFocus} onBlur={onItemBlur} />
             </div>
             <div style={{ marginRight: "4px" }}>
-                <Avatar color="#FF88AA" focusKey="4" onFocus={onItemFocus} />
+                <Avatar color="#FF88AA" focusKey="4" onFocus={onItemFocus} onBlur={onItemBlur} />
             </div>
         </Focusable>
     )
@@ -30,10 +38,12 @@ function Avatar({
     color,
     focusKey,
     onFocus,
+    onBlur,
 }: {
     color: string
     focusKey: string
     onFocus: (event: FocusEvent) => void
+    onBlur: (event: FocusEvent) => void
 }) {
     return (
         <FocusableItem
@@ -44,6 +54,7 @@ function Avatar({
                 transition: "border-color 100ms ease-out",
             })}
             onFocus={onFocus}
+            onBlur={onBlur}
         >
             <div
                 style={{

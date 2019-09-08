@@ -2,19 +2,19 @@ import * as React from "react"
 import { useCallback, useEffect, useState } from "react"
 import { render } from "react-dom"
 import {
-    SunbeamProvider,
-    FocusManager,
-    useSunbeam,
-    unstable_defaultGetPreferredChildOnFocusReceive,
-    FocusableTreeNode,
     Direction,
     Focusable,
+    FocusableTreeNode,
+    FocusEvent,
+    FocusManager,
+    SunbeamProvider,
+    unstable_defaultGetPreferredChildOnFocusReceive,
+    useSunbeam,
 } from "react-sunbeam"
 
 import { ProfilesMenu } from "./ProfilesMenu"
 import { GamesGallery } from "./GamesGallery"
 import { NavigationMenu } from "./NavigationMenu"
-import { FocusEvent } from "./FocusableItem"
 
 export function App() {
     const [selectedItem, setSelectedItem] = useState<string | null>(null)
@@ -67,10 +67,21 @@ export function App() {
 
     const handleItemFocus = useCallback(
         (event: FocusEvent) => {
-            setSelectedItem(event.focusPath.join("->"))
+            const path = event.focusablePath.join("->")
+            console.log(`onFocus: ${path}`)
+            setSelectedItem(path)
         },
         [setSelectedItem]
     )
+    const handleItemBlur = useCallback((event: FocusEvent) => {
+        console.log(`onBlur: ${event.focusablePath.join("->")}`)
+    }, [])
+    const handleContainerFocus = useCallback((event: FocusEvent) => {
+        console.log(`onFocus: ${event.focusablePath.join("->")}`)
+    }, [])
+    const handleContainerBlur = useCallback((event: FocusEvent) => {
+        console.log(`onBlur: ${event.focusablePath.join("->")}`)
+    }, [])
 
     if (screen === "detail") {
         // TODO: implement Detail screen
@@ -100,13 +111,28 @@ export function App() {
             }}
         >
             <div style={{ marginTop: "32px", marginLeft: "60px" }}>
-                <ProfilesMenu onItemFocus={handleItemFocus} />
+                <ProfilesMenu
+                    onFocus={handleContainerFocus}
+                    onBlur={handleContainerBlur}
+                    onItemFocus={handleItemFocus}
+                    onItemBlur={handleItemBlur}
+                />
             </div>
             <div style={{ marginTop: "94px", alignSelf: "center" }}>
-                <GamesGallery onItemFocus={handleItemFocus} />
+                <GamesGallery
+                    onFocus={handleContainerFocus}
+                    onBlur={handleContainerBlur}
+                    onItemFocus={handleItemFocus}
+                    onItemBlur={handleItemBlur}
+                />
             </div>
             <div style={{ marginTop: "94px", alignSelf: "center" }}>
-                <NavigationMenu onItemFocus={handleItemFocus} />
+                <NavigationMenu
+                    onFocus={handleContainerFocus}
+                    onBlur={handleContainerBlur}
+                    onItemFocus={handleItemFocus}
+                    onItemBlur={handleItemBlur}
+                />
             </div>
         </div>
     )

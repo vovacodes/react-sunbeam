@@ -16,11 +16,11 @@ describe("KeyPressManager", () => {
         fireEvent(window, keyboardEvent1)
 
         expect(listener).toBeCalledWith(keyboardEvent1)
+        listener.mockClear()
 
         fireEvent(window, keyboardEvent2)
 
-        expect(listener).toBeCalledTimes(1)
-        expect(listener.mock.calls[0][0]).not.toBe(keyboardEvent2)
+        expect(listener).not.toBeCalled()
         manager.teardown()
     })
 
@@ -75,14 +75,15 @@ describe("KeyPressManager", () => {
 
         expect(listener1).not.toBeCalledWith(keyboardEvent1)
         expect(listener2).toBeCalledWith(keyboardEvent1)
+        listener1.mockClear()
+        listener2.mockClear()
 
         manager.removeListener("k", listener2)
 
         fireEvent(window, keyboardEvent2)
 
         expect(listener1).toBeCalledWith(keyboardEvent2)
-        expect(listener2).toBeCalledTimes(1)
-        expect(listener2.mock.calls[0][0]).toBe(keyboardEvent1)
+        expect(listener2).not.toBeCalled()
         manager.teardown()
     })
 
@@ -98,10 +99,11 @@ describe("KeyPressManager", () => {
 
         expect(listener).toBeCalledTimes(1)
         expect(listener).toBeCalledWith(keyboardEvent)
+        listener.mockClear()
 
         manager.teardown()
         fireEvent(window, keyboardEvent)
 
-        expect(listener).toBeCalledTimes(1)
+        expect(listener).not.toBeCalled()
     })
 })

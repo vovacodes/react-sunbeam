@@ -1,15 +1,13 @@
 import * as React from "react"
-import { useRef, useCallback, useEffect } from "react"
-import { useFocusable, useSunbeam } from "react-sunbeam"
-import { usePrevious } from "./usePrevious"
-
-export type FocusEvent = { element: HTMLElement; focusPath: readonly string[] }
+import { useRef, useCallback } from "react"
+import { useFocusable, useSunbeam, FocusEvent } from "react-sunbeam"
 
 type Props = {
     children?: React.ReactNode
     style?: React.CSSProperties | ((focused: boolean) => React.CSSProperties)
     focusKey: string
     onFocus?: (event: FocusEvent) => void
+    onBlur?: (event: FocusEvent) => void
 }
 
 /**
@@ -18,17 +16,10 @@ type Props = {
  * to the app. For example `FocusableItem` uses "tap-to-focus" functionality because the app requires it
  * even though `react-sunbeam` doesn't implement it out-of-the-box
  */
-export function FocusableItem({ children, style, focusKey, onFocus }: Props) {
+export function FocusableItem({ children, style, focusKey, onFocus, onBlur }: Props) {
     const elementRef = useRef<HTMLDivElement>(null)
-    const { focused, path } = useFocusable(focusKey, elementRef)
+    const { focused, path } = useFocusable({ focusKey, elementRef, onFocus, onBlur })
     const { setFocus } = useSunbeam()
-
-    const prevFocused = usePrevious(focused, focused)
-    useEffect(() => {
-        if (prevFocused !== focused && focused && onFocus) {
-            onFocus({ element: elementRef.current, focusPath: path })
-        }
-    })
 
     const handleClick = useCallback(() => {
         setFocus(path)

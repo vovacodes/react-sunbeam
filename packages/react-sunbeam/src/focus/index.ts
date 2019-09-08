@@ -2,6 +2,7 @@ import getPreferredNode from "./getPreferredNode"
 import { FocusableTreeNode } from "./types"
 import { Direction } from "../spatialNavigation"
 
+export { FocusEvent } from "./types"
 export { FocusManager } from "./FocusManager"
 export { Focusable } from "./components/Focusable"
 export { SunbeamProvider } from "./components/SunbeamProvider"

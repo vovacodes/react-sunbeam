@@ -8,7 +8,7 @@
     "private": true,
     "scripts": {
         "build": "parcel build index.html",
-        "dev": "parcel index.html",
+        "dev": "parcel index.html --port 1234",
         "type-check": "tsc --noEmit"
     },
     "dependencies": {

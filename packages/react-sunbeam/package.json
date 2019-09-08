@@ -43,5 +43,9 @@
         "not dead",
         "not ie <= 11",
         "not op_mini all"
-    ]
+    ],
+    "dependencies": {
+        "@types/nanoid": "^2.0.0",
+        "nanoid": "^2.0.3"
+    }
 }

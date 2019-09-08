@@ -9,6 +9,8 @@ export interface FocusableTreeContextValue {
     parentFocusableNode: FocusableTreeNode
     registerFocusable: (focusableTreeNode: FocusableTreeNode) => void
     unregisterFocusable: (focusKey: string) => void
+    dispatchOnFocus: (task: () => void) => void
+    dispatchOnBlur: (task: () => void) => void
 }
 
 export const FocusableTreeContext = createContext<FocusableTreeContextValue>({
@@ -30,4 +32,6 @@ export const FocusableTreeContext = createContext<FocusableTreeContextValue>({
     },
     registerFocusable: () => {},
     unregisterFocusable: () => {},
+    dispatchOnFocus: () => {},
+    dispatchOnBlur: () => {},
 })
