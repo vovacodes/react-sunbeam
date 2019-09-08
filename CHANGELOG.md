@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/vovaguguiev/react-sunbeam/compare/v0.7.0...v0.8.0) (2019-09-08)
+
+### Features
+
+-   **Focusable:** add onFocus and onBlur props ([ff7c208](https://github.com/vovaguguiev/react-sunbeam/commit/ff7c208))
+-   **KeyPressManager:** add KeyPressManager ([d5c92fb](https://github.com/vovaguguiev/react-sunbeam/commit/d5c92fb))
+
 # [0.7.0](https://github.com/vovaguguiev/react-sunbeam/compare/v0.6.1...v0.7.0) (2019-08-03)
 
 ### Features
