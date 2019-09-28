@@ -68,19 +68,19 @@ export function App() {
     const handleItemFocus = useCallback(
         (event: FocusEvent) => {
             const path = event.focusablePath.join("->")
-            console.log(`onFocus: ${path}`)
+            // console.log(`onFocus: ${path}`)
             setSelectedItem(path)
         },
         [setSelectedItem]
     )
     const handleItemBlur = useCallback((event: FocusEvent) => {
-        console.log(`onBlur: ${event.focusablePath.join("->")}`)
+        // console.log(`onBlur: ${event.focusablePath.join("->")}`)
     }, [])
     const handleContainerFocus = useCallback((event: FocusEvent) => {
-        console.log(`onFocus: ${event.focusablePath.join("->")}`)
+        // console.log(`onFocus: ${event.focusablePath.join("->")}`)
     }, [])
     const handleContainerBlur = useCallback((event: FocusEvent) => {
-        console.log(`onBlur: ${event.focusablePath.join("->")}`)
+        // console.log(`onBlur: ${event.focusablePath.join("->")}`)
     }, [])
 
     if (screen === "detail") {
@@ -144,7 +144,7 @@ const focusManager = new FocusManager({
 
 function handleFocusUpdate({ focusPath }) {
     // e.g. report an analytics event
-    console.log(`focus is updated, the new focusPath is: ${focusPath}`)
+    // console.log(`focus is updated, the new focusPath is: ${focusPath}`)
 }
 
 render(
