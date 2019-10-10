@@ -2,98 +2,105 @@ import { KeyPressManager } from "./KeyPressManager"
 import { fireEvent } from "@testing-library/react"
 
 describe("KeyPressManager", () => {
-    it("should add the listener only for the specified key", () => {
+    it("should not interfere with propagation of the original keydown event", () => {
         const manager = new KeyPressManager()
-        const keyboardEvent1 = new KeyboardEvent("keydown", {
-            key: "a",
+        const keyboardEvent = new KeyboardEvent("keydown", {
+            key: "x",
         })
-        const keyboardEvent2 = new KeyboardEvent("keydown", {
-            key: "y",
-        })
-        const listener = jest.fn()
-        manager.addListener("a", listener)
+        const managedListener = jest.fn(event => event.stopImmediatePropagation())
+        const otherListener = jest.fn()
 
-        fireEvent(window, keyboardEvent1)
+        manager.addListener(managedListener)
+        window.addEventListener("keydown", otherListener)
 
-        expect(listener).toBeCalledWith(keyboardEvent1)
-        listener.mockClear()
+        fireEvent(window, keyboardEvent)
 
-        fireEvent(window, keyboardEvent2)
-
-        expect(listener).not.toBeCalled()
-        manager.teardown()
+        expect(managedListener).toBeCalledTimes(1)
+        expect(otherListener).toBeCalledTimes(1)
+        window.removeEventListener("keydown", otherListener)
     })
 
-    it("should only execute the listener from the top of the stack", () => {
+    it("should preventDefault on the original keydown event if the cloned one is event.preventDefault() is called in a listener", () => {
+        const manager = new KeyPressManager()
+        const keyboardEvent = new KeyboardEvent("keydown", {
+            key: "x",
+            cancelable: true,
+        })
+        const managedListener = jest.fn(event => event.preventDefault())
+        manager.addListener(managedListener)
+
+        fireEvent(window, keyboardEvent)
+
+        expect(managedListener).toBeCalledTimes(1)
+        expect(keyboardEvent.defaultPrevented).toBe(true)
+    })
+
+    it("should execute the listener from the top of the stack first", () => {
         const manager = new KeyPressManager()
         const keyboardEvent = new KeyboardEvent("keydown", {
             key: "x",
         })
         const listener1 = jest.fn()
         const listener2 = jest.fn()
-        manager.addListener("x", listener1)
-        manager.addListener("x", listener2)
+        manager.addListener(listener1)
+        manager.addListener(listener2)
+
+        fireEvent(window, keyboardEvent)
+
+        expect(listener2.mock.invocationCallOrder[0]).toBeLessThan(listener1.mock.invocationCallOrder[0])
+        manager.removeAllListeners()
+    })
+
+    it("should NOT call the next listener in the stack if the current one stops propagation", () => {
+        const manager = new KeyPressManager()
+        const keyboardEvent = new KeyboardEvent("keydown", {
+            key: "x",
+        })
+        const listener1 = jest.fn()
+        const listener2 = jest.fn(event => event.stopPropagation())
+        manager.addListener(listener1)
+        manager.addListener(listener2)
 
         fireEvent(window, keyboardEvent)
 
         expect(listener1).not.toBeCalled()
         expect(listener2).toBeCalledWith(keyboardEvent)
-        manager.teardown()
-    })
-
-    it("should call the next listener in the stack if the current one returns `true`", () => {
-        const manager = new KeyPressManager()
-        const keyboardEvent = new KeyboardEvent("keydown", {
-            key: "x",
-        })
-        const listener1 = jest.fn()
-        const listener2 = jest.fn(() => true)
-        manager.addListener("x", listener1)
-        manager.addListener("x", listener2)
-
-        fireEvent(window, keyboardEvent)
-
-        expect(listener1).toBeCalledWith(keyboardEvent)
-        expect(listener2).toBeCalledWith(keyboardEvent)
-        manager.teardown()
+        manager.removeAllListeners()
     })
 
     it("should remove the key listener while preserving other key listeners in the stack", () => {
         const manager = new KeyPressManager()
-        const keyboardEvent1 = new KeyboardEvent("keydown", {
-            key: "k",
-        })
-        const keyboardEvent2 = new KeyboardEvent("keydown", {
+        const keyboardEvent = new KeyboardEvent("keydown", {
             key: "k",
         })
         const listener1 = jest.fn()
-        const listener2 = jest.fn()
-        manager.addListener("k", listener1)
-        manager.addListener("k", listener2)
+        const listener2 = jest.fn(event => event.stopPropagation())
+        manager.addListener(listener1)
+        manager.addListener(listener2)
 
-        fireEvent(window, keyboardEvent1)
+        fireEvent(window, keyboardEvent)
 
-        expect(listener1).not.toBeCalledWith(keyboardEvent1)
-        expect(listener2).toBeCalledWith(keyboardEvent1)
+        expect(listener1).not.toBeCalledWith(keyboardEvent)
+        expect(listener2).toBeCalledWith(keyboardEvent)
         listener1.mockClear()
         listener2.mockClear()
 
-        manager.removeListener("k", listener2)
+        manager.removeListener(listener2)
 
-        fireEvent(window, keyboardEvent2)
+        fireEvent(window, keyboardEvent)
 
-        expect(listener1).toBeCalledWith(keyboardEvent2)
+        expect(listener1).toBeCalledWith(keyboardEvent)
         expect(listener2).not.toBeCalled()
-        manager.teardown()
+        manager.removeAllListeners()
     })
 
-    it("should stop listening to the `keydown` events after `teardown()`", () => {
+    it("should stop listening to the `keydown` events after `removeAllListeners()`", () => {
         const manager = new KeyPressManager()
         const keyboardEvent = new KeyboardEvent("keydown", {
             key: "z",
         })
         const listener = jest.fn()
-        manager.addListener("z", listener)
+        manager.addListener(listener)
 
         fireEvent(window, keyboardEvent)
 
@@ -101,7 +108,7 @@ describe("KeyPressManager", () => {
         expect(listener).toBeCalledWith(keyboardEvent)
         listener.mockClear()
 
-        manager.teardown()
+        manager.removeAllListeners()
         fireEvent(window, keyboardEvent)
 
         expect(listener).not.toBeCalled()

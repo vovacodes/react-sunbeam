@@ -1,6 +1,6 @@
 import { BoundingBox, Direction } from "../spatialNavigation"
 
-export interface FocusEvent {
+export type FocusEvent = {
     getBoundingClientRect: () => ClientRect
     focusablePath: readonly string[]
 }
@@ -14,7 +14,7 @@ export type GetPreferredChildFn = (
 
 export type FocusPath = readonly string[]
 
-export interface FocusableTreeNode {
+export type FocusableTreeNode = {
     focusKey: string
     getParent: () => FocusableTreeNode | undefined
     getBoundingBox: GetBoundingBoxFn

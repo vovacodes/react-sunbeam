@@ -17,6 +17,7 @@ export const GamesGallery = memo(function GamesGallery({ onFocus, onBlur, onItem
     const handleItemFocus = useCallback(
         (event: FocusEvent) => {
             const viewport = viewportRef.current
+            if (!viewport) throw new Error("Unexpected, viewportRef.current is undefined")
             const { width: viewportWidth, left: viewportLeft } = viewport.getBoundingClientRect()
 
             const { left: elementLeft, width: elementWidth } = event.getBoundingClientRect()
@@ -32,6 +33,7 @@ export const GamesGallery = memo(function GamesGallery({ onFocus, onBlur, onItem
 
             const newScrollX = ensureScrollXWithinBounds(scrollX + deltaScrollX)
             function ensureScrollXWithinBounds(value: number): number {
+                if (!trackRef.current) throw new Error("Unexpected, trackRef.current is undefined")
                 const minScrollX = 0
                 const maxScrollX = trackRef.current.scrollWidth - viewportWidth
                 if (value < minScrollX) return minScrollX
@@ -45,13 +47,23 @@ export const GamesGallery = memo(function GamesGallery({ onFocus, onBlur, onItem
         [scrollX]
     )
 
-    const { setFocus } = useSunbeam()
+    const sunbeamContextValue = useSunbeam()
+    const setFocus = sunbeamContextValue ? sunbeamContextValue.setFocus : undefined
     const handleItemClick = useCallback((itemFocusPath: ReadonlyArray<string>) => {
-        setFocus(itemFocusPath)
+        if (setFocus) setFocus(itemFocusPath)
     }, [])
 
     return (
-        <Focusable onFocus={onFocus} onBlur={onBlur} focusKey="gamesGallery">
+        <Focusable
+            onFocus={onFocus}
+            onBlur={onBlur}
+            focusKey="gamesGallery"
+            onKeyPress={event => {
+                if (event.key !== "g") return
+                console.log("Handling a `g` key press in GamesGallery")
+                event.stopPropagation()
+            }}
+        >
             <div ref={viewportRef} style={{ width: "1078px" }}>
                 <div
                     ref={trackRef}
@@ -140,6 +152,12 @@ function GameTile({
                 borderRadius: "2px",
                 transition: "border-color 100ms ease-out",
             })}
+            onKeyPress={event => {
+                if (event.key !== "Enter") return
+                event.preventDefault()
+                event.stopPropagation()
+                console.log('Handling "Enter" key in GameTile', focusKey)
+            }}
             onFocus={onFocus}
             onBlur={onBlur}
         >
