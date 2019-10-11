@@ -4,3 +4,5 @@ dist
 
 .cache
 .rts2_cache_*
+
+yarn-error.log

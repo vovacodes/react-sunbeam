@@ -1,42 +1,45 @@
-type Listener = (event: KeyboardEvent) => boolean | undefined
+export type KeyPressListener = (event: KeyboardEvent) => void
 
 export class KeyPressManager {
-    private listenersByKey: { [key: string]: Listener[] } = {}
+    private listeners: KeyPressListener[] | null = null
 
-    public constructor() {
-        window.addEventListener("keydown", this.onKeyDown)
-    }
-
-    public teardown() {
+    public removeAllListeners() {
         window.removeEventListener("keydown", this.onKeyDown)
+        this.listeners = null
     }
 
-    public addListener(key: string, listener: Listener) {
-        if (!this.listenersByKey[key]) {
-            this.listenersByKey[key] = []
+    public addListener(listener: KeyPressListener) {
+        if (!this.listeners) {
+            this.listeners = []
+            window.addEventListener("keydown", this.onKeyDown)
         }
-        const keyListeners = this.listenersByKey[key]
-        keyListeners.unshift(listener)
+
+        this.listeners.unshift(listener)
     }
 
-    public removeListener(key: string, listener: Listener) {
-        const keyListeners = this.listenersByKey[key]
-        if (!keyListeners) return
+    public removeListener(listener: KeyPressListener) {
+        if (!this.listeners) return
 
-        const index = keyListeners.indexOf(listener)
+        const index = this.listeners.indexOf(listener)
         if (index === -1) return
 
-        keyListeners.splice(index, 1)
+        this.listeners.splice(index, 1)
     }
 
     private onKeyDown = (event: KeyboardEvent): void => {
-        const key = event.key
-        const keyListeners = this.listenersByKey[key]
-        if (!keyListeners) return
+        const { listeners } = this
+        if (!listeners) throw new Error("`onKeyDown` is registered before `listeners` array is initialized")
 
         let index = 0
-        while (keyListeners[index] && keyListeners[index](event)) {
+        // clone the original event to handle its propagation in isolation
+        const clonedEvent = new KeyboardEvent(event.type, event)
+        // go through the listeners as long as the event propagation is not cancelled
+        while (listeners[index]) {
+            listeners[index](clonedEvent)
+            if (clonedEvent.cancelBubble) break
             index++
         }
+        // cancel the original event if clonedEvent was cancelled
+        if (clonedEvent.defaultPrevented) event.preventDefault()
     }
 }

@@ -4,6 +4,8 @@ import { BoundingBox } from "../../spatialNavigation"
 import { FocusableTreeContext } from "../FocusableTreeContext"
 import { useGeneratedFocusKey } from "./useGeneratedFocusKey"
 import { useOnFocusedChange } from "./useOnFocusedChange"
+import { useKeyPressTreeNode } from "./useKeyPressTreeNode"
+import { KeyPressListener } from "../../keyPressManagement"
 
 // TODO: add other options: () => ClientRect | ClientRect
 type Element = RefObject<{
@@ -13,11 +15,13 @@ type Element = RefObject<{
 export function useFocusable({
     elementRef,
     focusKey,
+    onKeyPress,
     onFocus,
     onBlur,
 }: {
     elementRef: Element
     focusKey?: string
+    onKeyPress?: KeyPressListener
     onFocus?: (event: FocusEvent) => void
     onBlur?: (event: FocusEvent) => void
 }): { focused: boolean; path: string[] } {
@@ -88,6 +92,8 @@ export function useFocusable({
             })
         }
     })
+
+    useKeyPressTreeNode({ onKeyPress, focused })
 
     return { focused, path }
 }

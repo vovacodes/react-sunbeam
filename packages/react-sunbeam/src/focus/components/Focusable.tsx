@@ -2,9 +2,11 @@ import * as React from "react"
 import { useMemo, useRef, useCallback, useEffect } from "react"
 import { FocusableTreeContext } from "../FocusableTreeContext"
 import { BoundingBox, Direction } from "../../spatialNavigation"
+import { KeyPressListener, KeyPressTreeContextProvider } from "../../keyPressManagement"
 import { FocusableNodesMap, FocusableTreeNode, FocusEvent } from "../types"
 import { useGeneratedFocusKey } from "../hooks/useGeneratedFocusKey"
 import { useOnFocusedChange } from "../hooks/useOnFocusedChange"
+import { useKeyPressTreeNode } from "../hooks/useKeyPressTreeNode"
 import getPreferredNode from "../getPreferredNode"
 
 interface Props {
@@ -17,6 +19,7 @@ interface Props {
         focusOrigin?: FocusableTreeNode
         direction?: Direction
     }) => FocusableTreeNode | undefined
+    onKeyPress?: KeyPressListener
     onFocus?: (event: FocusEvent) => void
     onBlur?: (event: FocusEvent) => void
 }
@@ -28,6 +31,7 @@ export function Focusable({
     style,
     focusKey,
     unstable_getPreferredChildOnFocusReceive,
+    onKeyPress,
     onFocus,
     onBlur,
 }: Props) {
@@ -72,7 +76,7 @@ export function Focusable({
         dispatchOnBlur,
     } = React.useContext(FocusableTreeContext)
     const path = useMemo(() => [...parentPath, realFocusKey], [parentPath, realFocusKey])
-    const focusableTreeNode: FocusableTreeNode = useMemo(
+    const focusableTreeNode = useMemo<FocusableTreeNode>(
         () => ({
             focusKey: realFocusKey,
             getParent: () => parentFocusableNode,
@@ -132,14 +136,16 @@ export function Focusable({
             dispatchOnBlur,
         }
     }, [childrenFocusPath.join(), focusableTreeNode, path])
-
+    const childKeyPressTreeContextValue = useKeyPressTreeNode({ onKeyPress, focused })
     const renderCallbackArgument = useMemo(() => ({ focused: focused, path }), [focused, path])
 
     return (
         <FocusableTreeContext.Provider value={childFocusableTreeContextValue}>
-            <div ref={wrapperRef} className={className} style={style}>
-                {typeof children === "function" ? children(renderCallbackArgument) : children}
-            </div>
+            <KeyPressTreeContextProvider value={childKeyPressTreeContextValue}>
+                <div ref={wrapperRef} className={className} style={style}>
+                    {typeof children === "function" ? children(renderCallbackArgument) : children}
+                </div>
+            </KeyPressTreeContextProvider>
         </FocusableTreeContext.Provider>
     )
 }

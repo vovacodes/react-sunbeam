@@ -1,0 +1,28 @@
+name: Publish on PR merge
+
+on:
+    pull_request:
+        types: closed
+
+jobs:
+    build-and-publish:
+        if: github.event.pull_request.merged == true
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v1
+              with:
+                  ref: master
+
+            - name: Setup node
+              uses: actions/setup-node@v1.1.0
+              with:
+                  node-version: "10.x"
+                  registry-url: "https://registry.npmjs.org"
+
+            - run: yarn install
+
+            - name: Publish
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+              run: yarn release --yes

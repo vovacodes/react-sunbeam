@@ -1,16 +1,24 @@
 import * as React from "react"
 import { useCallback, useEffect, useMemo, useRef } from "react"
 import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants"
-import { FocusableTreeContext } from "../../FocusableTreeContext"
+import { FocusableTreeContext, FocusableTreeContextValue } from "../../FocusableTreeContext"
 import { SunbeamContext } from "../../SunbeamContext"
 import { FocusableNodesMap, FocusableTreeNode, FocusPath } from "../../types"
 import { FocusManager } from "../../FocusManager"
+import {
+    KeyPressManager,
+    KeyPressListener,
+    KeyPressTreeContextProvider,
+    KeyPressTreeNode,
+} from "../../../keyPressManagement"
 import { BoundingBox, Direction } from "../../../spatialNavigation"
 import getPreferredNode from "../../getPreferredNode"
+import { useChildKeyPressTreeContextValue } from "../../hooks/useChildKeyPressTreeContextValue"
 import useFocusPath from "./useFocusPath"
 
-interface Props {
+type Props = {
     focusManager: FocusManager
+    keyPressManager?: KeyPressManager
     children: React.ReactNode
     // unstable_passFocusBetweenChildren?: (args: {
     //     focusableChildren: FocusableNodesMap
@@ -18,6 +26,7 @@ interface Props {
     //     direction: Direction
     // }) => FocusableTreeNode | "KEEP_FOCUS_UNCHANGED" | "CANDIDATE_NOT_FOUND"
     onFocusUpdate?: (event: { focusPath: FocusPath }) => void
+    onKeyPress?: KeyPressListener
     unstable_getPreferredChildOnFocusReceive?: (args: {
         focusableChildren: FocusableNodesMap
         focusOrigin?: FocusableTreeNode
@@ -28,8 +37,10 @@ interface Props {
 /* eslint-disable @typescript-eslint/camelcase */
 export function SunbeamProvider({
     focusManager,
+    keyPressManager: customKeyPressManager,
     children,
     onFocusUpdate,
+    onKeyPress,
     unstable_getPreferredChildOnFocusReceive,
 }: Props) {
     const focusPath = useFocusPath(focusManager, onFocusUpdate)
@@ -155,7 +166,40 @@ export function SunbeamProvider({
         })
     }
 
-    const focusableTreeContextValue = useMemo(
+    // ====================================
+    // Key press management
+    // ====================================
+    const childKeyPressTreeNodeRef = useRef<KeyPressTreeNode | undefined>(undefined)
+    const keyPressManager = useMemo<KeyPressManager>(() => {
+        if (customKeyPressManager != null) return customKeyPressManager
+        return new KeyPressManager()
+    }, [customKeyPressManager])
+    useEffect(() => {
+        keyPressManager.addListener(keyPressListener)
+        function keyPressListener(event: KeyboardEvent) {
+            // first build up the array of listeners from the root to the leaf
+            const listeners: KeyPressListener[] = onKeyPress ? [onKeyPress] : []
+            let keyPressTreeNode: KeyPressTreeNode | undefined = childKeyPressTreeNodeRef.current
+            while (keyPressTreeNode) {
+                const listener = keyPressTreeNode.listenerRef.current
+                if (listener) listeners.push(listener)
+                keyPressTreeNode = keyPressTreeNode.childKeyPressTreeNodeRef.current
+            }
+            // then process this array from the leaf to the root
+            for (let i = listeners.length - 1; i >= 0; i--) {
+                const listener = listeners[i]
+                listener(event)
+                if (event.cancelBubble) break
+            }
+        }
+
+        return () => {
+            keyPressManager.removeListener(keyPressListener)
+        }
+    }, [onKeyPress, keyPressManager])
+    const childKeyPressTreeContextValue = useChildKeyPressTreeContextValue(childKeyPressTreeNodeRef)
+
+    const focusableTreeContextValue = useMemo<FocusableTreeContextValue>(
         () => ({
             addFocusableToMap,
             removeFocusableFromMap,
@@ -188,7 +232,9 @@ export function SunbeamProvider({
     return (
         <SunbeamContext.Provider value={sunbeamContextValue}>
             <FocusableTreeContext.Provider value={focusableTreeContextValue}>
-                <div ref={wrapperRef}>{children}</div>
+                <KeyPressTreeContextProvider value={childKeyPressTreeContextValue}>
+                    <div ref={wrapperRef}>{children}</div>
+                </KeyPressTreeContextProvider>
             </FocusableTreeContext.Provider>
         </SunbeamContext.Provider>
     )

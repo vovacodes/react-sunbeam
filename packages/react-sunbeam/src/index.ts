@@ -10,4 +10,4 @@ export {
     unstable_defaultGetPreferredChildOnFocusReceive,
 } from "./focus"
 export { Direction } from "./spatialNavigation"
-export { KeyPressManager } from "./keyPressManagement"
+export { KeyPressManager, KeyPressListener } from "./keyPressManagement"
