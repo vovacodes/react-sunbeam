@@ -1,0 +1,29 @@
+name: publish
+
+on:
+    pull_request:
+        types: closed
+
+jobs:
+    build-and-publish:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Dump GitHub context
+              env:
+                  GITHUB_CONTEXT: ${{ toJson(github) }}
+              run: echo "$GITHUB_CONTEXT"
+
+            - name: Checkout
+              uses: actions/checkout@v1
+            - name: Setup node
+              uses: actions/setup-node@v1.1.0
+              with:
+                  node-version: "10.x"
+                  registry-url: "https://registry.npmjs.org"
+
+            - run: yarn install
+
+            - name: Publish
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+              run: yarn info react-sunbeam
