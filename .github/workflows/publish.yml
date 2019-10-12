@@ -14,7 +14,10 @@ jobs:
               with:
                   ref: master
 
-            - run: git checkout master
+            - run: |
+                  git config --local user.email "action@github.com"
+                  git config --local user.name "GitHub Action"
+                  git checkout master
 
             - name: Setup node
               uses: actions/setup-node@v1.1.0
