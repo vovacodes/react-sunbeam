@@ -5,6 +5,7 @@
     Spatial navigation and focus management system for React apps
 </p>
 <p align="center">
+    <a href="https://github.com/vovaguguiev/react-sunbeam/actions?workflow=Test"><img src="https://github.com/vovaguguiev/react-sunbeam/workflows/Test/badge.svg" alt="Test Status"></a>
     <a href="https://app.netlify.com/sites/romantic-wiles-3910cf/deploys"><img src="https://api.netlify.com/api/v1/badges/87d42de3-3413-493d-b30c-c12523a6062a/deploy-status" alt="Netlify Status"></a>
     <a href="https://www.npmjs.com/package/react-sunbeam"><img src="https://badge.fury.io/js/react-sunbeam.svg" alt="npm version" height="18"></a>
 </div>
