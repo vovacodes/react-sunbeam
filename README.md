@@ -1,6 +1,6 @@
 <div align="center">
 <h1 align="center">react-sunbeam</h1>
-<h3 align="center">🌅</h3>
+<h3 align="center"><img src="https://user-images.githubusercontent.com/1524432/66853526-c8c8d200-ef7f-11e9-8fcf-65da77392158.png" width="170" height="170" alt="Sunbeam Logo"></a></h3>
 <p>
     Spatial navigation and focus management system for React apps
 </p>
