@@ -127,6 +127,59 @@ export function FocusableCard({ focusKey }) {
 
 ### `FocusManager`
 
+`FocusManager` is responsible for maintaining the tree of focusable nodes and updating the currently focused node.
+Usually, your app will only have a single instance of it which you pass to a `<SunbeamProvider>` component
+
+#### `moveLeft()` / `moveRight()` / `moveUp()` / `moveDown()`
+
+These are the most important methods of `FocusManager`.
+They move focus to the nearest focusable node in the corresponding direction.
+You can call these methods in response to any events you want: key presses, game controller button presses, scroll events, etc.
+
+#### `setFocus(path: string[])`
+
+Immediately makes focused the focusable node with the given `path`.
+
+#### Example
+
+```js
+import { render } from "react-dom"
+import { SunbeamProvider, FocusManager } from "react-sunbeam"
+import { App } from "./App"
+
+const focusManager = new FocusManager({
+    initialFocusPath: ["menuContainer", "menuItem1"],
+})
+
+// Use arrow key presses to control focus.
+document.addEventListener("keydown", event => {
+    switch (event.key) {
+        case "ArrowRight":
+            focusManager.moveRight()
+            return
+        case "ArrowLeft":
+            focusManager.moveLeft()
+            return
+        case "ArrowUp":
+            focusManager.moveUp()
+            return
+        case "ArrowDown":
+            focusManager.moveDown()
+            return
+        case "Backspace":
+            focusManager.setFocus(["carousel", "item-1"])
+            return
+    }
+})
+
+render(
+    <SunbeamProvider focusManager={focusManager}>
+        <App />
+    </SunbeamProvider>,
+    document.getElementById("app")
+)
+```
+
 ### `SunbeamProvider`
 
 ### `Focusable`
