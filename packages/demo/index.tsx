@@ -49,13 +49,6 @@ render(
         focusManager={focusManager}
         keyPressManager={keyPressManager}
         onFocusUpdate={handleFocusUpdate}
-        // unstable_passFocusBetweenChildren={({ focusableChildren, focusOrigin, direction }) => {
-        //     if (direction === "LEFT" || direction === "RIGHT") {
-        //         return "KEEP_FOCUS_UNCHANGED"
-        //     }
-        //
-        //     return unstable_defaultPassFocusBetweenChildren({focusableChildren, focusOrigin, direction})
-        // }}
         unstable_getPreferredChildOnFocusReceive={({
             focusableChildren,
             focusOrigin,

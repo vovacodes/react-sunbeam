@@ -1,10 +1,5 @@
 import { BoundingBox, Direction } from "./types"
-import {
-    isWithinBottomFrustumOf,
-    isWithinLeftFrustumOf,
-    isWithinRightFrustumOf,
-    isWithinTopFrustumOf,
-} from "./frustumFilteringUtils"
+import { boxesWithinFrustumOfOrigin } from "./frustumFilteringUtils"
 import absurd from "../shared/absurd"
 
 function getMinkowskiDifference(boxA: BoundingBox, boxB: BoundingBox): BoundingBox {
@@ -116,28 +111,7 @@ export default function getBestCandidate(
 ): BoundingBox | null {
     if (candidates.length === 0) return null
 
-    let candidatesWithinFrustum: BoundingBox[] = []
-    switch (direction) {
-        case Direction.UP:
-            candidatesWithinFrustum = candidates.filter(isWithinTopFrustumOf(origin))
-            break
-
-        case Direction.RIGHT:
-            candidatesWithinFrustum = candidates.filter(isWithinRightFrustumOf(origin))
-            break
-
-        case Direction.DOWN:
-            candidatesWithinFrustum = candidates.filter(isWithinBottomFrustumOf(origin))
-            break
-
-        case Direction.LEFT:
-            candidatesWithinFrustum = candidates.filter(isWithinLeftFrustumOf(origin))
-            break
-
-        default:
-            absurd(direction)
-    }
-
+    const candidatesWithinFrustum = boxesWithinFrustumOfOrigin(candidates, origin, direction)
     if (candidatesWithinFrustum.length === 0) return null
 
     const [bestCandidates] = candidatesWithinFrustum.reduce<[BoundingBox[], number]>(

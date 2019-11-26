@@ -1,6 +1,7 @@
 import { FocusableTreeNode, FocusPath } from "./types"
 import { getNodeByPath, getPathToNode, getSiblings, validateAndFixFocusPathIfNeeded } from "./FocusableTreeUtils"
 import { Direction, getBestCandidate } from "../spatialNavigation"
+import { boxesWithinFrustumOfOrigin } from "../spatialNavigation/frustumFilteringUtils"
 
 interface Options {
     initialFocusPath: FocusPath
@@ -116,7 +117,8 @@ function findBestCandidateAmongSiblingsOf(
     const focusableSiblings = getSiblings(treeNode)
 
     const siblingBoxes = focusableSiblings.map(node => node.getBoundingBox())
-    const bestCandidateBox = getBestCandidate(focusOrigin.getBoundingBox(), siblingBoxes, direction)
+    const siblingsWithinFrustum = boxesWithinFrustumOfOrigin(siblingBoxes, treeNode.getBoundingBox(), direction)
+    const bestCandidateBox = getBestCandidate(focusOrigin.getBoundingBox(), siblingsWithinFrustum, direction)
     if (!bestCandidateBox) {
         const parent = treeNode.getParent()
         // Best candidate is not found, so the focus doesn't move

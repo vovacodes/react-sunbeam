@@ -1,4 +1,5 @@
-import { isWithinTopFrustumOf } from "./frustumFilteringUtils"
+import { boxesWithinFrustumOfOrigin } from "./frustumFilteringUtils"
+import { Direction } from "./types"
 
 describe("isWithinTopFrustumOf", () => {
     const originBox = {
@@ -8,8 +9,8 @@ describe("isWithinTopFrustumOf", () => {
         right: 500,
     }
 
-    it("should return `TRUE` for the boxes that are entirely within the top frustum", () => {
-        const testBoxes = [
+    it("should filter out the boxes that are outside of the top frustum", () => {
+        const boxesEntirelyWithinTopFrustum = [
             {
                 top: 25,
                 bottom: 75,
@@ -29,14 +30,7 @@ describe("isWithinTopFrustumOf", () => {
                 right: 524,
             },
         ]
-
-        for (const testBox of testBoxes) {
-            expect(isWithinTopFrustumOf(originBox)(testBox)).toBe(true)
-        }
-    })
-
-    it("should return `TRUE` for the boxes that are at least partially within the top frustum", () => {
-        const testBoxes = [
+        const boxesPartiallyWithinTopFrustum = [
             {
                 top: 40,
                 bottom: 80,
@@ -50,13 +44,7 @@ describe("isWithinTopFrustumOf", () => {
                 right: 599,
             },
         ]
-
-        for (const testBox of testBoxes) {
-            expect(isWithinTopFrustumOf(originBox)(testBox)).toBe(true)
-        }
-    })
-    it("should return `FALSE` for the boxes that are outside the top frustum", () => {
-        const testBoxes = [
+        const boxesOutsideTopFrustum = [
             {
                 top: 40,
                 bottom: 80,
@@ -71,8 +59,12 @@ describe("isWithinTopFrustumOf", () => {
             },
         ]
 
-        for (const testBox of testBoxes) {
-            expect(isWithinTopFrustumOf(originBox)(testBox)).toBe(false)
-        }
+        expect(
+            boxesWithinFrustumOfOrigin(
+                [...boxesEntirelyWithinTopFrustum, ...boxesPartiallyWithinTopFrustum, ...boxesOutsideTopFrustum],
+                originBox,
+                Direction.UP
+            )
+        ).toEqual([...boxesEntirelyWithinTopFrustum, ...boxesPartiallyWithinTopFrustum])
     })
 })

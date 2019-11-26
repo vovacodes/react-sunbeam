@@ -12,7 +12,12 @@ type Props = {
 
 export const NavigationMenu = memo(function NavigationMenu({ onFocus, onBlur, onItemFocus, onItemBlur }: Props) {
     return (
-        <Focusable focusKey="navigationMenu" onFocus={onFocus} onBlur={onBlur} style={{ display: "flex" }}>
+        <Focusable
+            focusKey="navigationMenu"
+            onFocus={onFocus}
+            onBlur={onBlur}
+            style={{ display: "flex", justifyContent: "center", width: "1078px" }}
+        >
             <div style={{ marginRight: "8px" }}>
                 <NavMenuItem focusKey="1" onFocus={onItemFocus} onBlur={onItemBlur} />
             </div>
