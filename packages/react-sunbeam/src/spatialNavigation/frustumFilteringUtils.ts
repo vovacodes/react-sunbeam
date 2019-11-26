@@ -1,4 +1,5 @@
-import { BoundingBox } from "./types"
+import { BoundingBox, Direction } from "./types"
+import absurd from "../shared/absurd"
 
 // ax + bx + c = 0
 interface Line {
@@ -7,7 +8,26 @@ interface Line {
     c: number
 }
 
-export function isWithinTopFrustumOf(originBox: BoundingBox) {
+export function boxesWithinFrustumOfOrigin(
+    boundingBoxes: readonly BoundingBox[],
+    origin: BoundingBox,
+    direction: Direction
+): BoundingBox[] {
+    switch (direction) {
+        case Direction.UP:
+            return boundingBoxes.filter(isWithinTopFrustumOf(origin))
+        case Direction.RIGHT:
+            return boundingBoxes.filter(isWithinRightFrustumOf(origin))
+        case Direction.DOWN:
+            return boundingBoxes.filter(isWithinBottomFrustumOf(origin))
+        case Direction.LEFT:
+            return boundingBoxes.filter(isWithinLeftFrustumOf(origin))
+        default:
+            return absurd(direction)
+    }
+}
+
+function isWithinTopFrustumOf(originBox: BoundingBox) {
     return (testBox: BoundingBox): boolean => {
         // test for Y-axis intersection
 
@@ -32,7 +52,7 @@ export function isWithinTopFrustumOf(originBox: BoundingBox) {
     }
 }
 
-export function isWithinRightFrustumOf(originBox: BoundingBox) {
+function isWithinRightFrustumOf(originBox: BoundingBox) {
     return (testBox: BoundingBox): boolean => {
         // test for X-axis intersection
 
@@ -57,7 +77,7 @@ export function isWithinRightFrustumOf(originBox: BoundingBox) {
     }
 }
 
-export function isWithinBottomFrustumOf(originBox: BoundingBox) {
+function isWithinBottomFrustumOf(originBox: BoundingBox) {
     return (testBox: BoundingBox): boolean => {
         // test for Y-axis intersection
 
@@ -82,7 +102,7 @@ export function isWithinBottomFrustumOf(originBox: BoundingBox) {
     }
 }
 
-export function isWithinLeftFrustumOf(originBox: BoundingBox) {
+function isWithinLeftFrustumOf(originBox: BoundingBox) {
     return (testBox: BoundingBox): boolean => {
         // test for X-axis intersection
 
