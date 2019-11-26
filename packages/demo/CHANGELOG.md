@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/wzrdzl/react-sunbeam/compare/v0.9.0...v0.10.0) (2019-11-26)
+
+### Features
+
+-   **spatialnavigation:** when picking candidate among parent siblings take parent box into account ([729fc4c](https://github.com/wzrdzl/react-sunbeam/commit/729fc4c))
+
 # [0.9.0](https://github.com/wzrdzl/react-sunbeam/compare/v0.8.0...v0.9.0) (2019-10-12)
 
 ### Features
