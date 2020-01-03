@@ -5,7 +5,11 @@
     "main": "dist/cjs/index.js",
     "module": "dist/es/index.js",
     "types": "dist/es/index.d.ts",
-    "repository": "git+https://github.com/vovaguguiev/react-sunbeam.git",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vovaguguiev/react-sunbeam.git",
+        "directory": "packages/react-sunbeam"
+    },
     "author": "Vladimir Guguiev <vladimir.guguiev@gmail.com>",
     "license": "MIT",
     "scripts": {
