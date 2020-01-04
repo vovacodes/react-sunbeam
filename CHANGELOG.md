@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/vovaguguiev/react-sunbeam/compare/v0.10.1...v0.11.0) (2020-01-04)
+
+### Features
+
+-   **package_json:** add "unpkg" field to package.json ([c09509c](https://github.com/vovaguguiev/react-sunbeam/commit/c09509c))
+
 ## [0.10.1](https://github.com/vovaguguiev/react-sunbeam/compare/v0.10.0...v0.10.1) (2020-01-04)
 
 **Note:** Version bump only for package react-sunbeam
