@@ -1,6 +1,6 @@
 {
     "name": "react-sunbeam",
-    "version": "0.10.0",
+    "version": "0.10.1",
     "description": "Spatial navigation and focus management for React",
     "main": "dist/cjs/index.js",
     "module": "dist/es/index.js",
