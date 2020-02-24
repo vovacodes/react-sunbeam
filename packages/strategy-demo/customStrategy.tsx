@@ -48,7 +48,7 @@ function getHorizontalParent(node: FocusableTreeNode): FocusableTreeNode | null 
     if (!parent) {
         return null
     }
-    if (allowHorizontal(parent)) {
+    if (isHorizontalList(parent)) {
         return parent
     }
     return getHorizontalParent(parent)
@@ -59,26 +59,30 @@ function getVerticalParent(node: FocusableTreeNode): FocusableTreeNode | null {
     if (!parent) {
         return null
     }
-    if (allowVertical(parent)) {
+    if (isVerticalList(parent)) {
         return parent
     }
     return getVerticalParent(parent)
 }
 
-function allowHorizontal(parent: FocusableTreeNode) {
-    return parent.focusKey.indexOf("#horizontal#") === 0
+function isHorizontalList(node: FocusableTreeNode) {
+    return node.focusKey.indexOf("#horizontal#") === 0
 }
 
-function allowVertical(parent: FocusableTreeNode) {
-    return parent.focusKey.indexOf("#vertical#") === 0
+function isVerticalList(node: FocusableTreeNode) {
+    return node.focusKey.indexOf("#vertical#") === 0
+}
+function isHorizontalDirection(direction: Direction) {
+    return horizontalDirections.indexOf(direction) > -1
+}
+function isVerticalDirection(direction: Direction) {
+    return verticalDirections.indexOf(direction) > -1
 }
 
 function getNextChildWithinParent(searchRoot: FocusableTreeNode, focusOrigin: FocusableTreeNode, direction: Direction) {
-    const currentPath = getPathToNode(focusOrigin)
-    const pathIndex = currentPath.indexOf(searchRoot.focusKey)
-    const sortedChildren = sortNodesForDirection(Array.from(searchRoot.getChildren().values()), direction)
-    const focusedChildKey = currentPath[pathIndex + 1]
-    const nodeToFocus = getNextFocusedNode(sortedChildren, focusedChildKey, direction)
+    const searchRootPath = getPathToNode(searchRoot)
+    const allPossibleChildren = flattenNodesForDirection(searchRoot, direction)
+    const nodeToFocus = getNextFocusedNode(allPossibleChildren, focusOrigin.focusKey, direction)
     return nodeToFocus
 }
 
@@ -128,4 +132,30 @@ function getFirstChild(children: Array<FocusableTreeNode>, direction: Direction)
 
 function isLeaf(node: FocusableTreeNode) {
     return node.getChildren().size === 0
+}
+
+function childrenToArray(children: Map<string, FocusableTreeNode>) {
+    return Array.from(children.values())
+}
+
+function flattenNodesForDirection(root: FocusableTreeNode, direction: Direction): Array<FocusableTreeNode> {
+    let targets: Array<FocusableTreeNode> = []
+    const childrenList: Array<FocusableTreeNode> = childrenToArray(root.getChildren())
+    const children = sortNodesForDirection(childrenList, direction)
+    children.forEach(node => {
+        if (isLeaf(node)) {
+            targets.push(node)
+        } else if (
+            (isHorizontalList(node) && isVerticalDirection(direction)) ||
+            (isVerticalList(node) && isHorizontalDirection(direction))
+        ) {
+            const preferredChild = node.getPreferredChild()
+            if (preferredChild) {
+                targets.push(preferredChild)
+            }
+        } else {
+            targets.push(...flattenNodesForDirection(node, direction))
+        }
+    })
+    return targets
 }

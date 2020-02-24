@@ -7,6 +7,7 @@ import HorizontalList from "./HorizontalList"
 import VerticalList from "./VerticalList"
 // import FocusLock from "./FocusLock"
 import customStrategy from "./customStrategy"
+import AutoFocus from "./AutoFocus"
 
 const focusManager = new FocusManager({
     initialFocusPath: [
@@ -50,8 +51,6 @@ render(
 )
 
 function App() {
-    const [expanded, setExpanded] = useState(false)
-
     return (
         <VerticalList focusKey="root_vertical">
             <AppBody />
@@ -100,7 +99,7 @@ function VerticalMainBody({ added }: { added: boolean }) {
         <>
             <Item focusKey="vertical_item_1" />
             <Item focusKey="vertical_item_2" />
-            <Item focusKey="expandable" />
+            <ExpandableSection />
             <Item focusKey="third" />
             {added && <Item focusKey="dynamically added" />}
             <HorizontalList
@@ -113,6 +112,33 @@ function VerticalMainBody({ added }: { added: boolean }) {
         </>
     )
 }
+
+function ExpandableSection() {
+    const [expanded, setExpanded] = useState(false)
+    const onExpandablePress = useCallback(event => {
+        if (event.key === "Enter") {
+            setExpanded(true)
+        } else if (event.key === "Backspace") {
+            setExpanded(false)
+        }
+    }, [])
+    return (
+        <VerticalList focusKey="expandable-list" onKeyPress={onExpandablePress}>
+            <Item focusKey="expandable" />
+            {expanded && (
+                <AutoFocus focusKey="autofocus-subgroup" style={{ marginLeft: 20 }}>
+                    <Item focusKey="sub_item_1" />
+                    <Item focusKey="sub_item_2" />
+                    <Item focusKey="sub_item_3" />
+                </AutoFocus>
+            )}
+        </VerticalList>
+    )
+}
+
+// function ExpandableSectionChildren(){
+
+// }
 
 function SubHorizontalBody() {
     return (
