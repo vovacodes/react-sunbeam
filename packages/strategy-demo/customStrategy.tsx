@@ -27,47 +27,37 @@ function searchFrom(
     origin: FocusableTreeNode,
     direction: Direction
 ): FocusableTreeNode | undefined {
-    const directionParent = getDirectionParent(start, direction)
+    const parent = start.getParent()
+    if (!parent) {
+        return
+    }
+    const directionParent = getDirectionParent(parent, direction)
     if (!directionParent) {
         return
     }
     const focusTarget = getNextChildWithinParent(directionParent, origin, direction)
     if (!focusTarget) {
+        if (directionParent === start || isFocusLock(directionParent)) {
+            return
+        }
         return searchFrom(directionParent, origin, direction)
     }
     const focusableLeaf = getFirstFocusableChild(focusTarget, direction)
     return focusableLeaf
 }
 
-function getDirectionParent(node: FocusableTreeNode, direction: Direction): FocusableTreeNode | null {
-    if (horizontalDirections.indexOf(direction) > -1) {
-        return getHorizontalParent(node)
-    } else if (verticalDirections.indexOf(direction) > -1) {
-        return getVerticalParent(node)
+function getDirectionParent(node: FocusableTreeNode, direction: Direction): FocusableTreeNode | undefined {
+    if (isHorizontalDirection(direction) && isHorizontalList(node)) {
+        return node
+    } else if (isVerticalDirection(direction) && isVerticalList(node)) {
+        return node
+    } else if (isFocusLock(node)) {
+        return node
     }
-    throw new Error(`Cant find parent for Direction ${direction}`)
-}
-
-function getHorizontalParent(node: FocusableTreeNode): FocusableTreeNode | null {
     const parent = node.getParent()
-    if (!parent) {
-        return null
+    if (parent) {
+        return getDirectionParent(parent, direction)
     }
-    if (isHorizontalList(parent)) {
-        return parent
-    }
-    return getHorizontalParent(parent)
-}
-
-function getVerticalParent(node: FocusableTreeNode): FocusableTreeNode | null {
-    const parent = node.getParent()
-    if (!parent) {
-        return null
-    }
-    if (isVerticalList(parent)) {
-        return parent
-    }
-    return getVerticalParent(parent)
 }
 
 function isHorizontalList(node: FocusableTreeNode) {
@@ -175,8 +165,8 @@ function flattenNodesForDirection(
             targets.push(node)
         } else if (shouldIgnore(node)) {
         } else if (
-            (isHorizontalList(node) && isHorizontalDirection(direction)) ||
-            (isVerticalList(node) && isVerticalDirection(direction)) ||
+            // (isHorizontalList(node) && isHorizontalDirection(direction)) ||
+            // (isVerticalList(node) && isVerticalDirection(direction)) ||
             isAutoFocus(node) ||
             isFocusLock(node) ||
             isIgnoreContainer(node)

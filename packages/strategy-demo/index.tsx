@@ -83,13 +83,13 @@ function AppBody() {
             <button onClick={toggleIgnore}>Ignore</button>
             <HorizontalList
                 focusKey="horizontal_list"
-                style={{ marginTop: "32px", marginLeft: "60px", display: "flex" }}
+                style={{ marginTop: "32px", marginLeft: "60px", display: "flex", border: "1px solid blue" }}
             >
                 <HorizontalBody />
             </HorizontalList>
 
             <div style={{ marginTop: "94px" }}>
-                <VerticalList focusKey="vertical_list_1">
+                <VerticalList focusKey="vertical_list_1" style={{ border: "1px solid blue" }}>
                     <VerticalMainBody added={added} ignore={ignore} />
                 </VerticalList>
             </div>
@@ -111,12 +111,17 @@ function VerticalMainBody({ added, ignore }: { added: boolean; ignore: boolean }
         <>
             <Item focusKey="vertical_item_1" />
             <Item focusKey="vertical_item_2" />
+            <VerticalList focusKey="inner-vertical" style={{ border: "1px solid green" }}>
+                <Item focusKey="inner-vert-1" />
+                <Item focusKey="inner-vert-2" />
+            </VerticalList>
+
             <ExpandableSection />
             <Item focusKey="third" />
             {added && <Item focusKey="dynamically added" />}
             <HorizontalList
                 focusKey="horizontal_list"
-                style={{ marginTop: "16px", marginLeft: "60px", display: "flex" }}
+                style={{ marginTop: "16px", marginLeft: "60px", display: "flex", border: "1px solid blue" }}
             >
                 <SubHorizontalBody />
             </HorizontalList>
@@ -147,7 +152,7 @@ function ExpandableSection() {
         }
     }, [])
     return (
-        <VerticalList focusKey="expandable-list" onKeyPress={onExpandablePress}>
+        <VerticalList focusKey="expandable-list" onKeyPress={onExpandablePress} style={{ border: "1px solid blue" }}>
             <Item focusKey="expandable" />
             {expanded && (
                 <FocusLock focusKey="my-only-lock">

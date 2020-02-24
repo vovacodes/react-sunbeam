@@ -72,7 +72,6 @@ export default function AutoFocusContainer({ children, focusKey }: ContainerProp
         const first = sorted.find(node => getFirstFocusableChild(node, direction))
         if (first && setFocus) {
             const path = getPathToNode(first)
-            console.log("Setting Focus to", path)
             setFocus(path)
         }
     }, [preContext.parentFocusableNode, focusableChildrenRef.current, setFocus])
