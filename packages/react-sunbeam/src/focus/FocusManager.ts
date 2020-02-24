@@ -1,14 +1,17 @@
 import { FocusableTreeNode, FocusPath } from "./types"
-import { getNodeByPath, getPathToNode, getSiblings, validateAndFixFocusPathIfNeeded } from "./FocusableTreeUtils"
-import { Direction, getBestCandidate } from "../spatialNavigation"
-import { boxesWithinFrustumOfOrigin } from "../spatialNavigation/frustumFilteringUtils"
+import { getNodeByPath, getPathToNode, validateAndFixFocusPathIfNeeded } from "./FocusableTreeUtils"
+import { Direction } from "../spatialNavigation"
+import findBestCandidateAmongSiblingsOf from "./strategies/bestCandidateAmongSiblings"
+import { GetPreferredChildFn } from "./types"
 
 interface Options {
     initialFocusPath: FocusPath
+    strategy?: GetPreferredChildFn
 }
 
-const defaultOptions = {
+const defaultOptions: Options = {
     initialFocusPath: [],
+    strategy: findBestCandidateAmongSiblingsOf,
 }
 
 export class FocusManager {
@@ -18,10 +21,11 @@ export class FocusManager {
     private focusPath: readonly string[]
     private focusableRoot: FocusableTreeNode | undefined
     private subscribers: Set<Function>
+    private strategy: GetPreferredChildFn
 
     public constructor(options: Options = defaultOptions) {
         this.focusPath = options.initialFocusPath
-
+        this.strategy = options.strategy || (defaultOptions.strategy as GetPreferredChildFn)
         this.subscribers = new Set()
     }
 
@@ -99,55 +103,9 @@ export class FocusManager {
             throw new Error(`focusOrigin is not found, looks like the focusPath: ${this.focusPath} is invalid`)
         }
 
-        const bestCandidate = findBestCandidateAmongSiblingsOf(focusOrigin, focusOrigin, direction)
+        const bestCandidate = this.strategy(focusOrigin, direction)
         if (!bestCandidate) return
 
         this.setFocus(getPathToNode(bestCandidate))
     }
-}
-
-function findBestCandidateAmongSiblingsOf(
-    treeNode: FocusableTreeNode,
-    focusOrigin: FocusableTreeNode,
-    direction: Direction
-): FocusableTreeNode | null {
-    // 2. Search for the best candidate among siblings of the current focusOrigin
-    // If not found repeat the same process for the parent FocusableNode's siblings
-    // until either the candidate is found or the FocusableRootNode is reached
-    const focusableSiblings = getSiblings(treeNode)
-
-    const siblingBoxes = focusableSiblings.map(node => node.getBoundingBox())
-    const siblingsWithinFrustum = boxesWithinFrustumOfOrigin(siblingBoxes, treeNode.getBoundingBox(), direction)
-    const bestCandidateBox = getBestCandidate(focusOrigin.getBoundingBox(), siblingsWithinFrustum, direction)
-    if (!bestCandidateBox) {
-        const parent = treeNode.getParent()
-        // Best candidate is not found, so the focus doesn't move
-        if (!parent) return null
-
-        return findBestCandidateAmongSiblingsOf(parent, focusOrigin, direction)
-    }
-
-    const bestCandidateIndex = siblingBoxes.indexOf(bestCandidateBox)
-    let bestCandidateNode = focusableSiblings[bestCandidateIndex]
-
-    // 3. Once the best candidate is found recursively ask it
-    // for the preferredChild FocusableNode until a leaf node is reached
-    while (bestCandidateNode) {
-        if (bestCandidateNode.getChildren().size === 0) {
-            // we found the bestCandidate
-            break
-        }
-
-        const preferredChild = bestCandidateNode.getPreferredChild(focusOrigin, direction)
-        if (!preferredChild) {
-            throw new Error(
-                "`focusableTreeNode.getPreferredChild()` should " +
-                    "never return `undefined` when it has at least 1 child"
-            )
-        }
-
-        bestCandidateNode = preferredChild
-    }
-
-    return bestCandidateNode
 }

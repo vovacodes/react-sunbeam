@@ -11,3 +11,4 @@ export {
 } from "./focus"
 export { Direction } from "./spatialNavigation"
 export { KeyPressManager, KeyPressListener } from "./keyPressManagement"
+export { getPathToNode } from "./focus/FocusableTreeUtils"
