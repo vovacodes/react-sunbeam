@@ -81,7 +81,7 @@ function isVerticalDirection(direction: Direction) {
 
 function getNextChildWithinParent(searchRoot: FocusableTreeNode, focusOrigin: FocusableTreeNode, direction: Direction) {
     const searchRootPath = getPathToNode(searchRoot)
-    const allPossibleChildren = flattenNodesForDirection(searchRoot, direction)
+    const allPossibleChildren = flattenNodesForDirection(searchRoot, focusOrigin, direction)
     const nodeToFocus = getNextFocusedNode(allPossibleChildren, focusOrigin.focusKey, direction)
     return nodeToFocus
 }
@@ -137,8 +137,15 @@ function isLeaf(node: FocusableTreeNode) {
 function childrenToArray(children: Map<string, FocusableTreeNode>) {
     return Array.from(children.values())
 }
+function isAutoFocus(node: FocusableTreeNode) {
+    return node.focusKey.indexOf("#AutoFocus#") > -1
+}
 
-function flattenNodesForDirection(root: FocusableTreeNode, direction: Direction): Array<FocusableTreeNode> {
+function flattenNodesForDirection(
+    root: FocusableTreeNode,
+    focusOrigin: FocusableTreeNode,
+    direction: Direction
+): Array<FocusableTreeNode> {
     let targets: Array<FocusableTreeNode> = []
     const childrenList: Array<FocusableTreeNode> = childrenToArray(root.getChildren())
     const children = sortNodesForDirection(childrenList, direction)
@@ -146,15 +153,20 @@ function flattenNodesForDirection(root: FocusableTreeNode, direction: Direction)
         if (isLeaf(node)) {
             targets.push(node)
         } else if (
-            (isHorizontalList(node) && isVerticalDirection(direction)) ||
-            (isVerticalList(node) && isHorizontalDirection(direction))
+            (isHorizontalList(node) && isHorizontalDirection(direction)) ||
+            (isVerticalList(node) && isVerticalDirection(direction))
         ) {
-            const preferredChild = node.getPreferredChild()
-            if (preferredChild) {
-                targets.push(preferredChild)
-            }
+            targets.push(...flattenNodesForDirection(node, focusOrigin, direction))
         } else {
-            targets.push(...flattenNodesForDirection(node, direction))
+            const allChildren = flattenNodesForDirection(node, focusOrigin, direction).map(f => f.focusKey)
+            if (allChildren.indexOf(focusOrigin.focusKey) > -1) {
+                targets.push(focusOrigin)
+            } else {
+                const preferredChild = node.getPreferredChild()
+                if (preferredChild) {
+                    targets.push(getFirstFocusableChild(preferredChild, direction))
+                }
+            }
         }
     })
     return targets
