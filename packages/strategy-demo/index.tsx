@@ -1,13 +1,15 @@
 import * as React from "react"
-import { useCallback, useState } from "react"
+import { useCallback, useState, useRef } from "react"
 import { render } from "react-dom"
-import { FocusManager, SunbeamProvider, KeyPressManager } from "../react-sunbeam"
+import { FocusManager, SunbeamProvider, KeyPressManager, useFocusable, Focusable } from "../react-sunbeam"
 import Item from "./StyledFocusItem"
 import HorizontalList from "./HorizontalList"
 import VerticalList from "./VerticalList"
 // import FocusLock from "./FocusLock"
 import customStrategy from "./customStrategy"
 import AutoFocus from "./AutoFocus"
+import FocusLock from "./FocusLock"
+import FocusIgnore from "./FocusIgnore"
 
 const focusManager = new FocusManager({
     initialFocusPath: [
@@ -16,6 +18,12 @@ const focusManager = new FocusManager({
         "#horizontal#horizontal_list",
         "sub_horizontal_1",
     ],
+    // initialFocusPath: [
+    //     "#vertical#root_vertical",
+    //     "#vertical#vertical_list_1",
+    //     "#vertical#expandable-list",
+    //     "sub_item_1",
+    // ],
     strategy: customStrategy,
 })
 const keyPressManager = new KeyPressManager()
@@ -61,6 +69,9 @@ function App() {
 function AppBody() {
     const [added, setAdded] = useState(false)
     const toggleAdded = useCallback(() => setAdded(a => !a), [setAdded])
+    const [ignore, setIgnore] = useState(false)
+    const toggleIgnore = useCallback(() => setIgnore(a => !a), [setIgnore])
+
     return (
         <div
             style={{
@@ -69,6 +80,7 @@ function AppBody() {
             }}
         >
             <button onClick={toggleAdded}>Add Dynami</button>
+            <button onClick={toggleIgnore}>Ignore</button>
             <HorizontalList
                 focusKey="horizontal_list"
                 style={{ marginTop: "32px", marginLeft: "60px", display: "flex" }}
@@ -78,7 +90,7 @@ function AppBody() {
 
             <div style={{ marginTop: "94px" }}>
                 <VerticalList focusKey="vertical_list_1">
-                    <VerticalMainBody added={added} />
+                    <VerticalMainBody added={added} ignore={ignore} />
                 </VerticalList>
             </div>
         </div>
@@ -94,7 +106,7 @@ function HorizontalBody() {
     )
 }
 
-function VerticalMainBody({ added }: { added: boolean }) {
+function VerticalMainBody({ added, ignore }: { added: boolean; ignore: boolean }) {
     return (
         <>
             <Item focusKey="vertical_item_1" />
@@ -108,8 +120,20 @@ function VerticalMainBody({ added }: { added: boolean }) {
             >
                 <SubHorizontalBody />
             </HorizontalList>
+            <IgnoreSection ignore={ignore} />
             <Item focusKey="forth" />
         </>
+    )
+}
+
+function IgnoreSection({ ignore }: { ignore: boolean }) {
+    return (
+        <div style={{ color: ignore ? "#c2d5cc" : undefined }}>
+            <FocusIgnore active={ignore} focusKey="ignore-container">
+                <Item focusKey="ignore-1" />
+                <Item focusKey="ignore-2" />
+            </FocusIgnore>
+        </div>
     )
 }
 
@@ -126,19 +150,17 @@ function ExpandableSection() {
         <VerticalList focusKey="expandable-list" onKeyPress={onExpandablePress}>
             <Item focusKey="expandable" />
             {expanded && (
-                <AutoFocus focusKey="autofocus-subgroup" style={{ marginLeft: 20 }}>
-                    <Item focusKey="sub_item_1" />
-                    <Item focusKey="sub_item_2" />
-                    <Item focusKey="sub_item_3" />
-                </AutoFocus>
+                <FocusLock focusKey="my-only-lock">
+                    <AutoFocus focusKey="autofocus-subgroup" style={{ marginLeft: 20 }}>
+                        <Item focusKey="sub_item_1" />
+                        <Item focusKey="sub_item_2" />
+                        <Item focusKey="sub_item_3" />
+                    </AutoFocus>
+                </FocusLock>
             )}
         </VerticalList>
     )
 }
-
-// function ExpandableSectionChildren(){
-
-// }
 
 function SubHorizontalBody() {
     return (

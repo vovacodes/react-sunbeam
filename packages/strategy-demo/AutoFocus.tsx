@@ -1,6 +1,21 @@
 import * as React from "react"
-import { useContext, useEffect, useRef, useMemo } from "react"
-import { FocusableTreeContext, Focusable, FocusableTreeNode, useSunbeam, getPathToNode } from "../react-sunbeam"
+import { useContext, useEffect, useRef, useMemo, useCallback, useLayoutEffect } from "react"
+import {
+    FocusableTreeContext,
+    Focusable,
+    FocusableTreeNode,
+    useSunbeam,
+    getPathToNode,
+    Direction,
+    FocusableNodesMap,
+} from "../react-sunbeam"
+import {
+    ListDirection,
+    getCurrentDirection,
+    sortNodesForDirection,
+    getFirstFocusableChild,
+    childrenToArray,
+} from "./customStrategy"
 
 type ContainerProps = {
     children: React.ReactNode
@@ -8,32 +23,59 @@ type ContainerProps = {
     style?: React.CSSProperties
 }
 
-export default function AutoFocusContainer({ children, focusKey, ...rest }: ContainerProps) {
-    const realFocusKey = focusKey ? `#AutoFocus#${focusKey}` : undefined
-    return (
-        <Focusable focusKey={realFocusKey} {...rest}>
-            <AutoFocusTrigger />
-            {children}
-        </Focusable>
-    )
-}
-
-export function AutoFocusTrigger() {
+export default function AutoFocusContainer({ children, focusKey }: ContainerProps) {
     const sunbeam = useSunbeam()
-    const { parentFocusableNode } = useContext(FocusableTreeContext)
-
+    const realFocusKey = focusKey ? `#AutoFocus#${focusKey}` : undefined
+    const focusableChildrenRef = useRef<FocusableNodesMap>(new Map())
+    const preContext = React.useContext(FocusableTreeContext)
+    const registerFocusable = useCallback(
+        (node: FocusableTreeNode) => {
+            focusableChildrenRef.current.set(node.focusKey, node)
+            return preContext.registerFocusable(node)
+        },
+        [preContext.registerFocusable]
+    )
+    const unregisterFocusable = useCallback(
+        (focusKey: string) => {
+            focusableChildrenRef.current.delete(focusKey)
+            return preContext.unregisterFocusable(focusKey)
+        },
+        [preContext.unregisterFocusable]
+    )
+    const newContext = useMemo(() => {
+        const {
+            addFocusableToMap,
+            removeFocusableFromMap,
+            focusPath,
+            parentPath,
+            parentFocusableNode,
+            dispatchOnFocus,
+            dispatchOnBlur,
+        } = preContext
+        return {
+            addFocusableToMap,
+            removeFocusableFromMap,
+            focusPath,
+            parentPath,
+            parentFocusableNode,
+            dispatchOnFocus,
+            dispatchOnBlur,
+            registerFocusable,
+            unregisterFocusable,
+        }
+    }, [preContext, registerFocusable, unregisterFocusable])
+    const setFocus = sunbeam && sunbeam.setFocus
     useEffect(() => {
-        const children = parentFocusableNode.getChildren()
-        if (children.size === 0) {
-            return
+        const listDirection = getCurrentDirection(preContext.parentFocusableNode)
+        const direction = listDirection === ListDirection.VERTICAL ? Direction.UP : Direction.LEFT
+        const sorted = sortNodesForDirection(childrenToArray(focusableChildrenRef.current), direction)
+        const first = sorted.find(node => getFirstFocusableChild(node, direction))
+        if (first && setFocus) {
+            const path = getPathToNode(first)
+            console.log("Setting Focus to", path)
+            setFocus(path)
         }
-        const nextChild = parentFocusableNode.getPreferredChild()
-        if (nextChild) {
-            const targetFocusPath = getPathToNode(nextChild)
-            if (sunbeam && sunbeam.setFocus && targetFocusPath) {
-                sunbeam.setFocus(targetFocusPath)
-            }
-        }
-    }, [])
-    return null
+    }, [preContext.parentFocusableNode, focusableChildrenRef.current, setFocus])
+
+    return <FocusableTreeContext.Provider value={newContext}>{children}</FocusableTreeContext.Provider>
 }

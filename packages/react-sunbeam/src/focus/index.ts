@@ -11,6 +11,7 @@ export { useFocusable } from "./hooks/useFocusable"
 export { FocusableTreeContext } from "./FocusableTreeContext"
 
 export type FocusableTreeNode = FocusableTreeNode
+// export type FocusableNodesMap = FocusableNodesMap
 
 // eslint-disable-next-line @typescript-eslint/camelcase
 export function unstable_defaultGetPreferredChildOnFocusReceive({

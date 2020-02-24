@@ -9,6 +9,7 @@ export {
     // eslint-disable-next-line @typescript-eslint/camelcase
     unstable_defaultGetPreferredChildOnFocusReceive,
     FocusableTreeContext,
+    FocusableNodesMap,
 } from "./focus"
 export { Direction } from "./spatialNavigation"
 export { KeyPressManager, KeyPressListener } from "./keyPressManagement"

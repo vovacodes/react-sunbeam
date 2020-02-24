@@ -1,18 +1,18 @@
 import * as React from "react"
-import { useRef } from "react"
-import { useFocusable } from "../react-sunbeam"
+import { Focusable } from "../react-sunbeam"
 
-interface Props {
+type Props = {
     children?: React.ReactNode
     focusKey: string
+    style?: React.CSSProperties
 }
 
-export default function FocusLock({ focusKey, children }: Props) {
-    const elementRef = useRef<HTMLDivElement>(null)
-    const fullFocusKey = `#lock#${focusKey}`
-    const { focused, path } = useFocusable({
-        focusKey: fullFocusKey,
-        elementRef,
-    })
-    return <div ref={elementRef}>{children}</div>
+export default function FocusLock({ focusKey, children, ...rest }: Props) {
+    const fullFocusKey = `#FocusLock#${focusKey}`
+
+    return (
+        <Focusable focusKey={fullFocusKey} {...rest}>
+            {children}
+        </Focusable>
+    )
 }

@@ -1,5 +1,10 @@
 import { FocusableTreeNode, Direction, getPathToNode } from "../react-sunbeam"
 
+export enum ListDirection {
+    HORIZONTAL = "HORIZONTAL",
+    VERTICAL = "VERTICAL",
+}
+
 const verticalDirections = [Direction.UP, Direction.DOWN]
 const horizontalDirections = [Direction.RIGHT, Direction.LEFT]
 const forwardDirections = [Direction.DOWN, Direction.RIGHT]
@@ -86,9 +91,14 @@ function getNextChildWithinParent(searchRoot: FocusableTreeNode, focusOrigin: Fo
     return nodeToFocus
 }
 
-function sortNodesForDirection(children: Array<FocusableTreeNode>, direction: Direction) {
+export function sortNodesForDirection(
+    children: Array<FocusableTreeNode>,
+    direction: Direction | ListDirection | undefined
+) {
     return children.sort((a, b) => {
-        const key = horizontalDirections.indexOf(direction) > -1 ? "left" : "top"
+        const isHorizontalDirection =
+            direction === ListDirection.HORIZONTAL || direction === Direction.LEFT || direction === Direction.RIGHT
+        const key = isHorizontalDirection ? "left" : "top"
         const aBox = a.getBoundingBox()
         const bBox = b.getBoundingBox()
         const aValue = aBox[key]
@@ -114,7 +124,7 @@ function getNextFocusedNode(children: Array<FocusableTreeNode>, startKey: string
     return nextElement
 }
 
-function getFirstFocusableChild(node: FocusableTreeNode, direction: Direction): FocusableTreeNode {
+export function getFirstFocusableChild(node: FocusableTreeNode, direction: Direction): FocusableTreeNode {
     if (isLeaf(node)) {
         return node
     }
@@ -134,11 +144,22 @@ function isLeaf(node: FocusableTreeNode) {
     return node.getChildren().size === 0
 }
 
-function childrenToArray(children: Map<string, FocusableTreeNode>) {
+export function childrenToArray(children: Map<string, FocusableTreeNode>) {
     return Array.from(children.values())
 }
 function isAutoFocus(node: FocusableTreeNode) {
     return node.focusKey.indexOf("#AutoFocus#") > -1
+}
+function isFocusLock(node: FocusableTreeNode) {
+    return node.focusKey.indexOf("#FocusLock#") > -1
+}
+
+function isIgnoreContainer(node: FocusableTreeNode) {
+    return node.focusKey.indexOf("#ignore#") === 0
+}
+
+function shouldIgnore(node: FocusableTreeNode) {
+    return node.focusKey.indexOf("#ignore#active#") === 0
 }
 
 function flattenNodesForDirection(
@@ -152,9 +173,13 @@ function flattenNodesForDirection(
     children.forEach(node => {
         if (isLeaf(node)) {
             targets.push(node)
+        } else if (shouldIgnore(node)) {
         } else if (
             (isHorizontalList(node) && isHorizontalDirection(direction)) ||
-            (isVerticalList(node) && isVerticalDirection(direction))
+            (isVerticalList(node) && isVerticalDirection(direction)) ||
+            isAutoFocus(node) ||
+            isFocusLock(node) ||
+            isIgnoreContainer(node)
         ) {
             targets.push(...flattenNodesForDirection(node, focusOrigin, direction))
         } else {
@@ -170,4 +195,18 @@ function flattenNodesForDirection(
         }
     })
     return targets
+}
+
+export function getCurrentDirection(node: FocusableTreeNode): ListDirection | undefined {
+    if (isVerticalList(node)) {
+        return ListDirection.VERTICAL
+    } else if (isHorizontalList(node)) {
+        return ListDirection.HORIZONTAL
+    }
+    const parent = node.getParent()
+    if (parent) {
+        return getCurrentDirection(parent)
+    }
+    console.warn("Could not find a Direction Parent")
+    return ListDirection.VERTICAL
 }
