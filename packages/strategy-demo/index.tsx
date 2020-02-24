@@ -50,7 +50,6 @@ render(
 )
 
 function App() {
-    const [selectedItem, setSelectedItem] = useState<string | null>(null)
     const [expanded, setExpanded] = useState(false)
 
     return (
@@ -61,6 +60,8 @@ function App() {
 }
 
 function AppBody() {
+    const [added, setAdded] = useState(false)
+    const toggleAdded = useCallback(() => setAdded(a => !a), [setAdded])
     return (
         <div
             style={{
@@ -68,6 +69,7 @@ function AppBody() {
                 flexDirection: "column",
             }}
         >
+            <button onClick={toggleAdded}>Add Dynami</button>
             <HorizontalList
                 focusKey="horizontal_list"
                 style={{ marginTop: "32px", marginLeft: "60px", display: "flex" }}
@@ -77,7 +79,7 @@ function AppBody() {
 
             <div style={{ marginTop: "94px" }}>
                 <VerticalList focusKey="vertical_list_1">
-                    <VerticalMainBody />
+                    <VerticalMainBody added={added} />
                 </VerticalList>
             </div>
         </div>
@@ -93,13 +95,14 @@ function HorizontalBody() {
     )
 }
 
-function VerticalMainBody() {
+function VerticalMainBody({ added }: { added: boolean }) {
     return (
         <>
             <Item focusKey="vertical_item_1" />
             <Item focusKey="vertical_item_2" />
             <Item focusKey="expandable" />
             <Item focusKey="third" />
+            {added && <Item focusKey="dynamically added" />}
             <HorizontalList
                 focusKey="horizontal_list"
                 style={{ marginTop: "16px", marginLeft: "60px", display: "flex" }}
