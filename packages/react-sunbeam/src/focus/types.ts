@@ -22,6 +22,8 @@ export type FocusableTreeNode = {
     getPreferredChild: GetPreferredChildFn
 }
 
+export type FocusPathValidator = (focusPath: FocusPath, treeRoot: FocusableTreeNode) => FocusPath | null
+
 export type FocusableNodesMap = Map<string, FocusableTreeNode>
 
 export type GetChildrenFn = () => FocusableNodesMap

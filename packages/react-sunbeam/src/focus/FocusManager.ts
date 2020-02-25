@@ -1,4 +1,4 @@
-import { FocusableTreeNode, FocusPath } from "./types"
+import { FocusableTreeNode, FocusPath, FocusPathValidator } from "./types"
 import { getNodeByPath, getPathToNode, validateAndFixFocusPathIfNeeded } from "./FocusableTreeUtils"
 import { Direction } from "../spatialNavigation"
 import findBestCandidateAmongSiblingsOf from "./strategies/bestCandidateAmongSiblings"
@@ -7,11 +7,13 @@ import { GetPreferredChildFn } from "./types"
 interface Options {
     initialFocusPath: FocusPath
     strategy?: GetPreferredChildFn
+    validateFocusPath?: FocusPathValidator
 }
 
 const defaultOptions: Options = {
     initialFocusPath: [],
     strategy: findBestCandidateAmongSiblingsOf,
+    validateFocusPath: validateAndFixFocusPathIfNeeded,
 }
 
 export class FocusManager {
@@ -22,11 +24,13 @@ export class FocusManager {
     private focusableRoot: FocusableTreeNode | undefined
     private subscribers: Set<Function>
     private strategy: GetPreferredChildFn
+    private validateFocusPath: FocusPathValidator
 
     public constructor(options: Options = defaultOptions) {
         this.focusPath = options.initialFocusPath
         this.strategy = options.strategy || (defaultOptions.strategy as GetPreferredChildFn)
         this.subscribers = new Set()
+        this.validateFocusPath = options.validateFocusPath || validateAndFixFocusPathIfNeeded
     }
 
     public setFocusableRoot(focusableRoot: FocusableTreeNode): void {
@@ -54,7 +58,7 @@ export class FocusManager {
             return
         }
 
-        const fixedFocusPath = validateAndFixFocusPathIfNeeded(this.focusPath, this.focusableRoot)
+        const fixedFocusPath = this.validateFocusPath(this.focusPath, this.focusableRoot)
         if (fixedFocusPath) {
             this.setFocus(fixedFocusPath)
         }

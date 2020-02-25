@@ -17,6 +17,7 @@
         "build": "yarn build:es && yarn build:cjs",
         "build:es": "tsc --outDir dist/es",
         "build:cjs": "tsc --outDir dist/cjs --module CommonJS",
+        "build:esnext": "tsc --outDir dist/esnext --module esnext --removeComments --target ES2020",
         "clean": "rimraf dist",
         "dev": "concurrently 'yarn build:es --watch' 'yarn build:cjs --watch' -n ES2017,CommonJS -c cyan,magenta",
         "lint": "eslint ./src --ext .ts,.tsx",

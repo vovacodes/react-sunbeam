@@ -9,6 +9,7 @@
     "scripts": {
         "build": "parcel build index.html",
         "dev": "parcel index.html --port 1235",
+        "build:esnext": "tsc --outDir dist/esnext --module esnext --removeComments --target ES2020",
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
