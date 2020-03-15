@@ -136,7 +136,7 @@ These are the most important methods of `FocusManager`.
 They move focus to the nearest focusable node in the corresponding direction.
 You can call these methods in response to any events you want: key presses, game controller button presses, scroll events, etc.
 
-#### `setFocus(path: string[])`
+#### `setFocus(path: string[]): void`
 
 Immediately makes focused the focusable node with the given `path`.
 
@@ -183,6 +183,11 @@ render(
 ### `SunbeamProvider`
 
 ### `Focusable`
+
+### `useSunbeam(): { setFocus(focusPath: readonly string[]): void; moveFocusRight(): void; moveFocusLeft(): void; moveFocusUp(): void; moveFocusDown(): void; }`
+
+This hook provides access to some public methods of `FocusManager` inside the React components.
+It expects `<SunbeamProvider>` to be present in the tree, otherwise it returns no-op versions of the methods
 
 ### `useFocusable`
 
