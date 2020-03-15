@@ -16,9 +16,14 @@ describe("useFocusable", () => {
                 bottom: style.bottom == null ? 0 : parseInt(style.bottom),
                 height: style.height == null ? 0 : parseInt(style.height),
                 left: style.left == null ? 0 : parseInt(style.left),
+                x: style.left == null ? 0 : parseInt(style.left),
                 right: style.right == null ? 0 : parseInt(style.right),
                 top: style.top == null ? 0 : parseInt(style.top),
+                y: style.top == null ? 0 : parseInt(style.top),
                 width: style.width == null ? 0 : parseInt(style.width),
+                toJSON() {
+                    throw new Error("toJSON not supported")
+                },
             }
         }
     })
