@@ -36,7 +36,11 @@ export class FocusManager {
     }
 
     public setFocus(focusPath: FocusPath): void {
-        this.focusPath = focusPath
+        if (!this.focusableRoot) return
+
+        const fixedFocusPath = validateAndFixFocusPathIfNeeded(focusPath, this.focusableRoot)
+        this.focusPath = fixedFocusPath ?? focusPath
+
         this.notifySubscribers()
     }
 
