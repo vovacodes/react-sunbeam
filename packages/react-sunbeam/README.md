@@ -191,7 +191,10 @@ It expects `<SunbeamProvider>` to be present in the tree, otherwise it returns n
 
 ### `useFocusable(options: Options): { focused: boolean; path: string[] }`
 
-#### `Options`
+This hook makes the enclosing component focusable. It can only be used for the "leaf" focusables so the component
+that uses it cannot have other focusable children. If you need the latter behaviour use `<Focusable>` instead.
+
+#### Options
 
 ```typescript
 type Options = {
@@ -205,9 +208,6 @@ type Options = {
     onBlur?: (event: { focusablePath: readonly string[]; getBoundingClientRect: () => ClientRect }) => void
 }
 ```
-
-This hook makes the enclosing component focusable. It can only be used for the "leaf" focusables so the component
-that uses it cannot have other focusable children. If you need the latter behaviour use `<Focusable>` instead.
 
 #### Example
 

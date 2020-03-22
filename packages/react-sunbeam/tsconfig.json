@@ -8,5 +8,6 @@
         "esModuleInterop": true,
         "jsx": "react",
         "rootDir": "src"
-    }
+    },
+    "exclude": ["dist"]
 }
