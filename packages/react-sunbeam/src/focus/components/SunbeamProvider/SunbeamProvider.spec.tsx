@@ -1,11 +1,40 @@
 import React from "react"
-import { cleanup, render, fireEvent } from "@testing-library/react"
-import { FocusManager } from "../.."
+import { act, cleanup, render, fireEvent } from "@testing-library/react"
+import { Focusable, FocusManager } from "../.."
 import { KeyPressManager } from "../../../keyPressManagement"
 import { SunbeamProvider } from "."
 
 describe("<SunbeamProvider>", () => {
     afterEach(cleanup)
+
+    it("should call focusManager.revalidateFocusPath() only once when multiple nodes are added/removed from the tree", async () => {
+        const focusManager = new FocusManager()
+        const spy = jest.spyOn(focusManager, "revalidateFocusPath")
+
+        const { rerender } = render(
+            <SunbeamProvider focusManager={focusManager}>
+                <Focusable>left</Focusable>
+                <Focusable>
+                    <Focusable>right</Focusable>
+                </Focusable>
+            </SunbeamProvider>
+        )
+
+        expect(spy).toBeCalledTimes(1)
+        spy.mockReset()
+
+        rerender(
+            <SunbeamProvider focusManager={focusManager}>
+                <Focusable>left</Focusable>
+                {/* Removed right subtree */}
+            </SunbeamProvider>
+        )
+
+        await act(() => Promise.resolve())
+
+        expect(spy).toBeCalledTimes(1)
+        spy.mockRestore()
+    })
 
     describe("keyPressManager", () => {
         afterEach(cleanup)

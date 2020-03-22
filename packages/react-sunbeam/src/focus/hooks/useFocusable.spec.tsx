@@ -4,33 +4,10 @@ import { FocusManager } from "../FocusManager"
 import { SunbeamProvider } from "../components/SunbeamProvider"
 import { useFocusable } from "./useFocusable"
 import { Focusable } from ".."
+import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/utils"
 
 describe("useFocusable", () => {
-    const originalGetBoundingClientRect = window.Element.prototype.getBoundingClientRect
-    beforeAll(() => {
-        // JSDOM doesn't implement element.getBoundingClientRect()
-        // so we provide a mock implementation that uses element style values
-        window.Element.prototype.getBoundingClientRect = function() {
-            const { style } = this as HTMLElement
-            return {
-                bottom: style.bottom == null ? 0 : parseInt(style.bottom),
-                height: style.height == null ? 0 : parseInt(style.height),
-                left: style.left == null ? 0 : parseInt(style.left),
-                x: style.left == null ? 0 : parseInt(style.left),
-                right: style.right == null ? 0 : parseInt(style.right),
-                top: style.top == null ? 0 : parseInt(style.top),
-                y: style.top == null ? 0 : parseInt(style.top),
-                width: style.width == null ? 0 : parseInt(style.width),
-                toJSON() {
-                    throw new Error("toJSON not supported")
-                },
-            }
-        }
-    })
-    afterAll(() => {
-        window.Element.prototype.getBoundingClientRect = originalGetBoundingClientRect
-    })
-
+    mockGetBoundingClientRect()
     afterEach(cleanup)
 
     it("should make the component focusable", () => {
@@ -154,4 +131,48 @@ describe("useFocusable", () => {
             expect(onBlurRightChild).not.toBeCalled()
         }
     )
+
+    it('should not participate in focus management if "focusable" is set to false', async () => {
+        function Component({ focusKey, focusable, left }: { focusKey: string; focusable?: boolean; left: number }) {
+            const ref = useRef<HTMLDivElement>(null)
+            const { focused } = useFocusable({ elementRef: ref, focusKey, focusable })
+            return (
+                <div ref={ref} style={{ width: "100px", height: "200px", top: 0, left }}>
+                    {focused ? "I'm focused" : "I'm blurred"}
+                </div>
+            )
+        }
+
+        const focusManager = new FocusManager({ initialFocusPath: ["left"] })
+
+        const { rerender } = render(
+            <SunbeamProvider focusManager={focusManager}>
+                <Component focusKey="left" left={0} />
+                <Component focusKey="right" left={200} />
+            </SunbeamProvider>
+        )
+
+        act(() => {
+            focusManager.moveRight()
+        })
+
+        expect(focusManager.getFocusPath()).toEqual(["right"])
+
+        rerender(
+            <SunbeamProvider focusManager={focusManager}>
+                <Component focusKey="left" left={0} />
+                <Component focusKey="right" focusable={false} left={200} />
+            </SunbeamProvider>
+        )
+
+        await waitForFocusTreeUpdates()
+
+        expect(focusManager.getFocusPath()).toEqual(["left"])
+
+        act(() => {
+            focusManager.moveRight()
+        })
+
+        expect(focusManager.getFocusPath()).toEqual(["left"])
+    })
 })

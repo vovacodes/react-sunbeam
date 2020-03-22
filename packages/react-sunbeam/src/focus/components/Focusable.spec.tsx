@@ -2,8 +2,10 @@ import React from "react"
 import { cleanup, render, act } from "@testing-library/react"
 import { FocusManager, SunbeamProvider } from ".."
 import { Focusable } from "./Focusable"
+import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/utils"
 
 describe("Focusable", () => {
+    mockGetBoundingClientRect()
     afterEach(cleanup)
 
     it("should pass `focused` and `path` to its render callback when one is provided", () => {
@@ -123,4 +125,75 @@ describe("Focusable", () => {
             expect(onBlurRightChild).not.toBeCalled()
         }
     )
+
+    it('should not participate in focus management if "focusable" is set to false', async () => {
+        const focusManager = new FocusManager({ initialFocusPath: ["left"] })
+
+        const { rerender } = render(
+            <SunbeamProvider focusManager={focusManager}>
+                <Focusable focusKey="left" style={{ width: "100px", height: "200px", top: 0, left: 0 }}>
+                    Left
+                </Focusable>
+                <Focusable focusKey="rightParent" style={{ width: "100px", height: "200px", top: 0, left: 200 }}>
+                    <Focusable focusKey="rightChild" style={{ width: "100px", height: "200px", top: 0, left: 200 }}>
+                        Right
+                    </Focusable>
+                </Focusable>
+            </SunbeamProvider>
+        )
+
+        act(() => focusManager.moveRight())
+
+        expect(focusManager.getFocusPath()).toEqual(["rightParent", "rightChild"])
+
+        // make "rightChild" not "focusable"
+        rerender(
+            <SunbeamProvider focusManager={focusManager}>
+                <SunbeamProvider focusManager={focusManager}>
+                    <Focusable focusKey="left" style={{ width: "100px", height: "200px", top: 0, left: 0 }}>
+                        Left
+                    </Focusable>
+                    <Focusable focusKey="rightParent" style={{ width: "100px", height: "200px", top: 0, left: 200 }}>
+                        <Focusable
+                            focusable={false}
+                            focusKey="rightChild"
+                            style={{ width: "100px", height: "200px", top: 0, left: 200 }}
+                        >
+                            Right
+                        </Focusable>
+                    </Focusable>
+                </SunbeamProvider>
+            </SunbeamProvider>
+        )
+        await waitForFocusTreeUpdates()
+
+        expect(focusManager.getFocusPath()).toEqual(["rightParent"])
+
+        // make "rightParent" not "focusable"
+        rerender(
+            <SunbeamProvider focusManager={focusManager}>
+                <SunbeamProvider focusManager={focusManager}>
+                    <Focusable focusKey="left" style={{ width: "100px", height: "200px", top: 0, left: 0 }}>
+                        Left
+                    </Focusable>
+                    <Focusable
+                        focusable={false}
+                        focusKey="rightParent"
+                        style={{ width: "100px", height: "200px", top: 0, left: 200 }}
+                    >
+                        <Focusable focusKey="rightChild" style={{ width: "100px", height: "200px", top: 0, left: 200 }}>
+                            Right
+                        </Focusable>
+                    </Focusable>
+                </SunbeamProvider>
+            </SunbeamProvider>
+        )
+        await waitForFocusTreeUpdates()
+
+        expect(focusManager.getFocusPath()).toEqual(["left"])
+
+        act(() => focusManager.moveRight())
+
+        expect(focusManager.getFocusPath()).toEqual(["left"])
+    })
 })

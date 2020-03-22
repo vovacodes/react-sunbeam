@@ -189,7 +189,36 @@ render(
 This hook provides access to some public methods of `FocusManager` inside the React components.
 It expects `<SunbeamProvider>` to be present in the tree, otherwise it returns no-op versions of the methods
 
-### `useFocusable`
+### `useFocusable({ elementRef: RefObject<{ getBoundingClientRect(): ClientRect }>; focusable?: boolean = true; focusKey?: string; onKeyPress?: KeyPressListener; onFocus?: (event: FocusEvent) => void; onBlur?: (event: FocusEvent) => void }): { focused: boolean; path: string[] }`
+
+This hook makes the enclosing component focusable. It can only be used for the "leaf" focusables so the component
+that uses it cannot have other focusable children. If you need the latter behaviour use `<Focusable>` instead.
+
+#### Example
+
+```typescript jsx
+import React from "react"
+import { useFocusable } from "react-sunbeam"
+
+export function FocusableButton({ children }) {
+    const ref = React.useRef<HTMLButtonElement>(null)
+    const { focused } = useFocusable({
+        elementRef: ref,
+        onKeyPress(event) {
+            if (event.key === "Enter") {
+                event.stopPropagation()
+                alert("Click!")
+            }
+        },
+    })
+
+    return (
+        <button style={{ border: focused ? "2px solid black" : "2px solid transparent" }} ref={ref}>
+            {children}
+        </button>
+    )
+}
+```
 
 ### `KeyPressManager`
 
