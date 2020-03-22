@@ -18,7 +18,7 @@
         "build:es": "tsc --outDir dist/es",
         "build:cjs": "tsc --outDir dist/cjs --module CommonJS",
         "clean": "rimraf dist",
-        "dev": "concurrently 'yarn build:es --watch' 'yarn build:cjs --watch' -n ES2017,CommonJS -c cyan,magenta",
+        "dev": "concurrently 'yarn build:es --watch --preserveWatchOutput' 'yarn build:cjs --watch --preserveWatchOutput' -n ES2017,CommonJS -c cyan,magenta",
         "lint": "eslint ./src --ext .ts,.tsx",
         "prebuild": "npm run clean",
         "test": "jest",

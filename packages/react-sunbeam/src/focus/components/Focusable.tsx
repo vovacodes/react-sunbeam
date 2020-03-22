@@ -12,6 +12,7 @@ import getPreferredNode from "../getPreferredNode"
 interface Props {
     focusKey?: string
     children: React.ReactNode | ((param: { focused: boolean; path: readonly string[] }) => React.ReactNode)
+    focusable?: boolean
     style?: React.CSSProperties
     className?: string
     unstable_getPreferredChildOnFocusReceive?: (args: {
@@ -30,6 +31,7 @@ export function Focusable({
     className,
     style,
     focusKey,
+    focusable = true,
     unstable_getPreferredChildOnFocusReceive,
     onKeyPress,
     onFocus,
@@ -88,12 +90,12 @@ export function Focusable({
     )
 
     useEffect(() => {
-        registerFocusable(focusableTreeNode)
+        if (focusable) registerFocusable(focusableTreeNode)
 
         return () => {
-            unregisterFocusable(realFocusKey)
+            if (focusable) unregisterFocusable(realFocusKey)
         }
-    }, [focusableTreeNode, realFocusKey])
+    }, [focusable, focusableTreeNode, realFocusKey])
 
     const [focusedSiblingFocusKey, ...restOfFocusPath] = focusPath
     const focused = focusedSiblingFocusKey === realFocusKey

@@ -15,12 +15,14 @@ type Element = RefObject<{
 export function useFocusable({
     elementRef,
     focusKey,
+    focusable = true,
     onKeyPress,
     onFocus,
     onBlur,
 }: {
     elementRef: Element
     focusKey?: string
+    focusable?: boolean
     onKeyPress?: KeyPressListener
     onFocus?: (event: FocusEvent) => void
     onBlur?: (event: FocusEvent) => void
@@ -64,12 +66,12 @@ export function useFocusable({
     )
 
     useEffect(() => {
-        registerFocusable(focusableTreeNode)
+        if (focusable) registerFocusable(focusableTreeNode)
 
         return () => {
-            unregisterFocusable(realFocusKey)
+            if (focusable) unregisterFocusable(realFocusKey)
         }
-    }, [focusableTreeNode, realFocusKey])
+    }, [focusable, focusableTreeNode, realFocusKey])
 
     const focused = focusedSiblingFocusKey === realFocusKey
 

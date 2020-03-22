@@ -91,7 +91,7 @@ export function SunbeamProvider({
     }, [focusManager, focusableTreeRoot])
 
     const revalidateFocus = useCallback(() => focusManager.revalidateFocusPath(), [focusManager])
-    const debouncedRevalidateFocus = useDebounce(revalidateFocus)
+    const debouncedRevalidateFocus = defer(revalidateFocus)
     function addFocusableToMap(focusableChildrenMap: FocusableNodesMap, focusableTreeNode: FocusableTreeNode) {
         const { focusKey } = focusableTreeNode
         if (focusableChildrenMap.has(focusKey)) {
@@ -240,21 +240,15 @@ export function SunbeamProvider({
     )
 }
 
-function useDebounce(fn: () => void, timeout = 0) {
-    const timerIdRef = useRef<number | null>(null)
+function defer(fn: () => void): () => void {
+    let promise: Promise<void> | null
 
-    const debouncedFn = useCallback(() => {
-        const timerId = timerIdRef.current
-        if (timerId) clearTimeout(timerId)
+    return function deferred() {
+        if (promise) return
 
-        timerIdRef.current = window.setTimeout(fn, timeout)
-    }, [fn, timeout])
-
-    useEffect(() => {
-        return () => {
-            if (timerIdRef.current != null) window.clearTimeout(timerIdRef.current)
-        }
-    }, [timeout])
-
-    return debouncedFn
+        promise = Promise.resolve().then(() => {
+            fn()
+            promise = null
+        })
+    }
 }
