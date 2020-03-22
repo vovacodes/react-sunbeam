@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/wzrdzl/react-sunbeam/compare/v0.11.1...v0.12.0) (2020-03-22)
+
+### Features
+
+-   add "focusable" prop to Focusable and useFocusable ([43e9a49](https://github.com/wzrdzl/react-sunbeam/commit/43e9a49320dee817b02d1ddfb486bbd21825bd8a))
+
 ## [0.11.1](https://github.com/wzrdzl/react-sunbeam/compare/v0.11.0...v0.11.1) (2020-03-18)
 
 **Note:** Version bump only for package demo
