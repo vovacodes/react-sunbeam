@@ -189,7 +189,22 @@ render(
 This hook provides access to some public methods of `FocusManager` inside the React components.
 It expects `<SunbeamProvider>` to be present in the tree, otherwise it returns no-op versions of the methods
 
-### `useFocusable({ elementRef: RefObject<{ getBoundingClientRect(): ClientRect }>; focusable?: boolean = true; focusKey?: string; onKeyPress?: KeyPressListener; onFocus?: (event: FocusEvent) => void; onBlur?: (event: FocusEvent) => void }): { focused: boolean; path: string[] }`
+### `useFocusable(options: Options): { focused: boolean; path: string[] }`
+
+#### `Options`
+
+```typescript
+type Options = {
+    // Ref object pointing to a DOM Element or any other object that has 'getBoundingClientRect(): ClientRect' method
+    elementRef: React.RefObject<{ getBoundingClientRect(): ClientRect }>
+    // If set to false the node is ignored in focus management process. Default: true
+    focusable?: boolean
+    focusKey?: string
+    onKeyPress?: (event: KeyboardEvent) => void
+    onFocus?: (event: { focusablePath: readonly string[]; getBoundingClientRect: () => ClientRect }) => void
+    onBlur?: (event: { focusablePath: readonly string[]; getBoundingClientRect: () => ClientRect }) => void
+}
+```
 
 This hook makes the enclosing component focusable. It can only be used for the "leaf" focusables so the component
 that uses it cannot have other focusable children. If you need the latter behaviour use `<Focusable>` instead.
