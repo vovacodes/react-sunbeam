@@ -1,12 +1,10 @@
 import React from "react"
-import { act, cleanup, render, fireEvent } from "@testing-library/react"
+import { act, render, fireEvent } from "@testing-library/react"
 import { Focusable, FocusManager } from "../.."
 import { KeyPressManager } from "../../../keyPressManagement"
 import { SunbeamProvider } from "."
 
 describe("<SunbeamProvider>", () => {
-    afterEach(cleanup)
-
     it("should call focusManager.revalidateFocusPath() only once when multiple nodes are added/removed from the tree", async () => {
         const focusManager = new FocusManager()
         const spy = jest.spyOn(focusManager, "revalidateFocusPath")
@@ -37,8 +35,6 @@ describe("<SunbeamProvider>", () => {
     })
 
     describe("keyPressManager", () => {
-        afterEach(cleanup)
-
         it("should allow to provide a custom instance of KeyPressManager", () => {
             function enterKeyHandler(event: KeyboardEvent) {
                 if (event.key === "Enter") event.stopPropagation()
@@ -52,7 +48,7 @@ describe("<SunbeamProvider>", () => {
             const keyPressManager = new KeyPressManager()
             keyPressManager.addListener(existingEnterKeyPressHandler)
 
-            render(
+            const { rerender } = render(
                 <SunbeamProvider
                     focusManager={focusManager}
                     keyPressManager={keyPressManager}
@@ -69,7 +65,8 @@ describe("<SunbeamProvider>", () => {
             sunbeamProviderEnterKeyPressHandler.mockClear()
             existingEnterKeyPressHandler.mockClear()
 
-            cleanup()
+            // unmount
+            rerender(<div />)
 
             fireEvent(window, enterKeyPressEvent)
             expect(existingEnterKeyPressHandler).toHaveBeenCalledTimes(1)
@@ -130,8 +127,6 @@ describe("<SunbeamProvider>", () => {
     })
 
     describe("onKeyPress", () => {
-        afterEach(cleanup)
-
         it("should call the listener", () => {
             const keyPressHandler = jest.fn()
             const keyPressEvent = new KeyboardEvent("keydown")
@@ -153,7 +148,7 @@ describe("<SunbeamProvider>", () => {
             const keyPressEvent = new KeyboardEvent("keydown")
 
             const focusManager = new FocusManager()
-            render(
+            const { rerender } = render(
                 <SunbeamProvider focusManager={focusManager} onKeyPress={keyPressHandler}>
                     hello
                 </SunbeamProvider>
@@ -163,7 +158,8 @@ describe("<SunbeamProvider>", () => {
             expect(keyPressHandler).toBeCalledTimes(1)
             keyPressHandler.mockClear()
 
-            cleanup() // unmount
+            // unmount
+            rerender(<div />)
 
             fireEvent(window, keyPressEvent)
             expect(keyPressHandler).not.toBeCalled()
