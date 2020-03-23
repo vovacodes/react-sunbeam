@@ -1,12 +1,11 @@
 import React from "react"
-import { cleanup, render, act } from "@testing-library/react"
+import { render, act } from "@testing-library/react"
 import { FocusManager, SunbeamProvider } from ".."
 import { Focusable } from "./Focusable"
 import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/utils"
 
 describe("Focusable", () => {
     mockGetBoundingClientRect()
-    afterEach(cleanup)
 
     it("should pass `focused` and `path` to its render callback when one is provided", () => {
         const fn = jest.fn()

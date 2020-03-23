@@ -1,5 +1,5 @@
 import React, { useRef } from "react"
-import { cleanup, render, act } from "@testing-library/react"
+import { render, act } from "@testing-library/react"
 import { FocusManager } from "../FocusManager"
 import { SunbeamProvider } from "../components/SunbeamProvider"
 import { useFocusable } from "./useFocusable"
@@ -8,7 +8,6 @@ import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/u
 
 describe("useFocusable", () => {
     mockGetBoundingClientRect()
-    afterEach(cleanup)
 
     it("should make the component focusable", () => {
         function Component() {
