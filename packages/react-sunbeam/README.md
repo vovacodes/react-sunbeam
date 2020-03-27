@@ -35,7 +35,7 @@ function App() {
     const { setFocus, moveFocusLeft, moveFocusRight, moveFocusUp, moveFocusDown } = useSunbeam()
 
     const onKeyDown = useCallback(
-        event => {
+        (event) => {
             if (!(event instanceof KeyboardEvent)) return
             switch (event.key) {
                 case "ArrowRight":
@@ -152,7 +152,7 @@ const focusManager = new FocusManager({
 })
 
 // Use arrow key presses to control focus.
-document.addEventListener("keydown", event => {
+document.addEventListener("keydown", (event) => {
     switch (event.key) {
         case "ArrowRight":
             focusManager.moveRight()
@@ -203,6 +203,8 @@ type Options = {
     // If set to false the node is ignored in focus management process. Default: true
     focusable?: boolean
     focusKey?: string
+    // If set prevents the node from losing focus when navigating in the given directions
+    lock?: Direction | Direction[]
     onKeyPress?: (event: KeyboardEvent) => void
     onFocus?: (event: { focusablePath: readonly string[]; getBoundingClientRect: () => ClientRect }) => void
     onBlur?: (event: { focusablePath: readonly string[]; getBoundingClientRect: () => ClientRect }) => void

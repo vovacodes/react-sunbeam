@@ -89,7 +89,7 @@ export class FocusManager {
     // ===================================
 
     private notifySubscribers(): void {
-        this.subscribers.forEach(subscriber => {
+        this.subscribers.forEach((subscriber) => {
             subscriber()
         })
     }
@@ -115,12 +115,15 @@ function findBestCandidateAmongSiblingsOf(
     focusOrigin: FocusableTreeNode,
     direction: Direction
 ): FocusableTreeNode | null {
+    // Focus doesn't move
+    if (treeNode.lock.includes(direction)) return null
+
     // 2. Search for the best candidate among siblings of the current focusOrigin
     // If not found repeat the same process for the parent FocusableNode's siblings
     // until either the candidate is found or the FocusableRootNode is reached
     const focusableSiblings = getSiblings(treeNode)
 
-    const siblingBoxes = focusableSiblings.map(node => node.getBoundingBox())
+    const siblingBoxes = focusableSiblings.map((node) => node.getBoundingBox())
     const siblingsWithinFrustum = boxesWithinFrustumOfOrigin(siblingBoxes, treeNode.getBoundingBox(), direction)
     const bestCandidateBox = getBestCandidate(focusOrigin.getBoundingBox(), siblingsWithinFrustum, direction)
     if (!bestCandidateBox) {

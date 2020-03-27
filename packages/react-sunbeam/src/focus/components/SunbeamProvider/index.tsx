@@ -79,6 +79,7 @@ export function SunbeamProvider({
             getBoundingBox,
             getChildren,
             getPreferredChild,
+            lock: [],
         }),
         [getChildren, getPreferredChild, getBoundingBox]
     )
