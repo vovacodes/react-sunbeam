@@ -1,6 +1,6 @@
 import React, { RefObject, useCallback, useMemo, useEffect } from "react"
 import { FocusableTreeNode, FocusEvent } from "../types"
-import { BoundingBox } from "../../spatialNavigation"
+import { BoundingBox, Direction } from "../../spatialNavigation"
 import { FocusableTreeContext } from "../FocusableTreeContext"
 import { useGeneratedFocusKey } from "./useGeneratedFocusKey"
 import { useOnFocusedChange } from "./useOnFocusedChange"
@@ -16,6 +16,7 @@ export function useFocusable({
     elementRef,
     focusKey,
     focusable = true,
+    lock = [],
     onKeyPress,
     onFocus,
     onBlur,
@@ -23,6 +24,7 @@ export function useFocusable({
     elementRef: Element
     focusKey?: string
     focusable?: boolean
+    lock?: Direction | Direction[]
     onKeyPress?: KeyPressListener
     onFocus?: (event: FocusEvent) => void
     onBlur?: (event: FocusEvent) => void
@@ -38,6 +40,8 @@ export function useFocusable({
     } = React.useContext(FocusableTreeContext)
     const generatedFocusKey = useGeneratedFocusKey()
     const realFocusKey = focusKey || generatedFocusKey
+    const lockDirections = Array.isArray(lock) ? lock : [lock]
+
     const [focusedSiblingFocusKey] = focusPath
     const path = useMemo(() => [...parentPath, realFocusKey], [parentPath, realFocusKey])
 
@@ -61,8 +65,16 @@ export function useFocusable({
             getChildren,
             getPreferredChild,
             getBoundingBox,
+            lock: lockDirections,
         }),
-        [realFocusKey, parentFocusableNode, getChildren, getPreferredChild, getBoundingBox]
+        [
+            realFocusKey,
+            parentFocusableNode,
+            getChildren,
+            getPreferredChild,
+            getBoundingBox,
+            JSON.stringify(lockDirections),
+        ]
     )
 
     useEffect(() => {
@@ -75,7 +87,7 @@ export function useFocusable({
 
     const focused = focusedSiblingFocusKey === realFocusKey
 
-    useOnFocusedChange(focused, isFocused => {
+    useOnFocusedChange(focused, (isFocused) => {
         const element = elementRef.current
         if (!element) return
         if (isFocused && onFocus) {

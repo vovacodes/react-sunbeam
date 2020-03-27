@@ -29,6 +29,7 @@ export const FocusableTreeContext = createContext<FocusableTreeContextValue>({
         }),
         getChildren: () => new Map(),
         getPreferredChild: () => undefined,
+        lock: [],
     },
     registerFocusable: () => {},
     unregisterFocusable: () => {},

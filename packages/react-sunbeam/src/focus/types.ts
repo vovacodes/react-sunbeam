@@ -20,6 +20,7 @@ export type FocusableTreeNode = {
     getBoundingBox: GetBoundingBoxFn
     getChildren: () => Map<string, FocusableTreeNode>
     getPreferredChild: GetPreferredChildFn
+    lock: Direction[]
 }
 
 export type FocusableNodesMap = Map<string, FocusableTreeNode>

@@ -13,6 +13,7 @@ interface Props {
     focusKey?: string
     children: React.ReactNode | ((param: { focused: boolean; path: readonly string[] }) => React.ReactNode)
     focusable?: boolean
+    lock?: Direction | Direction[]
     style?: React.CSSProperties
     className?: string
     unstable_getPreferredChildOnFocusReceive?: (args: {
@@ -32,6 +33,7 @@ export function Focusable({
     style,
     focusKey,
     focusable = true,
+    lock = [],
     unstable_getPreferredChildOnFocusReceive,
     onKeyPress,
     onFocus,
@@ -39,6 +41,7 @@ export function Focusable({
 }: Props) {
     const generatedFocusKey = useGeneratedFocusKey()
     const realFocusKey = focusKey || generatedFocusKey
+    const lockDirections = Array.isArray(lock) ? lock : [lock]
 
     const wrapperRef = useRef<HTMLDivElement | null>(null)
     const focusableChildrenRef = useRef<FocusableNodesMap>(new Map())
@@ -85,8 +88,16 @@ export function Focusable({
             getChildren,
             getPreferredChild,
             getBoundingBox,
+            lock: lockDirections,
         }),
-        [realFocusKey, parentFocusableNode, getChildren, getPreferredChild, getBoundingBox]
+        [
+            realFocusKey,
+            parentFocusableNode,
+            getChildren,
+            getPreferredChild,
+            getBoundingBox,
+            JSON.stringify(lockDirections),
+        ]
     )
 
     useEffect(() => {
@@ -101,7 +112,7 @@ export function Focusable({
     const focused = focusedSiblingFocusKey === realFocusKey
     const childrenFocusPath = focused ? restOfFocusPath : []
 
-    useOnFocusedChange(focused, isFocused => {
+    useOnFocusedChange(focused, (isFocused) => {
         const element = wrapperRef.current
         if (!element) return
         if (isFocused && onFocus) {

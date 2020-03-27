@@ -1,8 +1,9 @@
 import React from "react"
-import { render, act } from "@testing-library/react"
+import { act, render } from "@testing-library/react"
 import { FocusManager, SunbeamProvider } from ".."
 import { Focusable } from "./Focusable"
 import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/utils"
+import { Direction } from "../../spatialNavigation"
 
 describe("Focusable", () => {
     mockGetBoundingClientRect()
@@ -194,5 +195,104 @@ describe("Focusable", () => {
         act(() => focusManager.moveRight())
 
         expect(focusManager.getFocusPath()).toEqual(["left"])
+    })
+
+    it('should prevent focus from leaving in the directions specified in the "lock" props', () => {
+        const focusManager = new FocusManager({ initialFocusPath: ["top-left"] })
+
+        render(
+            <SunbeamProvider focusManager={focusManager}>
+                <Focusable
+                    lock={Direction.RIGHT}
+                    focusKey="top-left"
+                    style={{ width: 100, height: 200, top: 0, left: 0 }}
+                >
+                    Top Left
+                </Focusable>
+                <Focusable focusKey="top-right" style={{ width: 100, height: 200, top: 0, left: 200 }}>
+                    Top Right
+                </Focusable>
+                <Focusable
+                    lock={[Direction.RIGHT, Direction.UP]}
+                    focusKey="bottom-left"
+                    style={{ width: 100, height: 200, top: 300, left: 0 }}
+                >
+                    Bottom Left
+                </Focusable>
+                <Focusable focusKey="bottom-right" style={{ width: 100, height: 200, top: 300, left: 200 }}>
+                    Bottom Right
+                </Focusable>
+            </SunbeamProvider>
+        )
+
+        act(() => focusManager.moveRight())
+        // should not change
+        expect(focusManager.getFocusPath()).toEqual(["top-left"])
+
+        act(() => focusManager.moveDown())
+        expect(focusManager.getFocusPath()).toEqual(["bottom-left"])
+
+        act(() => focusManager.moveUp())
+        // should not change
+        expect(focusManager.getFocusPath()).toEqual(["bottom-left"])
+
+        act(() => focusManager.moveRight())
+        // should not change
+        expect(focusManager.getFocusPath()).toEqual(["bottom-left"])
+    })
+
+    it('should prevent focus from leaving in the directions specified in the "lock" props when it has children', async () => {
+        const focusManager = new FocusManager({ initialFocusPath: ["leftParent", "topChild"] })
+
+        const { rerender } = render(
+            <SunbeamProvider focusManager={focusManager}>
+                <Focusable
+                    lock={Direction.RIGHT}
+                    focusKey="leftParent"
+                    style={{ width: 100, height: 300, top: 0, left: 0 }}
+                >
+                    <Focusable focusKey="topChild" style={{ width: 100, height: 100, top: 0, left: 0 }}>
+                        Left Top
+                    </Focusable>
+                    <Focusable focusKey="bottomChild" style={{ width: 100, height: 100, top: 200, left: 0 }}>
+                        Left Bottom
+                    </Focusable>
+                </Focusable>
+                <Focusable focusKey="right" style={{ width: 100, height: 200, top: 0, left: 200 }}>
+                    Right
+                </Focusable>
+            </SunbeamProvider>
+        )
+
+        act(() => focusManager.moveRight())
+        expect(focusManager.getFocusPath()).toEqual(["leftParent", "topChild"])
+
+        act(() => focusManager.moveDown())
+        expect(focusManager.getFocusPath()).toEqual(["leftParent", "bottomChild"])
+
+        act(() => focusManager.moveRight())
+        // should not change
+        expect(focusManager.getFocusPath()).toEqual(["leftParent", "bottomChild"])
+
+        // release the focus lock
+        rerender(
+            <SunbeamProvider focusManager={focusManager}>
+                <Focusable focusKey="leftParent" style={{ width: 100, height: 300, top: 0, left: 0 }}>
+                    <Focusable focusKey="topChild" style={{ width: 100, height: 100, top: 0, left: 0 }}>
+                        Left Top
+                    </Focusable>
+                    <Focusable focusKey="bottomChild" style={{ width: 100, height: 100, top: 200, left: 0 }}>
+                        Left Bottom
+                    </Focusable>
+                </Focusable>
+                <Focusable focusKey="right" style={{ width: 100, height: 200, top: 0, left: 200 }}>
+                    Right
+                </Focusable>
+            </SunbeamProvider>
+        )
+        await waitForFocusTreeUpdates()
+
+        act(() => focusManager.moveRight())
+        expect(focusManager.getFocusPath()).toEqual(["right"])
     })
 })

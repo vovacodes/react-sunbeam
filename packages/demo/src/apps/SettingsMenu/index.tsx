@@ -1,7 +1,7 @@
 import * as React from "react"
-import { ComponentProps, ReactComponentElement, ReactElement, useEffect, useRef, useState } from "react"
+import { ReactComponentElement, useEffect, useRef, useState } from "react"
 import { useHistory } from "react-router-dom"
-import { Focusable, useFocusable, useSunbeam } from "react-sunbeam"
+import { Direction, Focusable, useFocusable, useSunbeam } from "react-sunbeam"
 
 const displayModes = [
     { label: "Fullscreen", value: "fullscreen" },
@@ -22,27 +22,49 @@ export function SettingsMenu() {
     const [resolution, setResolution] = useState<string>("2k")
 
     return (
-        <Focusable
-            onKeyPress={event => {
-                if (event.key !== "Backspace") return
-                event.stopPropagation()
-                history.goBack()
-            }}
-            style={{
-                padding: "100px 60px",
-            }}
-        >
-            <Picker label="Display mode" onPick={value => setDisplayMode(value)}>
-                {displayModes.map(({ label, value }) => (
-                    <PickerOption key={value} label={label} value={value} selected={value === displayMode} />
-                ))}
-            </Picker>
-            <Picker label="Screen resolution" onPick={value => setResolution(value)}>
-                {resolutions.map(({ label, value }) => (
-                    <PickerOption key={value} label={label} value={value} selected={value === resolution} />
-                ))}
-            </Picker>
-        </Focusable>
+        <>
+            <Focusable
+                onKeyPress={(event) => {
+                    if (event.key !== "Backspace" && event.key !== "Escape") return
+                    event.stopPropagation()
+                    history.goBack()
+                }}
+                style={{
+                    padding: "100px 60px",
+                }}
+            >
+                <Picker label="Display mode" onPick={(value) => setDisplayMode(value)}>
+                    {displayModes.map(({ label, value }) => (
+                        <PickerOption key={value} label={label} value={value} selected={value === displayMode} />
+                    ))}
+                </Picker>
+                <Picker label="Screen resolution" onPick={(value) => setResolution(value)}>
+                    {resolutions.map(({ label, value }) => (
+                        <PickerOption key={value} label={label} value={value} selected={value === resolution} />
+                    ))}
+                </Picker>
+            </Focusable>
+            <div
+                style={{
+                    position: "absolute",
+                    bottom: 20,
+                    right: 20,
+                    fontFamily: `"Fira Code", monospace`,
+                    fontSize: 13,
+                    lineHeight: 1.6,
+                }}
+            >
+                <div>
+                    Navigation - <b>{"↑"}</b> and <b>{"↓"}</b>
+                </div>
+                <div>
+                    Expand/Select - <b>Enter</b> or <b>Space</b>
+                </div>
+                <div>
+                    Collapse/Go back - <b>Esc</b> or <b>Backspace</b>
+                </div>
+            </div>
+        </>
     )
 }
 
@@ -57,7 +79,7 @@ function Picker({
 }) {
     const [open, setOpen] = useState(false)
 
-    const clonedChildren = React.Children.map(children, option => {
+    const clonedChildren = React.Children.map(children, (option) => {
         return React.cloneElement(option, {
             focusable: open,
             onPick: (value: string) => {
@@ -68,7 +90,7 @@ function Picker({
         })
     })
     const clonedChildrenArray = React.Children.toArray(clonedChildren) as ReactComponentElement<typeof PickerOption>[]
-    const selectedOption = clonedChildrenArray.find(option => option.props.selected)!
+    const selectedOption = clonedChildrenArray.find((option) => option.props.selected)!
 
     // focus on the "selected" option when opened
     const focusKeyByValue = clonedChildrenArray.reduce((result, option) => {
@@ -78,8 +100,9 @@ function Picker({
 
     return (
         <Focusable
-            onKeyPress={event => {
-                if (event.key === "Enter") {
+            lock={open ? [Direction.UP, Direction.DOWN] : undefined}
+            onKeyPress={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
                     event.stopPropagation()
                     setOpen(true)
                 }
@@ -144,7 +167,7 @@ function PickerOption({
         elementRef: ref,
         focusKey,
         onKeyPress(event) {
-            if (event.key === "Enter" && focusable) {
+            if (event.key === "Enter" || event.key === " ") {
                 event.stopPropagation()
                 if (onPick) onPick(value)
             }

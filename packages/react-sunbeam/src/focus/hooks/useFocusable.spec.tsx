@@ -5,6 +5,7 @@ import { SunbeamProvider } from "../components/SunbeamProvider"
 import { useFocusable } from "./useFocusable"
 import { Focusable } from ".."
 import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/utils"
+import { Direction } from "../../spatialNavigation"
 
 describe("useFocusable", () => {
     mockGetBoundingClientRect()
@@ -173,5 +174,55 @@ describe("useFocusable", () => {
         })
 
         expect(focusManager.getFocusPath()).toEqual(["left"])
+    })
+
+    it('should prevent focus from leaving in the directions specified in the "lock" props', () => {
+        function Component({
+            focusKey,
+            focusable,
+            lock,
+            left,
+            top,
+        }: {
+            focusKey: string
+            focusable?: boolean
+            lock?: Direction | Direction[]
+            left: number
+            top: number
+        }) {
+            const ref = useRef<HTMLDivElement>(null)
+            const { focused } = useFocusable({ elementRef: ref, focusKey, focusable, lock })
+            return (
+                <div ref={ref} style={{ width: "100px", height: "200px", top, left }}>
+                    {focused ? "I'm focused" : "I'm blurred"}
+                </div>
+            )
+        }
+
+        const focusManager = new FocusManager({ initialFocusPath: ["top-left"] })
+
+        render(
+            <SunbeamProvider focusManager={focusManager}>
+                <Component lock={Direction.RIGHT} focusKey="top-left" top={0} left={0} />
+                <Component focusKey="top-right" top={0} left={200} />
+                <Component lock={[Direction.RIGHT, Direction.UP]} focusKey="bottom-left" top={300} left={0} />
+                <Component focusKey="bottom-right" top={300} left={200} />
+            </SunbeamProvider>
+        )
+
+        act(() => focusManager.moveRight())
+        // should not change
+        expect(focusManager.getFocusPath()).toEqual(["top-left"])
+
+        act(() => focusManager.moveDown())
+        expect(focusManager.getFocusPath()).toEqual(["bottom-left"])
+
+        act(() => focusManager.moveUp())
+        // should not change
+        expect(focusManager.getFocusPath()).toEqual(["bottom-left"])
+
+        act(() => focusManager.moveRight())
+        // should not change
+        expect(focusManager.getFocusPath()).toEqual(["bottom-left"])
     })
 })
