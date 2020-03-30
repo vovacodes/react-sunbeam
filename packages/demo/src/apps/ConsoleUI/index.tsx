@@ -1,5 +1,7 @@
 import * as React from "react"
+import { useCallback } from "react"
 import { useHistory } from "react-router-dom"
+
 import {
     Direction,
     Focusable,
@@ -11,7 +13,9 @@ import {
 import { ProfilesMenu } from "./ProfilesMenu"
 import { GamesGallery } from "./GamesGallery"
 import { NavigationMenu } from "./NavigationMenu"
-import { useCallback } from "react"
+import { Header } from "../../components/Header"
+import { Colors } from "../../styles"
+import { Hint } from "../../components/Hint"
 
 export function ConsoleUI() {
     const handleItemFocus = useCallback((event: FocusEvent) => {
@@ -30,64 +34,94 @@ export function ConsoleUI() {
     const history = useHistory()
 
     return (
-        <Focusable
-            onKeyPress={event => {
-                if (event.key !== "Backspace") return
-
-                history.goBack()
-            }}
-            unstable_getPreferredChildOnFocusReceive={({
-                focusableChildren,
-                focusOrigin,
-                direction,
-            }: {
-                focusableChildren: Map<string, FocusableTreeNode>
-                focusOrigin?: FocusableTreeNode
-                direction?: Direction
-            }) => {
-                if (!focusOrigin || !direction) {
-                    // focus the gallery initially
-                    if (focusableChildren.has("gamesGallery")) return focusableChildren.get("gamesGallery")
-                }
-
-                return unstable_defaultGetPreferredChildOnFocusReceive({ focusableChildren, focusOrigin, direction })
-            }}
-        >
+        <>
+            <Header />
             <div
                 style={{
-                    backgroundColor: "#2D2D2D",
+                    height: "calc(100vh - 80px)",
                     display: "flex",
                     flexDirection: "column",
-                    height: "720px",
-                    width: "1280px",
-                    overflow: "hidden",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    position: "relative",
                 }}
             >
-                <div style={{ marginTop: "32px", marginLeft: "60px" }}>
-                    <ProfilesMenu
-                        onFocus={handleContainerFocus}
-                        onBlur={handleContainerBlur}
-                        onItemFocus={handleItemFocus}
-                        onItemBlur={handleItemBlur}
-                    />
-                </div>
-                <div style={{ marginTop: "94px", alignSelf: "center" }}>
-                    <GamesGallery
-                        onFocus={handleContainerFocus}
-                        onBlur={handleContainerBlur}
-                        onItemFocus={handleItemFocus}
-                        onItemBlur={handleItemBlur}
-                    />
-                </div>
-                <div style={{ marginTop: "94px", alignSelf: "center" }}>
-                    <NavigationMenu
-                        onFocus={handleContainerFocus}
-                        onBlur={handleContainerBlur}
-                        onItemFocus={handleItemFocus}
-                        onItemBlur={handleItemBlur}
-                    />
-                </div>
+                <Focusable
+                    onKeyPress={(event) => {
+                        if (event.key !== "Backspace" && event.key !== "Escape") return
+
+                        history.goBack()
+                    }}
+                    unstable_getPreferredChildOnFocusReceive={({
+                        focusableChildren,
+                        focusOrigin,
+                        direction,
+                    }: {
+                        focusableChildren: Map<string, FocusableTreeNode>
+                        focusOrigin?: FocusableTreeNode
+                        direction?: Direction
+                    }) => {
+                        if (!focusOrigin || !direction) {
+                            // focus the gallery initially
+                            if (focusableChildren.has("gamesGallery")) return focusableChildren.get("gamesGallery")
+                        }
+
+                        return unstable_defaultGetPreferredChildOnFocusReceive({
+                            focusableChildren,
+                            focusOrigin,
+                            direction,
+                        })
+                    }}
+                >
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between",
+                            height: "563px",
+                            width: "1000px",
+                            boxSizing: "border-box",
+                            padding: "60px 95px",
+                            border: `2px solid ${Colors.textBlack}`,
+                            overflow: "hidden",
+                        }}
+                    >
+                        <ProfilesMenu
+                            onFocus={handleContainerFocus}
+                            onBlur={handleContainerBlur}
+                            onItemFocus={handleItemFocus}
+                            onItemBlur={handleItemBlur}
+                        />
+                        <div style={{ alignSelf: "center" }}>
+                            <GamesGallery
+                                onFocus={handleContainerFocus}
+                                onBlur={handleContainerBlur}
+                                onItemFocus={handleItemFocus}
+                                onItemBlur={handleItemBlur}
+                            />
+                        </div>
+                        <div style={{ alignSelf: "center" }}>
+                            <NavigationMenu
+                                onFocus={handleContainerFocus}
+                                onBlur={handleContainerBlur}
+                                onItemFocus={handleItemFocus}
+                                onItemBlur={handleItemBlur}
+                            />
+                        </div>
+                    </div>
+                </Focusable>
             </div>
-        </Focusable>
+            <Hint>
+                <div>
+                    Navigation - <b>{"↑"}</b> <b>{"↓"}</b> <b>{"<-"}</b> <b>{"->"}</b>
+                </div>
+                <div>
+                    Go back - <b>Esc</b> or <b>Backspace</b>
+                </div>
+                <div>
+                    Immediately focus item - <b>Click</b>
+                </div>
+            </Hint>
+        </>
     )
 }

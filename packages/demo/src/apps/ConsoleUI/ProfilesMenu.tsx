@@ -2,6 +2,7 @@ import * as React from "react"
 import { memo } from "react"
 import { Focusable, FocusEvent } from "react-sunbeam"
 import { FocusableItem } from "./FocusableItem"
+import { Colors } from "../../styles"
 
 type Props = {
     onFocus: (event: FocusEvent) => void
@@ -16,56 +17,53 @@ export const ProfilesMenu = memo(function ProfilesMenu({ onFocus, onBlur, onItem
             focusKey="profiles"
             onFocus={onFocus}
             onBlur={onBlur}
-            style={{ display: "flex", marginRight: "100px" }}
+            style={{ display: "flex", justifyContent: "space-between" }}
         >
-            <div style={{ marginRight: "4px" }}>
-                <Avatar color="#66BB66" focusKey="1" onFocus={onItemFocus} onBlur={onItemBlur} />
+            <div style={{ display: "flex" }}>
+                <div style={{ marginRight: "20px" }}>
+                    <FocusableItem
+                        kind="circle"
+                        width={60}
+                        height={60}
+                        color={Colors.paleCyan}
+                        focusKey="1"
+                        onFocus={onItemFocus}
+                        onBlur={onItemBlur}
+                    />
+                </div>
+                <div style={{ marginRight: "20px" }}>
+                    <FocusableItem
+                        kind="circle"
+                        width={60}
+                        height={60}
+                        color={Colors.paleGreen}
+                        focusKey="2"
+                        onFocus={onItemFocus}
+                        onBlur={onItemBlur}
+                    />
+                </div>
+                <div style={{ marginRight: "20px" }}>
+                    <FocusableItem
+                        kind="circle"
+                        width={60}
+                        height={60}
+                        color={Colors.palePink}
+                        focusKey="3"
+                        onFocus={onItemFocus}
+                        onBlur={onItemBlur}
+                    />
+                </div>
             </div>
-            <div style={{ marginRight: "4px" }}>
-                <Avatar color="#22CCDD" focusKey="2" onFocus={onItemFocus} onBlur={onItemBlur} />
-            </div>
-            <div style={{ marginRight: "4px" }}>
-                <Avatar color="#FFEE66" focusKey="3" onFocus={onItemFocus} onBlur={onItemBlur} />
-            </div>
-            <div style={{ marginRight: "4px" }}>
-                <Avatar color="#FF88AA" focusKey="4" onFocus={onItemFocus} onBlur={onItemBlur} />
-            </div>
+
+            <FocusableItem
+                kind="circle"
+                width={60}
+                height={60}
+                color={Colors.sunRed}
+                focusKey="4"
+                onFocus={onItemFocus}
+                onBlur={onItemBlur}
+            />
         </Focusable>
     )
 })
-
-function Avatar({
-    color,
-    focusKey,
-    onFocus,
-    onBlur,
-}: {
-    color: string
-    focusKey: string
-    onFocus: (event: FocusEvent) => void
-    onBlur: (event: FocusEvent) => void
-}) {
-    return (
-        <FocusableItem
-            focusKey={focusKey}
-            style={focused => ({
-                border: focused ? "4px solid cyan" : "4px solid transparent",
-                borderRadius: "50%",
-                transition: "border-color 100ms ease-out",
-            })}
-            onFocus={onFocus}
-            onBlur={onBlur}
-        >
-            <div
-                style={{
-                    backgroundColor: color,
-                    border: "2px solid black",
-                    borderRadius: "50%",
-                    boxSizing: "border-box",
-                    height: "64px",
-                    width: "64px",
-                }}
-            />
-        </FocusableItem>
-    )
-}

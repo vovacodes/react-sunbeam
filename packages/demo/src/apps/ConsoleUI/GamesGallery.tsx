@@ -1,7 +1,8 @@
 import * as React from "react"
 import { memo, useCallback, useRef, useState } from "react"
-import { Focusable, useSunbeam, FocusEvent } from "react-sunbeam"
+import { Focusable, FocusEvent } from "react-sunbeam"
 import { FocusableItem } from "./FocusableItem"
+import { Colors } from "../../styles"
 
 type Props = {
     onFocus: (event: FocusEvent) => void
@@ -47,24 +48,9 @@ export const GamesGallery = memo(function GamesGallery({ onFocus, onBlur, onItem
         [scrollX]
     )
 
-    const sunbeamContextValue = useSunbeam()
-    const setFocus = sunbeamContextValue ? sunbeamContextValue.setFocus : undefined
-    const handleItemClick = useCallback((itemFocusPath: ReadonlyArray<string>) => {
-        if (setFocus) setFocus(itemFocusPath)
-    }, [])
-
     return (
-        <Focusable
-            onFocus={onFocus}
-            onBlur={onBlur}
-            focusKey="gamesGallery"
-            onKeyPress={event => {
-                if (event.key !== "g") return
-                console.log("Handling a `g` key press in GamesGallery")
-                event.stopPropagation()
-            }}
-        >
-            <div ref={viewportRef} style={{ width: "1078px" }}>
+        <Focusable onFocus={onFocus} onBlur={onBlur} focusKey="gamesGallery">
+            <div ref={viewportRef} style={{ width: "810px" }}>
                 <div
                     ref={trackRef}
                     style={{
@@ -74,103 +60,74 @@ export const GamesGallery = memo(function GamesGallery({ onFocus, onBlur, onItem
                         willChange: "transform",
                     }}
                 >
-                    <div style={{ marginRight: "2px" }}>
-                        <GameTile
-                            color="#1199EE"
+                    <div style={{ marginRight: "30px" }}>
+                        <FocusableItem
+                            kind="square"
+                            width={180}
+                            height={180}
+                            color={Colors.sunRed}
                             focusKey="1"
-                            onClick={handleItemClick}
                             onFocus={handleItemFocus}
                             onBlur={onItemBlur}
                         />
                     </div>
-                    <div style={{ marginRight: "2px" }}>
-                        <GameTile
-                            color="#FF88AA"
+                    <div style={{ marginRight: "30px" }}>
+                        <FocusableItem
+                            kind="square"
+                            width={180}
+                            height={180}
+                            color={Colors.paleBlue}
                             focusKey="2"
-                            onClick={handleItemClick}
                             onFocus={handleItemFocus}
                             onBlur={onItemBlur}
                         />
                     </div>
-                    <div style={{ marginRight: "2px" }}>
-                        <GameTile
-                            color="#BB66CC"
+                    <div style={{ marginRight: "30px" }}>
+                        <FocusableItem
+                            kind="square"
+                            width={180}
+                            height={180}
+                            color={Colors.palePink}
                             focusKey="3"
-                            onClick={handleItemClick}
                             onFocus={handleItemFocus}
                             onBlur={onItemBlur}
                         />
                     </div>
-                    <div style={{ marginRight: "2px" }}>
-                        <GameTile
-                            color="#FFCC66"
+                    <div style={{ marginRight: "30px" }}>
+                        <FocusableItem
+                            kind="square"
+                            width={180}
+                            height={180}
+                            color={Colors.paleGreen}
                             focusKey="4"
-                            onClick={handleItemClick}
                             onFocus={handleItemFocus}
                             onBlur={onItemBlur}
                         />
                     </div>
-                    <div style={{ marginRight: "2px" }}>
-                        <GameTile
-                            color="#55CCFF"
+                    <div style={{ marginRight: "30px" }}>
+                        <FocusableItem
+                            kind="square"
+                            width={180}
+                            height={180}
+                            color={Colors.paleYellow}
                             focusKey="5"
-                            onClick={handleItemClick}
                             onFocus={handleItemFocus}
                             onBlur={onItemBlur}
                         />
                     </div>
-                    <GameTile
-                        color="#EE4444"
-                        focusKey="6"
-                        onClick={handleItemClick}
-                        onFocus={handleItemFocus}
-                        onBlur={onItemBlur}
-                    />
+                    <div>
+                        <FocusableItem
+                            kind="square"
+                            width={180}
+                            height={180}
+                            color={Colors.paleCyan}
+                            focusKey="6"
+                            onFocus={handleItemFocus}
+                            onBlur={onItemBlur}
+                        />
+                    </div>
                 </div>
             </div>
         </Focusable>
     )
 })
-
-function GameTile({
-    color,
-    focusKey,
-    onFocus,
-    onBlur,
-}: {
-    color: string
-    focusKey: string
-    onClick: (focusPath: ReadonlyArray<string>) => void
-    onFocus: (event: FocusEvent) => void
-    onBlur: (event: FocusEvent) => void
-}) {
-    return (
-        <FocusableItem
-            focusKey={focusKey}
-            style={focused => ({
-                border: focused ? "4px solid cyan" : "4px solid transparent",
-                borderRadius: "2px",
-                transition: "border-color 100ms ease-out",
-            })}
-            onKeyPress={event => {
-                if (event.key !== "Enter") return
-                event.preventDefault()
-                event.stopPropagation()
-                console.log('Handling "Enter" key in GameTile', focusKey)
-            }}
-            onFocus={onFocus}
-            onBlur={onBlur}
-        >
-            <div
-                style={{
-                    height: "260px",
-                    width: "260px",
-                    backgroundColor: color,
-                    boxSizing: "border-box",
-                    border: "2px solid black",
-                    borderRadius: "2px",
-                }}
-            />
-        </FocusableItem>
-    )
-}

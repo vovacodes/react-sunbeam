@@ -2,70 +2,63 @@ import * as React from "react"
 import { useRef, ReactElement } from "react"
 import { useHistory } from "react-router-dom"
 import { useFocusable } from "react-sunbeam"
+import { Colors, Typography } from "../../styles"
+import { Header } from "../../components/Header"
+import { Hint } from "../../components/Hint"
 
 export function Home() {
     const history = useHistory()
 
     return (
-        <div
-            style={{
-                height: "100vh",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-        >
-            <h1
-                style={{
-                    fontFamily: "Sen, serif",
-                    color: "#000000",
-                    fontSize: "36px",
-                    lineHeight: 1.6,
-                    fontWeight: 700,
-                }}
-            >
-                Choose a demo
-            </h1>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <div style={{ margin: "20px 40px" }}>
-                    <FocusableCard
-                        title="Console UI"
-                        onSelect={() => history.push("/console-ui")}
-                        icon={<IconConsole />}
-                        background="salmon"
-                    />
-                </div>
-                <div style={{ margin: "20px 40px" }}>
-                    <FocusableCard
-                        title="Settings menu"
-                        onSelect={() => history.push("/settings-menu")}
-                        icon={<IconGear />}
-                        background="#A3DEEF"
-                    />
-                </div>
-            </div>
+        <>
+            <Header />
             <div
                 style={{
-                    position: "absolute",
-                    bottom: 20,
-                    right: 20,
-                    fontFamily: `"Fira Code", monospace`,
-                    fontSize: 13,
-                    lineHeight: 1.6,
+                    height: "calc(100vh - 80px)",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
                 }}
             >
-                <div>
-                    Navigation - <b>{"<-"}</b> and <b>{"->"}</b>
+                <h1
+                    style={{
+                        ...Typography.heading2,
+                    }}
+                >
+                    Choose a demo
+                </h1>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <div style={{ margin: "20px 40px" }}>
+                        <FocusableCard
+                            title="Home screen"
+                            onSelect={() => history.push("/console-ui")}
+                            icon={<IconConsole />}
+                            background={<Shape1 />}
+                        />
+                    </div>
+                    <div style={{ margin: "20px 40px" }}>
+                        <FocusableCard
+                            title="Settings menu"
+                            onSelect={() => history.push("/settings-menu")}
+                            icon={<IconGear />}
+                            background={<Shape2 />}
+                        />
+                    </div>
                 </div>
-                <div>
-                    Select - <b>Enter</b> or <b>Space</b>
-                </div>
-                <div>
-                    Go back - <b>Backspace</b>
-                </div>
+                <Hint>
+                    <div>
+                        Navigation - <b>{"<-"}</b> and <b>{"->"}</b>
+                    </div>
+                    <div>
+                        Select - <b>Enter</b> or <b>Space</b>
+                    </div>
+                    <div>
+                        Go back - <b>Backspace</b>
+                    </div>
+                </Hint>
             </div>
-        </div>
+        </>
     )
 }
 
@@ -78,7 +71,7 @@ function FocusableCard({
     title: string
     onSelect: () => void
     icon: ReactElement
-    background: string
+    background: ReactElement<{ grayscale: boolean }>
 }) {
     const ref = useRef(null)
     const { focused } = useFocusable({
@@ -89,6 +82,11 @@ function FocusableCard({
             onSelect()
         },
     })
+
+    const titleStyle = { marginTop: 10, ...Typography.bodyText }
+    if (focused) {
+        titleStyle.color = "black"
+    }
 
     return (
         <div
@@ -103,13 +101,20 @@ function FocusableCard({
                     position: "relative",
                     width: 160,
                     height: 250,
-                    background,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    border: "2px solid black",
+                    border: `2px solid ${focused ? "black" : Colors.textBlack}`,
+                    background: Colors.background,
                 }}
             >
+                <div
+                    style={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        overflow: "hidden",
+                    }}
+                >
+                    {React.cloneElement(background, { grayscale: !focused })}
+                </div>
                 {/*shadow*/}
                 <div
                     style={{
@@ -117,17 +122,27 @@ function FocusableCard({
                         zIndex: -1,
                         width: "100%",
                         height: "100%",
-                        boxShadow: "10px 10px 0px 0px rgba(0, 0, 0, 1)",
                         willChange: "transform",
-                        opacity: focused ? 1 : 0,
-                        transform: focused ? "translate(0,0)" : "translate(-8px, -8px)",
-                        transition: "transform 250ms ease-out, opacity 300ms ease-out",
                         animation: focused ? "600ms linear infinite alternate hovering" : "none",
                     }}
-                />
-                {icon}
+                >
+                    <div
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            boxShadow: "10px 10px 0px 0px rgba(0, 0, 0, 1)",
+                            willChange: "transform",
+                            transform: focused ? "translate(0,0)" : "translate(-8px, -8px)",
+                            transition: "transform 150ms ease-out",
+                            // animation: focused ? "600ms linear infinite alternate hovering" : "none",
+                        }}
+                    />
+                </div>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+                    {icon}
+                </div>
             </div>
-            <div style={{ marginTop: 10, fontFamily: '"Fira Code", monospace', fontSize: 16 }}>{title}</div>
+            <div style={titleStyle}>{title}</div>
         </div>
     )
 }
@@ -252,5 +267,86 @@ function IconGear() {
                 strokeLinejoin="round"
             ></path>
         </svg>
+    )
+}
+
+export function Shape1({ grayscale = true }: { grayscale?: boolean }) {
+    return (
+        <div style={{ position: "relative", width: "252px", height: "278px", top: "-64px", left: "-46px" }}>
+            <svg
+                width="252"
+                height="278"
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    opacity: grayscale ? 1 : 0,
+                    transition: "opacity 150ms ease-out",
+                }}
+            >
+                <path
+                    d="M 132.193 4.713 C 163.684 4.713 185.324 13.745 205.961 34.675 C 226.599 55.605 246.234 88.433 246.234 120.371 C 246.234 152.309 181.582 178.689 146.54 209.29 C 111.498 239.891 106.064 274.713 74.572 274.713 C 11.59 274.713 31.052 223.207 31.052 159.331 C 31.052 143.362 47.191 117.312 37.282 96.275 C 27.372 75.239 -8.585 59.216 9.009 43.891 C 44.196 13.241 100.702 4.713 132.193 4.713 Z"
+                    fill="#DEDEDE"
+                    stroke="rgb(61, 61, 61)"
+                />
+            </svg>
+            <svg
+                width="252"
+                height="278"
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    opacity: grayscale ? 0 : 1,
+                    transition: "opacity 150ms ease-out",
+                }}
+            >
+                <path
+                    d="M 132.193 4.713 C 163.684 4.713 185.324 13.745 205.961 34.675 C 226.599 55.605 246.234 88.433 246.234 120.371 C 246.234 152.309 181.582 178.689 146.54 209.29 C 111.498 239.891 106.064 274.713 74.572 274.713 C 11.59 274.713 31.052 223.207 31.052 159.331 C 31.052 143.362 47.191 117.312 37.282 96.275 C 27.372 75.239 -8.585 59.216 9.009 43.891 C 44.196 13.241 100.702 4.713 132.193 4.713 Z"
+                    fill="#9CE3C5"
+                    stroke="rgb(61, 61, 61)"
+                />
+            </svg>
+        </div>
+    )
+}
+export function Shape2({ grayscale = true }: { grayscale?: boolean }) {
+    return (
+        <div style={{ position: "relative", width: "241px", height: "238px", top: "-31px", left: "-20px" }}>
+            <svg
+                width="241"
+                height="238"
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    opacity: grayscale ? 1 : 0,
+                    transition: "opacity 150ms ease-out",
+                }}
+            >
+                <path
+                    d="M 76.092 5.145 C 124.64 5.145 234.836 17.708 234.836 87.716 C 234.836 122.72 238.763 166.407 213.024 193.764 C 187.285 221.12 131.88 232.145 107.606 232.145 C 59.057 232.145 5.051 168.479 5.051 98.471 C 5.051 28.464 27.544 5.145 76.092 5.145 Z"
+                    fill="#DEDEDE"
+                    stroke="rgb(61, 61, 61)"
+                />
+            </svg>
+            <svg
+                width="241"
+                height="238"
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    opacity: grayscale ? 0 : 1,
+                    transition: "opacity 150ms ease-out",
+                }}
+            >
+                <path
+                    d="M 76.092 5.145 C 124.64 5.145 234.836 17.708 234.836 87.716 C 234.836 122.72 238.763 166.407 213.024 193.764 C 187.285 221.12 131.88 232.145 107.606 232.145 C 59.057 232.145 5.051 168.479 5.051 98.471 C 5.051 28.464 27.544 5.145 76.092 5.145 Z"
+                    fill="#F0BCD5"
+                    stroke="rgb(61, 61, 61)"
+                />
+            </svg>
+        </div>
     )
 }
