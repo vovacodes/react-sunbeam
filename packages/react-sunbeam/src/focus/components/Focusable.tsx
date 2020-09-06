@@ -16,14 +16,14 @@ interface Props {
     lock?: Direction | Direction[]
     style?: React.CSSProperties
     className?: string
-    unstable_getPreferredChildOnFocusReceive?: (args: {
+    onKeyPress?: KeyPressListener
+    onFocus?: (event: FocusEvent) => void
+    onBlur?: (event: FocusEvent) => void
+    getPreferredChildOnFocus?: (args: {
         focusableChildren: FocusableNodesMap
         focusOrigin?: FocusableTreeNode
         direction?: Direction
     }) => FocusableTreeNode | undefined
-    onKeyPress?: KeyPressListener
-    onFocus?: (event: FocusEvent) => void
-    onBlur?: (event: FocusEvent) => void
 }
 
 /* eslint-disable @typescript-eslint/camelcase */
@@ -34,7 +34,7 @@ export function Focusable({
     focusKey,
     focusable = true,
     lock = [],
-    unstable_getPreferredChildOnFocusReceive,
+    getPreferredChildOnFocus,
     onKeyPress,
     onFocus,
     onBlur,
@@ -59,15 +59,15 @@ export function Focusable({
     const getChildren = useCallback(() => focusableChildrenRef.current, [])
     const getPreferredChild = useCallback(
         (focusOrigin?: FocusableTreeNode, direction?: Direction) => {
-            return unstable_getPreferredChildOnFocusReceive
-                ? unstable_getPreferredChildOnFocusReceive({
+            return getPreferredChildOnFocus
+                ? getPreferredChildOnFocus({
                       focusableChildren: focusableChildrenRef.current,
                       focusOrigin,
                       direction,
                   })
                 : getPreferredNode({ nodes: focusableChildrenRef.current, focusOrigin, direction })
         },
-        [unstable_getPreferredChildOnFocusReceive]
+        [getPreferredChildOnFocus]
     )
     const {
         addFocusableToMap,

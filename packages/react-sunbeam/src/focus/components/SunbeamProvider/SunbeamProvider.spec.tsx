@@ -34,6 +34,26 @@ describe("<SunbeamProvider>", () => {
         spy.mockRestore()
     })
 
+    describe("getPreferredChildOnFocus", () => {
+        it("selects which child to focus on when SunbeamProvider becomes focused", () => {
+            const focusManager = new FocusManager()
+
+            render(
+                <SunbeamProvider
+                    focusManager={focusManager}
+                    getPreferredChildOnFocus={({ focusableChildren }) => {
+                        return focusableChildren.get("right")
+                    }}
+                >
+                    <Focusable>left</Focusable>
+                    <Focusable focusKey="right">right</Focusable>
+                </SunbeamProvider>
+            )
+
+            expect(focusManager.getFocusPath()).toEqual(["right"])
+        })
+    })
+
     describe("keyPressManager", () => {
         it("should allow to provide a custom instance of KeyPressManager", () => {
             function enterKeyHandler(event: KeyboardEvent) {

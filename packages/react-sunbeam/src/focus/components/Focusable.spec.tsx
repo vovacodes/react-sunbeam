@@ -295,4 +295,28 @@ describe("Focusable", () => {
         act(() => focusManager.moveRight())
         expect(focusManager.getFocusPath()).toEqual(["right"])
     })
+
+    describe("getPreferredChildOnFocus", () => {
+        it("selects which child to focus on when SunbeamProvider becomes focused", () => {
+            const focusManager = new FocusManager()
+
+            render(
+                <SunbeamProvider focusManager={focusManager}>
+                    <Focusable
+                        getPreferredChildOnFocus={({ focusableChildren }) => {
+                            return focusableChildren.get("middleChild")
+                        }}
+                        focusKey="leftParent"
+                    >
+                        <Focusable focusKey="topChild">Left Top</Focusable>
+                        <Focusable focusKey="middleChild">Left Middle</Focusable>
+                        <Focusable focusKey="bottomChild">Left Bottom</Focusable>
+                    </Focusable>
+                    <Focusable focusKey="right">Right</Focusable>
+                </SunbeamProvider>
+            )
+
+            expect(focusManager.getFocusPath()).toEqual(["leftParent", "middleChild"])
+        })
+    })
 })
