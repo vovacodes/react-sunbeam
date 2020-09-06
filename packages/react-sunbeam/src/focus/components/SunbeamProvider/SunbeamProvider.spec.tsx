@@ -1,8 +1,8 @@
 import React from "react"
 import { act, render, fireEvent } from "@testing-library/react"
-import { Focusable, FocusManager } from "../.."
-import { KeyPressManager } from "../../../keyPressManagement"
-import { SunbeamProvider } from "."
+import { Focusable, FocusManager } from "../../index.js"
+import { KeyPressManager } from "../../../keyPressManagement/index.js"
+import { SunbeamProvider } from "./index.js"
 
 describe("<SunbeamProvider>", () => {
     it("should call focusManager.revalidateFocusPath() only once when multiple nodes are added/removed from the tree", async () => {

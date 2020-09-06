@@ -1,11 +1,11 @@
 import React, { useRef } from "react"
 import { render, act } from "@testing-library/react"
-import { FocusManager } from "../FocusManager"
-import { SunbeamProvider } from "../components/SunbeamProvider"
-import { useFocusable } from "./useFocusable"
-import { Focusable } from ".."
-import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/utils"
-import { Direction } from "../../spatialNavigation"
+import { FocusManager } from "../FocusManager.js"
+import { SunbeamProvider } from "../components/SunbeamProvider/index.js"
+import { useFocusable } from "./useFocusable.js"
+import { Focusable } from "../index.js"
+import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/utils.js"
+import { Direction } from "../../spatialNavigation/index.js"
 
 describe("useFocusable", () => {
     mockGetBoundingClientRect()

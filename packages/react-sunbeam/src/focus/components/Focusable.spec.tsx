@@ -1,9 +1,9 @@
 import React from "react"
 import { act, render } from "@testing-library/react"
-import { FocusManager, SunbeamProvider } from ".."
-import { Focusable } from "./Focusable"
-import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/utils"
-import { Direction } from "../../spatialNavigation"
+import { FocusManager, SunbeamProvider } from "../index.js"
+import { Focusable } from "./Focusable.js"
+import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/utils.js"
+import { Direction } from "../../spatialNavigation/index.js"
 
 describe("Focusable", () => {
     mockGetBoundingClientRect()

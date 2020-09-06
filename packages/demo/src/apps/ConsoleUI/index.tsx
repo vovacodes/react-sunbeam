@@ -2,13 +2,7 @@ import * as React from "react"
 import { useCallback } from "react"
 import { useHistory } from "react-router-dom"
 
-import {
-    Direction,
-    Focusable,
-    FocusableTreeNode,
-    FocusEvent,
-    unstable_defaultGetPreferredChildOnFocusReceive,
-} from "react-sunbeam"
+import { Direction, Focusable, FocusableTreeNode, FocusEvent, defaultGetPreferredChildOnFocus } from "react-sunbeam"
 
 import { ProfilesMenu } from "./ProfilesMenu"
 import { GamesGallery } from "./GamesGallery"
@@ -52,7 +46,7 @@ export function ConsoleUI() {
 
                         history.goBack()
                     }}
-                    unstable_getPreferredChildOnFocusReceive={({
+                    getPreferredChildOnFocus={({
                         focusableChildren,
                         focusOrigin,
                         direction,
@@ -66,7 +60,7 @@ export function ConsoleUI() {
                             if (focusableChildren.has("gamesGallery")) return focusableChildren.get("gamesGallery")
                         }
 
-                        return unstable_defaultGetPreferredChildOnFocusReceive({
+                        return defaultGetPreferredChildOnFocus({
                             focusableChildren,
                             focusOrigin,
                             direction,

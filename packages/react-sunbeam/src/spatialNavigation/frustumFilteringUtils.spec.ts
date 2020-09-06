@@ -1,5 +1,5 @@
-import { boxesWithinFrustumOfOrigin } from "./frustumFilteringUtils"
-import { Direction } from "./types"
+import { boxesWithinFrustumOfOrigin } from "./frustumFilteringUtils.js"
+import { Direction } from "./types.js"
 
 describe("isWithinTopFrustumOf", () => {
     const originBox = {

@@ -1,6 +1,6 @@
-import { FocusableNodesMap, FocusableTreeNode } from "./types"
-import { Direction } from "../spatialNavigation"
-import { getClosestFocusableNodeInDirection } from "./getClosestFocusableNodeInDirection"
+import type { FocusableNodesMap, FocusableTreeNode } from "./types.js"
+import type { Direction } from "../spatialNavigation/index.js"
+import { getClosestFocusableNodeInDirection } from "./getClosestFocusableNodeInDirection.js"
 
 interface Arguments {
     nodes: FocusableNodesMap

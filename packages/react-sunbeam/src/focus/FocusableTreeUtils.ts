@@ -1,5 +1,5 @@
-import { FocusableNodesMap, FocusableTreeNode, FocusPath } from "./types"
-import { FOCUSABLE_TREE_ROOT_KEY } from "./Constants"
+import type { FocusableNodesMap, FocusableTreeNode, FocusPath } from "./types.js"
+import { FOCUSABLE_TREE_ROOT_KEY } from "./Constants.js"
 
 export function validateAndFixFocusPathIfNeeded(focusPath: FocusPath, treeRoot: FocusableTreeNode): FocusPath | null {
     let fixedFocusPath: string[] | null = null // only initialize if we need to fix the path

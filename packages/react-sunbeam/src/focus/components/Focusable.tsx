@@ -1,13 +1,13 @@
 import * as React from "react"
 import { useMemo, useRef, useCallback, useEffect } from "react"
-import { FocusableTreeContext } from "../FocusableTreeContext"
-import { BoundingBox, Direction } from "../../spatialNavigation"
-import { KeyPressListener, KeyPressTreeContextProvider } from "../../keyPressManagement"
-import { FocusableNodesMap, FocusableTreeNode, FocusEvent } from "../types"
-import { useGeneratedFocusKey } from "../hooks/useGeneratedFocusKey"
-import { useOnFocusedChange } from "../hooks/useOnFocusedChange"
-import { useKeyPressTreeNode } from "../hooks/useKeyPressTreeNode"
-import getPreferredNode from "../getPreferredNode"
+import { FocusableTreeContext } from "../FocusableTreeContext.js"
+import type { BoundingBox, Direction } from "../../spatialNavigation/index.js"
+import { KeyPressListener, KeyPressTreeContextProvider } from "../../keyPressManagement/index.js"
+import type { FocusableNodesMap, FocusableTreeNode, FocusEvent } from "../types.js"
+import { useGeneratedFocusKey } from "../hooks/useGeneratedFocusKey.js"
+import { useOnFocusedChange } from "../hooks/useOnFocusedChange.js"
+import { useKeyPressTreeNode } from "../hooks/useKeyPressTreeNode.js"
+import getPreferredNode from "../getPreferredNode.js"
 
 interface Props {
     focusKey?: string

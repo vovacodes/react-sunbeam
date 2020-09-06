@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { FocusManager } from "../../FocusManager"
-import { FocusPath } from "../../types"
+import type { FocusManager } from "../../FocusManager.js"
+import type { FocusPath } from "../../types.js"
 
 export default function useFocusPath(
     focusManager: FocusManager,

@@ -1,20 +1,20 @@
 import * as React from "react"
 import { useCallback, useEffect, useMemo, useRef } from "react"
-import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants"
-import { FocusableTreeContext, FocusableTreeContextValue } from "../../FocusableTreeContext"
-import { SunbeamContext } from "../../SunbeamContext"
-import { FocusableNodesMap, FocusableTreeNode, FocusPath } from "../../types"
-import { FocusManager } from "../../FocusManager"
+import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants.js"
+import { FocusableTreeContext, FocusableTreeContextValue } from "../../FocusableTreeContext.js"
+import { SunbeamContext } from "../../SunbeamContext.js"
+import type { FocusableNodesMap, FocusableTreeNode, FocusPath } from "../../types.js"
+import type { FocusManager } from "../../FocusManager.js"
 import {
     KeyPressManager,
     KeyPressListener,
     KeyPressTreeContextProvider,
     KeyPressTreeNode,
-} from "../../../keyPressManagement"
-import { BoundingBox, Direction } from "../../../spatialNavigation"
-import getPreferredNode from "../../getPreferredNode"
-import { useChildKeyPressTreeContextValue } from "../../hooks/useChildKeyPressTreeContextValue"
-import useFocusPath from "./useFocusPath"
+} from "../../../keyPressManagement/index.js"
+import type { BoundingBox, Direction } from "../../../spatialNavigation/index.js"
+import getPreferredNode from "../../getPreferredNode.js"
+import { useChildKeyPressTreeContextValue } from "../../hooks/useChildKeyPressTreeContextValue.js"
+import useFocusPath from "./useFocusPath.js"
 
 type Props = {
     focusManager: FocusManager

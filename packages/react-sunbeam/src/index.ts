@@ -7,7 +7,7 @@ export {
     FocusableTreeNode,
     FocusEvent,
     // eslint-disable-next-line @typescript-eslint/camelcase
-    unstable_defaultGetPreferredChildOnFocusReceive,
-} from "./focus"
-export { Direction } from "./spatialNavigation"
-export { KeyPressManager, KeyPressListener } from "./keyPressManagement"
+    defaultGetPreferredChildOnFocus,
+} from "./focus/index.js"
+export { Direction } from "./spatialNavigation/index.js"
+export { KeyPressManager, KeyPressListener } from "./keyPressManagement/index.js"

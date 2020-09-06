@@ -1,16 +1,16 @@
-import getPreferredNode from "./getPreferredNode"
-import { FocusableTreeNode } from "./types"
-import { Direction } from "../spatialNavigation"
+import getPreferredNode from "./getPreferredNode.js"
+import type { FocusableTreeNode } from "./types.js"
+import type { Direction } from "../spatialNavigation/index.js"
 
-export { FocusEvent, FocusableTreeNode } from "./types"
-export { FocusManager } from "./FocusManager"
-export { Focusable } from "./components/Focusable"
-export { SunbeamProvider } from "./components/SunbeamProvider"
-export { useSunbeam } from "./hooks/useSunbeam"
-export { useFocusable } from "./hooks/useFocusable"
+export type { FocusEvent, FocusableTreeNode } from "./types.js"
+export { FocusManager } from "./FocusManager.js"
+export { Focusable } from "./components/Focusable.js"
+export { SunbeamProvider } from "./components/SunbeamProvider/index.js"
+export { useSunbeam } from "./hooks/useSunbeam.js"
+export { useFocusable } from "./hooks/useFocusable.js"
 
 // eslint-disable-next-line @typescript-eslint/camelcase
-export function unstable_defaultGetPreferredChildOnFocusReceive({
+export function defaultGetPreferredChildOnFocus({
     focusableChildren,
     focusOrigin,
     direction,

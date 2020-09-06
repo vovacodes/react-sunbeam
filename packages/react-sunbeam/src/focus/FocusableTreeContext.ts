@@ -1,5 +1,5 @@
 import { createContext } from "react"
-import { FocusableNodesMap, FocusableTreeNode } from "./types"
+import type { FocusableNodesMap, FocusableTreeNode } from "./types.js"
 
 export interface FocusableTreeContextValue {
     addFocusableToMap: (focusableChildrenMap: FocusableNodesMap, focusableTreeNode: FocusableTreeNode) => void

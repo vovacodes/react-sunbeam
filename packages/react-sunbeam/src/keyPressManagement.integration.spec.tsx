@@ -1,15 +1,15 @@
 import React, { useRef } from "react"
 import { act, render, fireEvent } from "@testing-library/react"
-import { SunbeamProvider, FocusManager, Focusable, useFocusable } from "./focus"
-import { KeyPressListener } from "./keyPressManagement"
+import { SunbeamProvider, FocusManager, Focusable, useFocusable } from "./focus/index.js"
+import type { KeyPressListener } from "./keyPressManagement/index.js"
 
 describe("Key press management integration", () => {
     test("Nested key handlers", () => {
-        const sunbeamProviderKeyHandler = jest.fn(event => event.stopPropagation())
-        const focusable1KeyHandler = jest.fn(event => event.stopPropagation())
+        const sunbeamProviderKeyHandler = jest.fn((event) => event.stopPropagation())
+        const focusable1KeyHandler = jest.fn((event) => event.stopPropagation())
         const focusable2KeyHandler = jest.fn()
         const focusableButton1KeyHandler = jest.fn()
-        const focusableButton2KeyHandler = jest.fn(event => event.stopPropagation())
+        const focusableButton2KeyHandler = jest.fn((event) => event.stopPropagation())
 
         function FocusableButton({ focusKey, onKeyPress }: { focusKey: string; onKeyPress: KeyPressListener }) {
             const ref = useRef(null)

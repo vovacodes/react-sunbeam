@@ -1,6 +1,6 @@
-import { BoundingBox, Direction } from "./types"
-import { boxesWithinFrustumOfOrigin } from "./frustumFilteringUtils"
-import absurd from "../shared/absurd"
+import { BoundingBox, Direction } from "./types.js"
+import { boxesWithinFrustumOfOrigin } from "./frustumFilteringUtils.js"
+import absurd from "../shared/absurd.js"
 
 function getMinkowskiDifference(boxA: BoundingBox, boxB: BoundingBox): BoundingBox {
     const left = boxA.left - boxB.right

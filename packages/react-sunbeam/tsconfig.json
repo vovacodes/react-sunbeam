@@ -7,7 +7,8 @@
         "strict": true,
         "esModuleInterop": true,
         "jsx": "react",
-        "rootDir": "src"
+        "rootDir": "src",
+        "importsNotUsedAsValues": "error"
     },
     "exclude": ["dist"]
 }

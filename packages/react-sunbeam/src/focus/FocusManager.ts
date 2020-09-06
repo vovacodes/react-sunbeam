@@ -1,7 +1,7 @@
-import { FocusableTreeNode, FocusPath } from "./types"
-import { getNodeByPath, getPathToNode, getSiblings, validateAndFixFocusPathIfNeeded } from "./FocusableTreeUtils"
-import { Direction, getBestCandidate } from "../spatialNavigation"
-import { boxesWithinFrustumOfOrigin } from "../spatialNavigation/frustumFilteringUtils"
+import type { FocusableTreeNode, FocusPath } from "./types.js"
+import { getNodeByPath, getPathToNode, getSiblings, validateAndFixFocusPathIfNeeded } from "./FocusableTreeUtils.js"
+import { Direction, getBestCandidate } from "../spatialNavigation/index.js"
+import { boxesWithinFrustumOfOrigin } from "../spatialNavigation/frustumFilteringUtils.js"
 
 interface Options {
     initialFocusPath: FocusPath

@@ -9,7 +9,7 @@ module.exports = {
             version: "detect",
         },
     },
-    plugins: ["@typescript-eslint", "react", "react-hooks"],
+    plugins: ["@typescript-eslint", "react", "react-hooks", "import"],
     extends: [
         "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended",
@@ -23,5 +23,6 @@ module.exports = {
         "@typescript-eslint/no-use-before-define": ["error", { functions: false }],
         "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
         "@typescript-eslint/no-empty-function": "off",
+        "import/extensions": ["error", "always"],
     },
 }

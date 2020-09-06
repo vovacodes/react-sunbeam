@@ -1,4 +1,4 @@
-import { BoundingBox, Direction } from "../spatialNavigation"
+import type { BoundingBox, Direction } from "../spatialNavigation/index.js"
 
 export type FocusEvent = {
     getBoundingClientRect: () => ClientRect

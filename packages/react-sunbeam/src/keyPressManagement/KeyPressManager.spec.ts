@@ -1,4 +1,4 @@
-import { KeyPressManager } from "./KeyPressManager"
+import { KeyPressManager } from "./KeyPressManager.js"
 import { fireEvent } from "@testing-library/react"
 
 describe("KeyPressManager", () => {
@@ -7,7 +7,7 @@ describe("KeyPressManager", () => {
         const keyboardEvent = new KeyboardEvent("keydown", {
             key: "x",
         })
-        const managedListener = jest.fn(event => event.stopImmediatePropagation())
+        const managedListener = jest.fn((event) => event.stopImmediatePropagation())
         const otherListener = jest.fn()
 
         manager.addListener(managedListener)
@@ -26,7 +26,7 @@ describe("KeyPressManager", () => {
             key: "x",
             cancelable: true,
         })
-        const managedListener = jest.fn(event => event.preventDefault())
+        const managedListener = jest.fn((event) => event.preventDefault())
         manager.addListener(managedListener)
 
         fireEvent(window, keyboardEvent)
@@ -57,7 +57,7 @@ describe("KeyPressManager", () => {
             key: "x",
         })
         const listener1 = jest.fn()
-        const listener2 = jest.fn(event => event.stopPropagation())
+        const listener2 = jest.fn((event) => event.stopPropagation())
         manager.addListener(listener1)
         manager.addListener(listener2)
 
@@ -74,7 +74,7 @@ describe("KeyPressManager", () => {
             key: "k",
         })
         const listener1 = jest.fn()
-        const listener2 = jest.fn(event => event.stopPropagation())
+        const listener2 = jest.fn((event) => event.stopPropagation())
         manager.addListener(listener1)
         manager.addListener(listener2)
 
