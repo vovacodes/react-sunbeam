@@ -1,33 +1,28 @@
 import * as React from "react"
 import { useCallback, useEffect, useMemo, useRef } from "react"
-import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants"
-import { FocusableTreeContext, FocusableTreeContextValue } from "../../FocusableTreeContext"
-import { SunbeamContext } from "../../SunbeamContext"
-import { FocusableNodesMap, FocusableTreeNode, FocusPath } from "../../types"
-import { FocusManager } from "../../FocusManager"
+import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants.js"
+import { FocusableTreeContext, FocusableTreeContextValue } from "../../FocusableTreeContext.js"
+import { SunbeamContext } from "../../SunbeamContext.js"
+import type { FocusableNodesMap, FocusableTreeNode, FocusPath } from "../../types.js"
+import type { FocusManager } from "../../FocusManager.js"
 import {
     KeyPressManager,
     KeyPressListener,
     KeyPressTreeContextProvider,
     KeyPressTreeNode,
-} from "../../../keyPressManagement"
-import { BoundingBox, Direction } from "../../../spatialNavigation"
-import getPreferredNode from "../../getPreferredNode"
-import { useChildKeyPressTreeContextValue } from "../../hooks/useChildKeyPressTreeContextValue"
-import useFocusPath from "./useFocusPath"
+} from "../../../keyPressManagement/index.js"
+import type { BoundingBox, Direction } from "../../../spatialNavigation/index.js"
+import getPreferredNode from "../../getPreferredNode.js"
+import { useChildKeyPressTreeContextValue } from "../../hooks/useChildKeyPressTreeContextValue.js"
+import useFocusPath from "./useFocusPath.js"
 
 type Props = {
     focusManager: FocusManager
     keyPressManager?: KeyPressManager
     children: React.ReactNode
-    // unstable_passFocusBetweenChildren?: (args: {
-    //     focusableChildren: FocusableNodesMap
-    //     focusOrigin: FocusableTreeNode
-    //     direction: Direction
-    // }) => FocusableTreeNode | "KEEP_FOCUS_UNCHANGED" | "CANDIDATE_NOT_FOUND"
     onFocusUpdate?: (event: { focusPath: FocusPath }) => void
     onKeyPress?: KeyPressListener
-    unstable_getPreferredChildOnFocusReceive?: (args: {
+    getPreferredChildOnFocus?: (args: {
         focusableChildren: FocusableNodesMap
         focusOrigin?: FocusableTreeNode
         direction?: Direction
@@ -41,7 +36,7 @@ export function SunbeamProvider({
     children,
     onFocusUpdate,
     onKeyPress,
-    unstable_getPreferredChildOnFocusReceive,
+    getPreferredChildOnFocus,
 }: Props) {
     const focusPath = useFocusPath(focusManager, onFocusUpdate)
     const wrapperRef = useRef<HTMLDivElement | null>(null)
@@ -61,15 +56,15 @@ export function SunbeamProvider({
     const getChildren = useCallback(() => focusableChildrenRef.current, [])
     const getPreferredChild = useCallback(
         (focusOrigin?: FocusableTreeNode, direction?: Direction) => {
-            return unstable_getPreferredChildOnFocusReceive
-                ? unstable_getPreferredChildOnFocusReceive({
+            return getPreferredChildOnFocus
+                ? getPreferredChildOnFocus({
                       focusableChildren: focusableChildrenRef.current,
                       focusOrigin,
                       direction,
                   })
                 : getPreferredNode({ nodes: focusableChildrenRef.current, focusOrigin, direction })
         },
-        [unstable_getPreferredChildOnFocusReceive]
+        [getPreferredChildOnFocus]
     )
     const path = useMemo(() => [], [])
     const focusableTreeRoot = useMemo(

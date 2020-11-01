@@ -1,5 +1,5 @@
-import { BoundingBox, Direction } from "./types"
-import absurd from "../shared/absurd"
+import { BoundingBox, Direction } from "./types.js"
+import absurd from "../shared/absurd.js"
 
 // ax + bx + c = 0
 interface Line {

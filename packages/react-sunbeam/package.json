@@ -3,6 +3,11 @@
     "version": "0.13.0",
     "description": "Spatial navigation and focus management for React",
     "main": "dist/cjs/index.js",
+    "exports": {
+        ".": "dist/es/index.js",
+        "./keyPressManagement": "dist/es/keyPressManagement/index.js",
+        "./spatialNavigation": "dist/es/spatialNavigation/index.js"
+    },
     "module": "dist/es/index.js",
     "unpkg": "dist/es/index.js",
     "types": "dist/es/index.d.ts",
@@ -33,9 +38,11 @@
         "concurrently": "^5.1.0",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^6.10.1",
+        "eslint-plugin-import": "^2.22.0",
         "eslint-plugin-react": "^7.19.0",
         "eslint-plugin-react-hooks": "^2.5.1",
         "jest": "^25.1.0",
+        "jest-ts-webcompat-resolver": "^1.0.0",
         "react": "^16.13.1",
         "ts-jest": "^25.2.1",
         "typescript": "^3.8.3"

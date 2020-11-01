@@ -1,5 +1,5 @@
 import { MutableRefObject, useCallback, useMemo } from "react"
-import { KeyPressTreeNode, KeyPressTreeContextValue } from "../../keyPressManagement"
+import type { KeyPressTreeNode, KeyPressTreeContextValue } from "../../keyPressManagement/index.js"
 
 export function useChildKeyPressTreeContextValue(
     childKeyPressTreeNodeRef: MutableRefObject<KeyPressTreeNode | undefined>

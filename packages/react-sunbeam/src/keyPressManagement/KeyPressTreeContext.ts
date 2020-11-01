@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react"
-import { KeyPressTreeNode } from "./types"
+import type { KeyPressTreeNode } from "./types.js"
 
 export interface KeyPressTreeContextValue {
     registerActiveKeyPressTreeNode?: (node: KeyPressTreeNode) => void

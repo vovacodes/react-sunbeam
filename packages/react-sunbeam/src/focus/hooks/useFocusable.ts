@@ -1,11 +1,11 @@
 import React, { RefObject, useCallback, useMemo, useEffect } from "react"
-import { FocusableTreeNode, FocusEvent } from "../types"
-import { BoundingBox, Direction } from "../../spatialNavigation"
-import { FocusableTreeContext } from "../FocusableTreeContext"
-import { useGeneratedFocusKey } from "./useGeneratedFocusKey"
-import { useOnFocusedChange } from "./useOnFocusedChange"
-import { useKeyPressTreeNode } from "./useKeyPressTreeNode"
-import { KeyPressListener } from "../../keyPressManagement"
+import type { FocusableTreeNode, FocusEvent } from "../types.js"
+import type { BoundingBox, Direction } from "../../spatialNavigation/index.js"
+import { FocusableTreeContext } from "../FocusableTreeContext.js"
+import { useGeneratedFocusKey } from "./useGeneratedFocusKey.js"
+import { useOnFocusedChange } from "./useOnFocusedChange.js"
+import { useKeyPressTreeNode } from "./useKeyPressTreeNode.js"
+import type { KeyPressListener } from "../../keyPressManagement/index.js"
 
 // TODO: add other options: () => ClientRect | ClientRect
 type Element = RefObject<{

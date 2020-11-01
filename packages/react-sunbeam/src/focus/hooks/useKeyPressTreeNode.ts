@@ -4,8 +4,8 @@ import {
     KeyPressTreeContextValue,
     KeyPressTreeNode,
     useKeyPressTreeContext,
-} from "../../keyPressManagement"
-import { useChildKeyPressTreeContextValue } from "./useChildKeyPressTreeContextValue"
+} from "../../keyPressManagement/index.js"
+import { useChildKeyPressTreeContextValue } from "./useChildKeyPressTreeContextValue.js"
 
 export function useKeyPressTreeNode({
     focused,

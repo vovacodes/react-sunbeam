@@ -1,5 +1,5 @@
-import { MutableRefObject } from "react"
-import { KeyPressListener } from "./KeyPressManager"
+import type { MutableRefObject } from "react"
+import type { KeyPressListener } from "./KeyPressManager.js"
 
 export type KeyPressTreeNode = {
     listenerRef: MutableRefObject<KeyPressListener | undefined>

@@ -1,8 +1,8 @@
 import * as React from "react"
 import { act, render } from "@testing-library/react"
-import { SunbeamProvider } from "./components/SunbeamProvider"
-import { Focusable } from "./components/Focusable"
-import { FocusManager } from "./FocusManager"
+import { SunbeamProvider } from "./components/SunbeamProvider/index.js"
+import { Focusable } from "./components/Focusable.js"
+import { FocusManager } from "./FocusManager.js"
 
 describe("FocusManager", () => {
     describe("setFocus", () => {

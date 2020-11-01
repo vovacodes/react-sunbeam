@@ -1,13 +1,13 @@
 import * as React from "react"
 import { useMemo, useRef, useCallback, useEffect } from "react"
-import { FocusableTreeContext } from "../FocusableTreeContext"
-import { BoundingBox, Direction } from "../../spatialNavigation"
-import { KeyPressListener, KeyPressTreeContextProvider } from "../../keyPressManagement"
-import { FocusableNodesMap, FocusableTreeNode, FocusEvent } from "../types"
-import { useGeneratedFocusKey } from "../hooks/useGeneratedFocusKey"
-import { useOnFocusedChange } from "../hooks/useOnFocusedChange"
-import { useKeyPressTreeNode } from "../hooks/useKeyPressTreeNode"
-import getPreferredNode from "../getPreferredNode"
+import { FocusableTreeContext } from "../FocusableTreeContext.js"
+import type { BoundingBox, Direction } from "../../spatialNavigation/index.js"
+import { KeyPressListener, KeyPressTreeContextProvider } from "../../keyPressManagement/index.js"
+import type { FocusableNodesMap, FocusableTreeNode, FocusEvent } from "../types.js"
+import { useGeneratedFocusKey } from "../hooks/useGeneratedFocusKey.js"
+import { useOnFocusedChange } from "../hooks/useOnFocusedChange.js"
+import { useKeyPressTreeNode } from "../hooks/useKeyPressTreeNode.js"
+import getPreferredNode from "../getPreferredNode.js"
 
 interface Props {
     focusKey?: string
@@ -16,14 +16,14 @@ interface Props {
     lock?: Direction | Direction[]
     style?: React.CSSProperties
     className?: string
-    unstable_getPreferredChildOnFocusReceive?: (args: {
+    onKeyPress?: KeyPressListener
+    onFocus?: (event: FocusEvent) => void
+    onBlur?: (event: FocusEvent) => void
+    getPreferredChildOnFocus?: (args: {
         focusableChildren: FocusableNodesMap
         focusOrigin?: FocusableTreeNode
         direction?: Direction
     }) => FocusableTreeNode | undefined
-    onKeyPress?: KeyPressListener
-    onFocus?: (event: FocusEvent) => void
-    onBlur?: (event: FocusEvent) => void
 }
 
 /* eslint-disable @typescript-eslint/camelcase */
@@ -34,7 +34,7 @@ export function Focusable({
     focusKey,
     focusable = true,
     lock = [],
-    unstable_getPreferredChildOnFocusReceive,
+    getPreferredChildOnFocus,
     onKeyPress,
     onFocus,
     onBlur,
@@ -59,15 +59,15 @@ export function Focusable({
     const getChildren = useCallback(() => focusableChildrenRef.current, [])
     const getPreferredChild = useCallback(
         (focusOrigin?: FocusableTreeNode, direction?: Direction) => {
-            return unstable_getPreferredChildOnFocusReceive
-                ? unstable_getPreferredChildOnFocusReceive({
+            return getPreferredChildOnFocus
+                ? getPreferredChildOnFocus({
                       focusableChildren: focusableChildrenRef.current,
                       focusOrigin,
                       direction,
                   })
                 : getPreferredNode({ nodes: focusableChildrenRef.current, focusOrigin, direction })
         },
-        [unstable_getPreferredChildOnFocusReceive]
+        [getPreferredChildOnFocus]
     )
     const {
         addFocusableToMap,
