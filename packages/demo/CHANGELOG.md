@@ -7,10 +7,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package demo
 
-
-
-
-
 # [0.13.0](https://github.com/wzrdzl/react-sunbeam/compare/v0.12.1...v0.13.0) (2020-03-27)
 
 ### Features
