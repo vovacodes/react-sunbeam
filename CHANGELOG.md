@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/vovaguguiev/react-sunbeam/compare/v0.13.0...v1.0.0) (2020-11-01)
+
+
+### Features
+
+* replace unstable_getPreferredChildOnFocusReceive prop with getPreferredChildOnFocus ([d5a1138](https://github.com/vovaguguiev/react-sunbeam/commit/d5a11381e241e26352ee17eddf3a95009919e532))
+* **exports:** add subpaths exports config to package.json ([a812355](https://github.com/vovaguguiev/react-sunbeam/commit/a81235561da2fb58d605509142195b981977ca0f))
+
+
+### BREAKING CHANGES
+
+* `unstable_getPreferredChildOnFocusReceive` prop is removed from SunbeamProvider and
+Focusable components, `getPreferredChildOnFocus` is introduced instead
+
+
+
+
+
 # [0.13.0](https://github.com/vovaguguiev/react-sunbeam/compare/v0.12.1...v0.13.0) (2020-03-27)
 
 ### Features
