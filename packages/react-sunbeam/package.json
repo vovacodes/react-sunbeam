@@ -3,6 +3,11 @@
     "version": "0.13.0",
     "description": "Spatial navigation and focus management for React",
     "main": "dist/cjs/index.js",
+    "exports": {
+        ".": "dist/es/index.js",
+        "./keyPressManagement": "dist/es/keyPressManagement/index.js",
+        "./spatialNavigation": "dist/es/spatialNavigation/index.js"
+    },
     "module": "dist/es/index.js",
     "unpkg": "dist/es/index.js",
     "types": "dist/es/index.d.ts",
