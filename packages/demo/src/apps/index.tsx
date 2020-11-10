@@ -1,6 +1,7 @@
 import * as React from "react"
-// import { render } from "react-dom/profiling"
-import { render } from "react-dom"
+// @ts-ignore
+import { render } from "react-dom/profiling"
+// import { render } from "react-dom"
 import { BrowserRouter, Route } from "react-router-dom"
 import { FocusManager, SunbeamProvider, KeyPressManager } from "react-sunbeam"
 import { ConsoleUI } from "./ConsoleUI"
@@ -12,7 +13,7 @@ const focusManager = new FocusManager({
 })
 
 const keyPressManager = new KeyPressManager()
-keyPressManager.addListener(event => {
+keyPressManager.addListener((event) => {
     switch (event.key) {
         case "ArrowRight":
             event.preventDefault()
