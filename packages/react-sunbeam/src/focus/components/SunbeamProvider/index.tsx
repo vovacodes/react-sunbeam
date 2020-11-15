@@ -29,7 +29,6 @@ type Props = {
     }) => FocusableTreeNode | undefined
 }
 
-/* eslint-disable @typescript-eslint/camelcase */
 export function SunbeamProvider({
     focusManager,
     keyPressManager: customKeyPressManager,

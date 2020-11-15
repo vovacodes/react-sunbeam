@@ -9,7 +9,6 @@ export { SunbeamProvider } from "./components/SunbeamProvider/index.js"
 export { useSunbeam } from "./hooks/useSunbeam.js"
 export { useFocusable } from "./hooks/useFocusable.js"
 
-// eslint-disable-next-line @typescript-eslint/camelcase
 export function defaultGetPreferredChildOnFocus({
     focusableChildren,
     focusOrigin,

@@ -17,7 +17,7 @@ export class FocusManager {
      */
     private focusPath: readonly string[]
     private focusableRoot: FocusableTreeNode | undefined
-    private subscribers: Set<Function>
+    private subscribers: Set<() => void>
 
     public constructor(options: Options = defaultOptions) {
         this.focusPath = options.initialFocusPath
@@ -48,7 +48,7 @@ export class FocusManager {
         return this.focusPath
     }
 
-    public revalidateFocusPath() {
+    public revalidateFocusPath(): void {
         if (!this.focusableRoot) {
             this.setFocus([])
             return
