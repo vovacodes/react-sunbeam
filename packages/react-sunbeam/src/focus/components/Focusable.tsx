@@ -26,7 +26,6 @@ interface Props {
     }) => FocusableTreeNode | undefined
 }
 
-/* eslint-disable @typescript-eslint/camelcase */
 export function Focusable({
     children,
     className,
