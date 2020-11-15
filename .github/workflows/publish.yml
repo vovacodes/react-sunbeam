@@ -31,7 +31,16 @@ jobs:
 
             - run: yarn install
 
-            - name: Publish
+            - name: Check credentials
+              run: |
+                  yarn logout
+                  echo "registry=http://registry.npmjs.org/" >> .npmrc
+                  echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
+                  npm whoami
               env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Publish
               run: yarn release --yes
+              env:
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
