@@ -1,6 +1,6 @@
 {
     "name": "demo",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "main": "index.js",
     "repository": "git+https://github.com/wzrdzl/react-sunbeam.git",
     "author": "Vladimir Guguiev <vladimir.guguiev@gmail.com>",
@@ -18,7 +18,7 @@
         "react-dom": "^17.0.1",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
-        "react-sunbeam": "^1.0.3"
+        "react-sunbeam": "^1.0.4"
     },
     "devDependencies": {
         "@types/react": "^16.9.56",
