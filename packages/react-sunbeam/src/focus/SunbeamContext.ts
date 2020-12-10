@@ -5,9 +5,12 @@ export interface SunbeamContextValue {
     moveFocusLeft(): void
     moveFocusUp(): void
     moveFocusDown(): void
-    setFocus: (focusPath: readonly string[]) => void
+    setFocus(focusPath: readonly string[]): void
 }
 
+/**
+ * This context exposes the public-facing API for controlling focusManger while keeping the "internal" methods hidden.
+ */
 export const SunbeamContext = createContext<SunbeamContextValue>({
     moveFocusRight() {
         console.warn('Attempted to call "moveFocusRight" without SunbeamContext.Provider present in the tree')

@@ -8,6 +8,8 @@ import { Direction } from "../../spatialNavigation/index.js"
 describe("Focusable", () => {
     mockGetBoundingClientRect()
 
+    it.todo("should render in isolation (without Provider) with no errors")
+
     it("should pass `focused` and `path` to its render callback when one is provided", () => {
         const fn = jest.fn()
         const focusKey = "my-focusable"

@@ -1,5 +1,5 @@
 import React, { useRef } from "react"
-import { render, act } from "@testing-library/react"
+import { act, render } from "@testing-library/react"
 import { FocusManager } from "../FocusManager.js"
 import { SunbeamProvider } from "../components/SunbeamProvider/index.js"
 import { useFocusable } from "./useFocusable.js"

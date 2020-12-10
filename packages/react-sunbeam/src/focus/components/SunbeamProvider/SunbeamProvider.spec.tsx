@@ -27,7 +27,6 @@ describe("<SunbeamProvider>", () => {
                 {/* Removed right subtree */}
             </SunbeamProvider>
         )
-
         await act(() => Promise.resolve())
 
         expect(spy).toBeCalledTimes(1)

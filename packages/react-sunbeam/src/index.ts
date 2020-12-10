@@ -1,11 +1,12 @@
 export {
     Focusable,
+    FocusContainer,
     SunbeamProvider,
     FocusManager,
     useSunbeam,
     useFocusable,
-    FocusableTreeNode,
     FocusEvent,
+    FIXMEFocusableNode,
     defaultGetPreferredChildOnFocus,
 } from "./focus/index.js"
 export { Direction } from "./spatialNavigation/index.js"

@@ -1,20 +1,21 @@
 import * as React from "react"
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants.js"
-import { FocusableTreeContext, FocusableTreeContextValue } from "../../FocusableTreeContext.js"
 import { SunbeamContext } from "../../SunbeamContext.js"
-import type { FocusableNodesMap, FocusableTreeNode, FocusPath } from "../../types.js"
+import type { CustomGetPreferredChildFn, FocusPath } from "../../types.js"
 import type { FocusManager } from "../../FocusManager.js"
 import {
-    KeyPressManager,
     KeyPressListener,
+    KeyPressManager,
     KeyPressTreeContextProvider,
     KeyPressTreeNode,
 } from "../../../keyPressManagement/index.js"
-import type { BoundingBox, Direction } from "../../../spatialNavigation/index.js"
-import getPreferredNode from "../../getPreferredNode.js"
 import { useChildKeyPressTreeContextValue } from "../../hooks/useChildKeyPressTreeContextValue.js"
-import useFocusPath from "./useFocusPath.js"
+import useOnFocusUpdate from "./useOnFocusUpdate.js"
+import { Dispatcher, DispatcherContext } from "../../Dispatcher.js"
+import { FocusManagerContext } from "../../FocusManagerContext.js"
+import { useFocusableNode } from "../../hooks/useFocusableNode.js"
+import { FocusableParentContextProvider } from "../../FocusableParentContext.js"
 
 type Props = {
     focusManager: FocusManager
@@ -22,11 +23,7 @@ type Props = {
     children: React.ReactNode
     onFocusUpdate?: (event: { focusPath: FocusPath }) => void
     onKeyPress?: KeyPressListener
-    getPreferredChildOnFocus?: (args: {
-        focusableChildren: FocusableNodesMap
-        focusOrigin?: FocusableTreeNode
-        direction?: Direction
-    }) => FocusableTreeNode | undefined
+    getPreferredChildOnFocus?: CustomGetPreferredChildFn
 }
 
 export function SunbeamProvider({
@@ -37,45 +34,17 @@ export function SunbeamProvider({
     onKeyPress,
     getPreferredChildOnFocus,
 }: Props) {
-    const focusPath = useFocusPath(focusManager, onFocusUpdate)
+    useOnFocusUpdate(focusManager, onFocusUpdate)
+    const [dispatcher] = useState(() => new Dispatcher())
     const wrapperRef = useRef<HTMLDivElement | null>(null)
-    const getBoundingBox = useCallback((): BoundingBox => {
-        const wrapperElement = wrapperRef.current
 
-        if (!wrapperElement) {
-            throw new Error("Attempting to get a bounding box of " + "the root Focusable when it is not mounted")
-        }
-
-        const boundingClientRect = wrapperElement.getBoundingClientRect()
-        const { left, top, right, bottom } = boundingClientRect
-
-        return { left, top, right, bottom }
-    }, [])
-    const focusableChildrenRef = useRef<FocusableNodesMap>(new Map())
-    const getChildren = useCallback(() => focusableChildrenRef.current, [])
-    const getPreferredChild = useCallback(
-        (focusOrigin?: FocusableTreeNode, direction?: Direction) => {
-            return getPreferredChildOnFocus
-                ? getPreferredChildOnFocus({
-                      focusableChildren: focusableChildrenRef.current,
-                      focusOrigin,
-                      direction,
-                  })
-                : getPreferredNode({ nodes: focusableChildrenRef.current, focusOrigin, direction })
-        },
-        [getPreferredChildOnFocus]
-    )
-    const path = useMemo(() => [], [])
-    const focusableTreeRoot = useMemo(
-        () => ({
-            focusKey: FOCUSABLE_TREE_ROOT_KEY,
-            getParent: () => undefined,
-            getBoundingBox,
-            getChildren,
-            getPreferredChild,
-            lock: [],
-        }),
-        [getChildren, getPreferredChild, getBoundingBox]
+    const focusableTreeRoot = useFocusableNode(
+        focusManager,
+        wrapperRef,
+        FOCUSABLE_TREE_ROOT_KEY,
+        true,
+        undefined,
+        getPreferredChildOnFocus
     )
 
     useEffect(() => {
@@ -84,82 +53,6 @@ export function SunbeamProvider({
             focusManager.clearFocusableRoot()
         }
     }, [focusManager, focusableTreeRoot])
-
-    const revalidateFocus = useCallback(() => focusManager.revalidateFocusPath(), [focusManager])
-    const debouncedRevalidateFocus = defer(revalidateFocus)
-    function addFocusableToMap(focusableChildrenMap: FocusableNodesMap, focusableTreeNode: FocusableTreeNode) {
-        const { focusKey } = focusableTreeNode
-        if (focusableChildrenMap.has(focusKey)) {
-            throw new Error(
-                `can't register Focusable child with focusKey=${focusKey}. ` + `This key is already registered`
-            )
-        }
-        focusableChildrenMap.set(focusKey, focusableTreeNode)
-        debouncedRevalidateFocus()
-    }
-    function removeFocusableFromMap(focusableChildrenMap: FocusableNodesMap, focusKey: string) {
-        if (!focusableChildrenMap.has(focusKey)) {
-            throw new Error(
-                `can't unregister Focusable child with focusKey=${focusKey}. There is no Focusable with such key registered`
-            )
-        }
-        focusableChildrenMap.delete(focusKey)
-        debouncedRevalidateFocus()
-    }
-
-    // ====================================
-    // onFocus/onBlur scheduling
-    //
-    // all the dispatchOnFocus/dispatchOnBlur calls happen synchronously in the same macrotask
-    // their order is defined by the order of useEffect() execution by React, which is child -> parent
-    //
-    // the code below will accumulate all the calls and fire the callbacks in the right order
-    // at the end of the current macrotask:
-    //
-    // childOnBlur -> parentOnBlur -> parentOnFocus -> childOnFocus
-    // ====================================
-    const onFocusDispatchQueueRef = useRef<(() => void)[]>([])
-    const onBlurDispatchQueueRef = useRef<(() => void)[]>([])
-    const shouldExhaustEventQueuesRef = useRef<boolean>(true)
-    const dispatchOnFocus = useCallback((onFocusHandler: () => void) => {
-        onFocusDispatchQueueRef.current.push(onFocusHandler)
-        scheduleEventQueuesProcessingIfNeeded()
-    }, [])
-    const dispatchOnBlur = useCallback((onBlurHandler: () => void) => {
-        onBlurDispatchQueueRef.current.push(onBlurHandler)
-        scheduleEventQueuesProcessingIfNeeded()
-    }, [])
-    function scheduleEventQueuesProcessingIfNeeded() {
-        // make sure the queues are processed only once during the same macrotask
-        if (!shouldExhaustEventQueuesRef.current) return
-        shouldExhaustEventQueuesRef.current = false
-
-        // schedule as microtask at the end of the current macrotask
-        Promise.resolve().then(() => {
-            // 1. first process onBlur in FIFO order (child -> parent)
-            let onBlur = onBlurDispatchQueueRef.current.shift()
-            while (onBlur) {
-                try {
-                    onBlur()
-                } catch (err) {
-                    console.error("There was an error in onBlur handler", err)
-                }
-                onBlur = onBlurDispatchQueueRef.current.shift()
-            }
-
-            // 2. then onFocus in FILO order (parent -> child)
-            let onFocus = onFocusDispatchQueueRef.current.pop()
-            while (onFocus) {
-                try {
-                    onFocus()
-                } catch (err) {
-                    console.error("There was an error in onFocus handler", err)
-                }
-                onFocus = onFocusDispatchQueueRef.current.pop()
-            }
-            shouldExhaustEventQueuesRef.current = true
-        })
-    }
 
     // ====================================
     // Key press management
@@ -194,25 +87,6 @@ export function SunbeamProvider({
     }, [onKeyPress, keyPressManager])
     const childKeyPressTreeContextValue = useChildKeyPressTreeContextValue(childKeyPressTreeNodeRef)
 
-    const focusableTreeContextValue = useMemo<FocusableTreeContextValue>(
-        () => ({
-            addFocusableToMap,
-            removeFocusableFromMap,
-            focusPath,
-            parentPath: path,
-            parentFocusableNode: focusableTreeRoot,
-            registerFocusable: (focusableTreeNode: FocusableTreeNode) => {
-                addFocusableToMap(focusableChildrenRef.current, focusableTreeNode)
-            },
-            unregisterFocusable: (focusKey: string) => {
-                removeFocusableFromMap(focusableChildrenRef.current, focusKey)
-            },
-            dispatchOnFocus,
-            dispatchOnBlur,
-        }),
-        [focusPath.join(), focusableTreeRoot, path]
-    )
-
     const sunbeamContextValue = useMemo(
         () => ({
             moveFocusLeft: () => focusManager.moveLeft(),
@@ -225,25 +99,16 @@ export function SunbeamProvider({
     )
 
     return (
-        <SunbeamContext.Provider value={sunbeamContextValue}>
-            <FocusableTreeContext.Provider value={focusableTreeContextValue}>
-                <KeyPressTreeContextProvider value={childKeyPressTreeContextValue}>
-                    <div ref={wrapperRef}>{children}</div>
-                </KeyPressTreeContextProvider>
-            </FocusableTreeContext.Provider>
-        </SunbeamContext.Provider>
+        <FocusManagerContext.Provider value={focusManager}>
+            <DispatcherContext.Provider value={dispatcher}>
+                <FocusableParentContextProvider value={focusableTreeRoot}>
+                    <KeyPressTreeContextProvider value={childKeyPressTreeContextValue}>
+                        <SunbeamContext.Provider value={sunbeamContextValue}>
+                            <div ref={wrapperRef}>{children}</div>
+                        </SunbeamContext.Provider>
+                    </KeyPressTreeContextProvider>
+                </FocusableParentContextProvider>
+            </DispatcherContext.Provider>
+        </FocusManagerContext.Provider>
     )
-}
-
-function defer(fn: () => void): () => void {
-    let promise: Promise<void> | null
-
-    return function deferred() {
-        if (promise) return
-
-        promise = Promise.resolve().then(() => {
-            fn()
-            promise = null
-        })
-    }
 }

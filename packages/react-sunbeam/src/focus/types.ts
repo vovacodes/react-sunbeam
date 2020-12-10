@@ -1,28 +1,38 @@
 import type { BoundingBox, Direction } from "../spatialNavigation/index.js"
 
+export type FocusKey = string
+
 export type FocusEvent = {
     getBoundingClientRect: () => ClientRect
     focusablePath: readonly string[]
 }
 
-export type GetBoundingBoxFn = () => BoundingBox
-
-export type GetPreferredChildFn = (
-    focusOrigin?: FocusableTreeNode,
-    direction?: Direction
-) => FocusableTreeNode | undefined
-
 export type FocusPath = readonly string[]
 
-export type FocusableTreeNode = {
-    focusKey: string
-    getParent: () => FocusableTreeNode | undefined
-    getBoundingBox: GetBoundingBoxFn
-    getChildren: () => Map<string, FocusableTreeNode>
+export type FocusUpdatesSubscriber = (event: { focusPath: FocusPath }) => void
+
+export type UnsubscribeFromFocusUpdatesFn = () => void
+
+export type CustomGetPreferredChildFn = (params: {
+    focusableChildren: Map<FocusKey, FIXMEFocusableNode>
+    focusOrigin?: FIXMEFocusableNode
+    direction?: Direction
+}) => FIXMEFocusableNode | undefined
+
+export type GetPreferredChildFn = (
+    focusOrigin?: FIXMEFocusableNode,
+    direction?: Direction
+) => FIXMEFocusableNode | undefined
+
+/**
+ * The public API version of FocusableNode class's interface.
+ */
+export interface FIXMEFocusableNode {
+    getFocusKey(): FocusKey
+    getPath(): FocusKey[]
+    getBoundingBox(): BoundingBox
+    getParent(): FIXMEFocusableNode | undefined
+    getChildren(): Map<FocusKey, FIXMEFocusableNode>
     getPreferredChild: GetPreferredChildFn
-    lock: Direction[]
+    getLock(): Direction[] | Direction | undefined
 }
-
-export type FocusableNodesMap = Map<string, FocusableTreeNode>
-
-export type GetChildrenFn = () => FocusableNodesMap

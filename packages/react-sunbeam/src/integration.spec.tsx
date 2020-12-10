@@ -3,6 +3,10 @@ import { act, render, fireEvent } from "@testing-library/react"
 import { SunbeamProvider, FocusManager, Focusable, useFocusable } from "./focus/index.js"
 import type { KeyPressListener } from "./keyPressManagement/index.js"
 
+describe("Sunbeam integration", () => {
+    test.todo("should re-render only the affected nodes on focus change")
+})
+
 describe("Key press management integration", () => {
     test("Nested key handlers", () => {
         const sunbeamProviderKeyHandler = jest.fn((event) => event.stopPropagation())
