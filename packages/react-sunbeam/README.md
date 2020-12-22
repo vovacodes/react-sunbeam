@@ -28,11 +28,11 @@ yarn add react-sunbeam
 ```js
 // app.js
 import React, { useCallback, useEffect } from "react"
-import { Root, Focusable, FocusManager, useSunbeam } from "react-sunbeam"
+import { Root, Focusable, FocusManager, useFocusManager } from "react-sunbeam"
 import { FocusableCard } from "./FocusableCard"
 
 function App() {
-    const { setFocus, moveFocusLeft, moveFocusRight, moveFocusUp, moveFocusDown } = useSunbeam()
+    const { setFocus, moveFocusLeft, moveFocusRight, moveFocusUp, moveFocusDown } = useFocusManager()
 
     const onKeyDown = useCallback(
         (event) => {
@@ -180,38 +180,57 @@ render(
 )
 ```
 
-### `SunbeamProvider`
+### `<Root>`
 
-### `Focusable`
+`Root` is the root focusable component.
+It instantiates the focusable tree and holds its root node, as well as passing some utilities through the React context to other focusable components in the tree.
 
-### `useSunbeam(): { setFocus(focusPath: readonly string[]): void; moveFocusRight(): void; moveFocusLeft(): void; moveFocusUp(): void; moveFocusDown(): void; }`
-
-This hook provides access to some public methods of `FocusManager` inside the React components.
-It expects `<SunbeamProvider>` to be present in the tree, otherwise it returns no-op versions of the methods
-
-### `useFocusable(options: Options): { focused: boolean; path: string[] }`
-
-This hook makes the enclosing component focusable. It can only be used for the "leaf" focusables so the component
-that uses it cannot have other focusable children. If you need the latter behaviour use `<Focusable>` instead.
-
-#### Options
-
-```typescript
-type Options = {
-    // Ref object pointing to a DOM Element or any other object that has 'getBoundingClientRect(): ClientRect' method
-    elementRef: React.RefObject<{ getBoundingClientRect(): ClientRect }>
-    // If set to false the node is ignored in focus management process. Default: true
-    focusable?: boolean
-    focusKey?: string
-    // If set prevents the node from losing focus when navigating in the given directions
-    lock?: Direction | Direction[]
-    onKeyPress?: (event: KeyboardEvent) => void
-    onFocus?: (event: { focusablePath: readonly string[]; getBoundingClientRect: () => ClientRect }) => void
-    onBlur?: (event: { focusablePath: readonly string[]; getBoundingClientRect: () => ClientRect }) => void
-}
+```ts
+function Root(props: {
+    focusManager: FocusManager
+    keyPressManager?: KeyPressManager
+    onFocusUpdate?: (event: { focusPath: FocusPath }) => void
+    onKeyPress?: KeyPressListener
+    getPreferredChildOnFocus?: CustomGetPreferredChildFn
+    children: React.ReactNode
+})
 ```
 
-#### Example
+### `useFocusable()`
+
+A hook that makes the component that uses it a focusable node in the tree.
+
+```ts
+function useFocusable(params: {
+    // Ref object pointing to a DOM Element or any other object that has 'getBoundingClientRect(): ClientRect' method
+    elementRef: Element
+    focusKey?: string
+    // If set to false the node is ignored in focus management process. Default: true
+    focusable?: boolean
+    // If set prevents the node from losing focus when navigating in the given directions
+    lock?: Direction | Direction[]
+    onKeyPress?: KeyPressListener
+    onFocus?: (event: FocusEvent) => void
+    onBlur?: (event: FocusEvent) => void
+    getPreferredChildOnFocus?: CustomGetPreferredChildFn
+}): { focused: boolean; path: string[]; node: BranchNode }
+```
+
+It can be used both for creating a leaf node or a branch node.
+If the latter is the goal, the node has to be passed down the tree through the React context.
+In order to do that, the user needs to render a Branch component and pass it the opaque `node` object returned from the `useFocusable()` call:
+
+```ts
+const { focused, node } = useFocusable(...)
+
+return (
+    <Branch node={node}>
+        ...
+    </Branch>
+)
+```
+
+#### Example: Focusable Button
 
 ```typescript jsx
 import React from "react"
@@ -234,6 +253,38 @@ export function FocusableButton({ children }) {
             {children}
         </button>
     )
+}
+```
+
+### `<Branch>`
+
+The sole purpose of the `Branch` component is to enable a focusable node to have other focusable children.
+The focusable components rendered inside `Branch` will become its focusable children.
+
+```ts
+const { focused, node } = useFocusable(...)
+
+return (
+    <Branch node={node}>
+        ...
+    </Branch>
+)
+```
+
+### `<Focusable>`
+
+### `useFocusManager()`
+
+This hook provides access to some public methods of `FocusManager` inside the React components.
+The methods can be used to manipulate focus programmatically.
+
+```ts
+function useFocusManager(): {
+    setFocus(focusPath: readonly string[]): void
+    moveRight(): void
+    moveLeft(): void
+    moveUp(): void
+    moveFocusDown(): void
 }
 ```
 

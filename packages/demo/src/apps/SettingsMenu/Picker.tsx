@@ -1,7 +1,7 @@
 import * as React from "react"
 import { ReactComponentElement, useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
-import { Direction, Focusable, useFocusable, useSunbeam } from "react-sunbeam"
+import { Direction, Focusable, useFocusable, useFocusManager } from "react-sunbeam"
 import { Colors, Typography } from "../../styles"
 
 export function Picker({
@@ -49,7 +49,7 @@ export function Picker({
             }}
         >
             {({ focused, path }) => {
-                const { setFocus } = useSunbeam()
+                const { setFocus } = useFocusManager()
                 const prevOpen = usePrevious(open, open)
                 useEffect(() => {
                     if (!open || prevOpen === open) return

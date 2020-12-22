@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { FOCUSABLE_TREE_ROOT_KEY } from "../../Constants.js"
-import { SunbeamContext } from "../../SunbeamContext.js"
+import { FocusManagerContext } from "../../FocusManagerContext.js"
 import type { CustomGetPreferredChildFn, FocusPath } from "../../types.js"
 import type { FocusManager } from "../../FocusManager.js"
 import {
@@ -87,25 +87,14 @@ export function Root({
     }, [onKeyPress, keyPressManager])
     const childKeyPressTreeContextValue = useChildKeyPressTreeContextValue(childKeyPressTreeNodeRef)
 
-    const sunbeamContextValue = useMemo(
-        () => ({
-            moveFocusLeft: () => focusManager.moveLeft(),
-            moveFocusRight: () => focusManager.moveRight(),
-            moveFocusUp: () => focusManager.moveUp(),
-            moveFocusDown: () => focusManager.moveDown(),
-            setFocus: focusManager.setFocus.bind(focusManager),
-        }),
-        [focusManager]
-    )
-
     return (
         <FocusManagerInternalsContext.Provider value={focusManager}>
             <DispatcherContext.Provider value={dispatcher}>
                 <FocusableParentContextProvider value={focusableTreeRoot}>
                     <KeyPressTreeContextProvider value={childKeyPressTreeContextValue}>
-                        <SunbeamContext.Provider value={sunbeamContextValue}>
+                        <FocusManagerContext.Provider value={focusManager}>
                             <div ref={wrapperRef}>{children}</div>
-                        </SunbeamContext.Provider>
+                        </FocusManagerContext.Provider>
                     </KeyPressTreeContextProvider>
                 </FocusableParentContextProvider>
             </DispatcherContext.Provider>

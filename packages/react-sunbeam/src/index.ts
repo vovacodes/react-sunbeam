@@ -3,7 +3,7 @@ export {
     Focusable,
     Root,
     FocusManager,
-    useSunbeam,
+    useFocusManager,
     useFocusable,
     FocusEvent,
     FIXMEFocusableNode,
