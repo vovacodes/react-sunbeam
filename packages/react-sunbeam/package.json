@@ -1,6 +1,6 @@
 {
     "name": "react-sunbeam",
-    "version": "1.0.4",
+    "version": "2.0.0-alpha.0",
     "description": "Spatial navigation and focus management for React",
     "keywords": [
         "spatial-navigation",
