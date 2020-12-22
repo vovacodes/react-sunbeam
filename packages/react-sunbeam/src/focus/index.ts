@@ -4,9 +4,9 @@ import type { Direction } from "../spatialNavigation/index.js"
 
 export type { FocusEvent, FIXMEFocusableNode } from "./types.js"
 export { FocusManager } from "./FocusManager.js"
+export { Branch } from "./components/Branch.js"
+export { Root } from "./components/Root/index.js"
 export { Focusable } from "./components/Focusable.js"
-export { FocusContainer } from "./components/FocusContainer.js"
-export { SunbeamProvider } from "./components/SunbeamProvider/index.js"
 export { useSunbeam } from "./hooks/useSunbeam.js"
 export { useFocusable } from "./hooks/useFocusable.js"
 

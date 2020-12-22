@@ -1,6 +1,6 @@
 import React, { useRef } from "react"
 import { act, render, fireEvent } from "@testing-library/react"
-import { SunbeamProvider, FocusManager, Focusable, useFocusable } from "./focus/index.js"
+import { Root, FocusManager, Focusable, useFocusable } from "./focus/index.js"
 import type { KeyPressListener } from "./keyPressManagement/index.js"
 
 describe("Sunbeam integration", () => {
@@ -23,7 +23,7 @@ describe("Key press management integration", () => {
 
         const focusManager = new FocusManager({ initialFocusPath: ["Focusable-1"] })
         render(
-            <SunbeamProvider focusManager={focusManager} onKeyPress={sunbeamProviderKeyHandler}>
+            <Root focusManager={focusManager} onKeyPress={sunbeamProviderKeyHandler}>
                 <Focusable focusKey={"Focusable-1"} onKeyPress={focusable1KeyHandler}>
                     hello
                 </Focusable>
@@ -31,7 +31,7 @@ describe("Key press management integration", () => {
                     <FocusableButton focusKey="FocusableButton-1" onKeyPress={focusableButton1KeyHandler} />
                     <FocusableButton focusKey="FocusableButton-2" onKeyPress={focusableButton2KeyHandler} />
                 </Focusable>
-            </SunbeamProvider>
+            </Root>
         )
 
         fireEvent(window, new KeyboardEvent("keydown"))

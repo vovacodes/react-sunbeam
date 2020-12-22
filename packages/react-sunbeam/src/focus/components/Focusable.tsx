@@ -4,7 +4,7 @@ import type { Direction } from "../../spatialNavigation/index.js"
 import type { KeyPressListener } from "../../keyPressManagement/index.js"
 import type { CustomGetPreferredChildFn, FocusEvent } from "../types.js"
 import { useFocusable } from "../hooks/useFocusable.js"
-import { FocusContainer } from "./FocusContainer.js"
+import { Branch } from "./Branch.js"
 
 interface Props {
     focusKey?: string
@@ -32,7 +32,7 @@ export function Focusable({
     onBlur,
 }: Props) {
     const wrapperRef = useRef<HTMLDivElement | null>(null)
-    const { focused, path, containerSymbol } = useFocusable({
+    const { focused, path, node } = useFocusable({
         elementRef: wrapperRef,
         focusKey,
         focusable,
@@ -46,10 +46,10 @@ export function Focusable({
     const renderCallbackArgument = useMemo(() => ({ focused, path }), [focused, path])
 
     return (
-        <FocusContainer symbol={containerSymbol}>
+        <Branch node={node}>
             <div ref={wrapperRef} className={className} style={style}>
                 {typeof children === "function" ? children(renderCallbackArgument) : children}
             </div>
-        </FocusContainer>
+        </Branch>
     )
 }

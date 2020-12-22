@@ -2,30 +2,30 @@ import React from "react"
 import { act, render, fireEvent } from "@testing-library/react"
 import { Focusable, FocusManager } from "../../index.js"
 import { KeyPressManager } from "../../../keyPressManagement/index.js"
-import { SunbeamProvider } from "./index.js"
+import { Root } from "./index.js"
 
-describe("<SunbeamProvider>", () => {
+describe("<Root>", () => {
     it("should call focusManager.revalidateFocusPath() only once when multiple nodes are added/removed from the tree", async () => {
         const focusManager = new FocusManager()
         const spy = jest.spyOn(focusManager, "revalidateFocusPath")
 
         const { rerender } = render(
-            <SunbeamProvider focusManager={focusManager}>
+            <Root focusManager={focusManager}>
                 <Focusable>left</Focusable>
                 <Focusable>
                     <Focusable>right</Focusable>
                 </Focusable>
-            </SunbeamProvider>
+            </Root>
         )
 
         expect(spy).toBeCalledTimes(1)
         spy.mockReset()
 
         rerender(
-            <SunbeamProvider focusManager={focusManager}>
+            <Root focusManager={focusManager}>
                 <Focusable>left</Focusable>
                 {/* Removed right subtree */}
-            </SunbeamProvider>
+            </Root>
         )
         await act(() => Promise.resolve())
 
@@ -34,11 +34,11 @@ describe("<SunbeamProvider>", () => {
     })
 
     describe("getPreferredChildOnFocus", () => {
-        it("selects which child to focus on when SunbeamProvider becomes focused", () => {
+        it("selects which child to focus on when Root becomes focused", () => {
             const focusManager = new FocusManager()
 
             render(
-                <SunbeamProvider
+                <Root
                     focusManager={focusManager}
                     getPreferredChildOnFocus={({ focusableChildren }) => {
                         return focusableChildren.get("right")
@@ -46,7 +46,7 @@ describe("<SunbeamProvider>", () => {
                 >
                     <Focusable>left</Focusable>
                     <Focusable focusKey="right">right</Focusable>
-                </SunbeamProvider>
+                </Root>
             )
 
             expect(focusManager.getFocusPath()).toEqual(["right"])
@@ -68,13 +68,13 @@ describe("<SunbeamProvider>", () => {
             keyPressManager.addListener(existingEnterKeyPressHandler)
 
             const { rerender } = render(
-                <SunbeamProvider
+                <Root
                     focusManager={focusManager}
                     keyPressManager={keyPressManager}
                     onKeyPress={sunbeamProviderEnterKeyPressHandler}
                 >
                     hello
-                </SunbeamProvider>
+                </Root>
             )
 
             fireEvent(window, enterKeyPressEvent)
@@ -108,13 +108,13 @@ describe("<SunbeamProvider>", () => {
             keyPressManager1.addListener(existingAKeyPressHandler1)
 
             const { rerender } = render(
-                <SunbeamProvider
+                <Root
                     focusManager={focusManager}
                     keyPressManager={keyPressManager1}
                     onKeyPress={sunbeamProviderAKeyPressHandler}
                 >
                     hello
-                </SunbeamProvider>
+                </Root>
             )
 
             fireEvent(window, aKeyPressEvent)
@@ -128,13 +128,13 @@ describe("<SunbeamProvider>", () => {
             keyPressManager2.addListener(existingAKeyPressHandler2)
 
             rerender(
-                <SunbeamProvider
+                <Root
                     focusManager={focusManager}
                     keyPressManager={keyPressManager2}
                     onKeyPress={sunbeamProviderAKeyPressHandler}
                 >
                     hello
-                </SunbeamProvider>
+                </Root>
             )
 
             fireEvent(window, aKeyPressEvent)
@@ -152,9 +152,9 @@ describe("<SunbeamProvider>", () => {
 
             const focusManager = new FocusManager()
             render(
-                <SunbeamProvider focusManager={focusManager} onKeyPress={keyPressHandler}>
+                <Root focusManager={focusManager} onKeyPress={keyPressHandler}>
                     hello
-                </SunbeamProvider>
+                </Root>
             )
 
             fireEvent(window, keyPressEvent)
@@ -168,9 +168,9 @@ describe("<SunbeamProvider>", () => {
 
             const focusManager = new FocusManager()
             const { rerender } = render(
-                <SunbeamProvider focusManager={focusManager} onKeyPress={keyPressHandler}>
+                <Root focusManager={focusManager} onKeyPress={keyPressHandler}>
                     hello
-                </SunbeamProvider>
+                </Root>
             )
 
             fireEvent(window, keyPressEvent)

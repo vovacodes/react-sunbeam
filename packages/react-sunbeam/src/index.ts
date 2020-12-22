@@ -1,7 +1,7 @@
 export {
+    Branch,
     Focusable,
-    FocusContainer,
-    SunbeamProvider,
+    Root,
     FocusManager,
     useSunbeam,
     useFocusable,

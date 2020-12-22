@@ -26,7 +26,7 @@ type Props = {
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
 }
 
-export function SunbeamProvider({
+export function Root({
     focusManager,
     keyPressManager: customKeyPressManager,
     children,

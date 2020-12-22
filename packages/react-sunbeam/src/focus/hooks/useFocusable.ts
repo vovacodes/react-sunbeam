@@ -7,7 +7,7 @@ import { useOnFocusedChange } from "./useOnFocusedChange.js"
 import { useKeyPressTreeNode } from "./useKeyPressTreeNode.js"
 import { useFocusableNode } from "./useFocusableNode.js"
 import { useFocused } from "./useFocused.js"
-import { createFocusContainerSymbol, FocusContainerSymbol } from "../focusContainerSymbol.js"
+import { branchNodeFrom, BranchNode } from "../branchNode.js"
 import { useFocusManager } from "./useFocusManager.js"
 
 // TODO: add other options: () => ClientRect | ClientRect
@@ -33,7 +33,7 @@ export function useFocusable({
     onFocus?: (event: FocusEvent) => void
     onBlur?: (event: FocusEvent) => void
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
-}): { focused: boolean; path: string[]; containerSymbol: FocusContainerSymbol } {
+}): { focused: boolean; path: string[]; node: BranchNode } {
     const focusManager = useFocusManager()
     const focusableNode = useFocusableNode(
         focusManager,
@@ -70,5 +70,5 @@ export function useFocusable({
 
     const keyPressTreeNode = useKeyPressTreeNode({ onKeyPress, focused })
 
-    return { focused, path, containerSymbol: createFocusContainerSymbol(focusableNode, keyPressTreeNode) }
+    return { focused, path, node: branchNodeFrom(focusableNode, keyPressTreeNode) }
 }
