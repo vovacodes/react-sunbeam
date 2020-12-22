@@ -2,15 +2,21 @@
     "name": "react-sunbeam",
     "version": "1.0.4",
     "description": "Spatial navigation and focus management for React",
-    "main": "dist/cjs/index.js",
+    "keywords": [
+        "spatial-navigation",
+        "tv",
+        "otp",
+        "focus-management"
+    ],
+    "main": "./dist/cjs/index.js",
     "exports": {
         ".": "dist/es/index.js",
         "./keyPressManagement": "dist/es/keyPressManagement/index.js",
         "./spatialNavigation": "dist/es/spatialNavigation/index.js"
     },
-    "module": "dist/es/index.js",
-    "unpkg": "dist/es/index.js",
-    "types": "dist/es/index.d.ts",
+    "module": "./dist/es/index.js",
+    "unpkg": "./dist/es/index.js",
+    "types": "./dist/es/index.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/vovaguguiev/react-sunbeam.git",
