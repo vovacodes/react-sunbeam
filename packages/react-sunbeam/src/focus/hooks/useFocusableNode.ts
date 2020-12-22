@@ -21,7 +21,7 @@ type ElementRef = RefObject<{
  * @param lock - can change between calls
  */
 export function useFocusableNode(
-    focusManager: { revalidateFocusPath(): void } | undefined,
+    focusManagerAPI: { revalidateFocusPath(): void } | undefined,
     elementRef: ElementRef,
     focusKey: FocusKey | undefined,
     focusable: boolean,
@@ -45,7 +45,7 @@ export function useFocusableNode(
     const [focusableNode] = useState(
         () =>
             new FocusableNode({
-                focusManager: focusManager ?? { revalidateFocusPath() {} },
+                focusManagerAPI: focusManagerAPI ?? { revalidateFocusPath() {} },
                 focusKey,
                 parentPath:
                     // We shouldn't include FOCUSABLE_TREE_ROOT_KEY into the focus path.

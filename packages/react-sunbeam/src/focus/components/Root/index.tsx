@@ -13,7 +13,7 @@ import {
 import { useChildKeyPressTreeContextValue } from "../../hooks/useChildKeyPressTreeContextValue.js"
 import useOnFocusUpdate from "./useOnFocusUpdate.js"
 import { Dispatcher, DispatcherContext } from "../../Dispatcher.js"
-import { FocusManagerContext } from "../../FocusManagerContext.js"
+import { FocusManagerInternalsContext } from "../../FocusManagerInternalsContext.js"
 import { useFocusableNode } from "../../hooks/useFocusableNode.js"
 import { FocusableParentContextProvider } from "../../FocusableParentContext.js"
 
@@ -99,7 +99,7 @@ export function Root({
     )
 
     return (
-        <FocusManagerContext.Provider value={focusManager}>
+        <FocusManagerInternalsContext.Provider value={focusManager}>
             <DispatcherContext.Provider value={dispatcher}>
                 <FocusableParentContextProvider value={focusableTreeRoot}>
                     <KeyPressTreeContextProvider value={childKeyPressTreeContextValue}>
@@ -109,6 +109,6 @@ export function Root({
                     </KeyPressTreeContextProvider>
                 </FocusableParentContextProvider>
             </DispatcherContext.Provider>
-        </FocusManagerContext.Provider>
+        </FocusManagerInternalsContext.Provider>
     )
 }

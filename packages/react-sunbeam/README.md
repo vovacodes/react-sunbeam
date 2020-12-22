@@ -28,7 +28,7 @@ yarn add react-sunbeam
 ```js
 // app.js
 import React, { useCallback, useEffect } from "react"
-import { Focusable, SunbeamProvider, FocusManager, useSunbeam } from "react-sunbeam"
+import { Root, Focusable, FocusManager, useSunbeam } from "react-sunbeam"
 import { FocusableCard } from "./FocusableCard"
 
 function App() {
@@ -101,9 +101,9 @@ const focusManager = new FocusManager({
 })
 
 render(
-    <SunbeamProvider focusManager={focusManager}>
+    <Root focusManager={focusManager}>
         <App />
-    </SunbeamProvider>,
+    </Root>,
     document.getElementById("app")
 )
 
@@ -144,7 +144,7 @@ Immediately makes focused the focusable node with the given `path`.
 
 ```js
 import { render } from "react-dom"
-import { SunbeamProvider, FocusManager } from "react-sunbeam"
+import { Root, FocusManager } from "react-sunbeam"
 import { App } from "./App"
 
 const focusManager = new FocusManager({
@@ -173,9 +173,9 @@ document.addEventListener("keydown", (event) => {
 })
 
 render(
-    <SunbeamProvider focusManager={focusManager}>
+    <Root focusManager={focusManager}>
         <App />
-    </SunbeamProvider>,
+    </Root>,
     document.getElementById("app")
 )
 ```

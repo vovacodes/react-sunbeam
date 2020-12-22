@@ -17,14 +17,14 @@ export class FocusableNode implements FIXMEFocusableNode {
     public readonly getBoundingBox: () => BoundingBox
 
     constructor({
-        focusManager,
+        focusManagerAPI,
         focusKey,
         parentPath,
         getBoundingBox,
         customGetPreferredChild,
         lock,
     }: {
-        focusManager: { revalidateFocusPath(): void }
+        focusManagerAPI: { revalidateFocusPath(): void }
         focusKey?: FocusKey
         parentPath: FocusKey[]
         getBoundingBox: () => BoundingBox
@@ -39,7 +39,7 @@ export class FocusableNode implements FIXMEFocusableNode {
         this.lock = lock
 
         // Make sure we only call the wrapped function at the end of the event loop cycle and only once.
-        this.revalidateFocusPath = deferAndDebounce(() => focusManager.revalidateFocusPath())
+        this.revalidateFocusPath = deferAndDebounce(() => focusManagerAPI.revalidateFocusPath())
     }
 
     public registerChild(child: FocusableNode): void {

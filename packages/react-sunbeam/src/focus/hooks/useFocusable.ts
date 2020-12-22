@@ -8,7 +8,7 @@ import { useKeyPressTreeNode } from "./useKeyPressTreeNode.js"
 import { useFocusableNode } from "./useFocusableNode.js"
 import { useFocused } from "./useFocused.js"
 import { branchNodeFrom, BranchNode } from "../branchNode.js"
-import { useFocusManager } from "./useFocusManager.js"
+import { useFocusManagerInternals } from "./useFocusManagerInternals.js"
 
 // TODO: add other options: () => ClientRect | ClientRect
 type Element = RefObject<{
@@ -34,9 +34,9 @@ export function useFocusable({
     onBlur?: (event: FocusEvent) => void
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
 }): { focused: boolean; path: string[]; node: BranchNode } {
-    const focusManager = useFocusManager()
+    const focusManagerInternals = useFocusManagerInternals()
     const focusableNode = useFocusableNode(
-        focusManager,
+        focusManagerInternals,
         elementRef,
         focusKey,
         focusable,

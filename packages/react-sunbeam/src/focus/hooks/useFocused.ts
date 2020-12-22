@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react"
 import type { FocusKey } from "../types.js"
-import { useFocusManager } from "./useFocusManager.js"
+import { useFocusManagerInternals } from "./useFocusManagerInternals.js"
 
 export function useFocused(focusablePath: readonly FocusKey[]): boolean {
-    const focusManager = useFocusManager()
+    const focusManagerInternals = useFocusManagerInternals()
 
-    const [focused, setFocused] = useState(() => isPrefixOfPath(focusManager?.getFocusPath() ?? [], focusablePath))
+    const [focused, setFocused] = useState(() =>
+        isPrefixOfPath(focusManagerInternals?.getFocusPath() ?? [], focusablePath)
+    )
 
     useEffect(() => {
-        if (focusManager) {
-            return focusManager.subscribe(({ focusPath }) => {
+        if (focusManagerInternals) {
+            return focusManagerInternals.subscribe(({ focusPath }) => {
                 setFocused(isPrefixOfPath(focusPath, focusablePath))
             })
         }
-    }, [focusManager, focusablePath, setFocused])
+    }, [focusManagerInternals, focusablePath, setFocused])
 
     return focused
 }
