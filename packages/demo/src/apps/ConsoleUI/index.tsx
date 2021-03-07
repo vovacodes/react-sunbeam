@@ -2,7 +2,7 @@ import * as React from "react"
 import { useCallback } from "react"
 import { useHistory } from "react-router-dom"
 
-import { defaultGetPreferredChildOnFocus, Direction, FIXMEFocusableNode, Focusable, FocusEvent } from "react-sunbeam"
+import { defaultGetPreferredChildOnFocus, Direction, IFocusableNode, Focusable, FocusEvent } from "react-sunbeam"
 
 import { ProfilesMenu } from "./ProfilesMenu"
 import { GamesGallery } from "./GamesGallery"
@@ -51,8 +51,8 @@ export function ConsoleUI() {
                         focusOrigin,
                         direction,
                     }: {
-                        focusableChildren: Map<string, FIXMEFocusableNode>
-                        focusOrigin?: FIXMEFocusableNode
+                        focusableChildren: Map<string, IFocusableNode>
+                        focusOrigin?: IFocusableNode
                         direction?: Direction
                     }) => {
                         if (!focusOrigin || !direction) {

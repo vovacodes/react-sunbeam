@@ -14,25 +14,22 @@ export type FocusUpdatesSubscriber = (event: { focusPath: FocusPath }) => void
 export type UnsubscribeFromFocusUpdatesFn = () => void
 
 export type CustomGetPreferredChildFn = (params: {
-    focusableChildren: Map<FocusKey, FIXMEFocusableNode>
-    focusOrigin?: FIXMEFocusableNode
+    focusableChildren: Map<FocusKey, IFocusableNode>
+    focusOrigin?: IFocusableNode
     direction?: Direction
-}) => FIXMEFocusableNode | undefined
+}) => IFocusableNode | undefined
 
-export type GetPreferredChildFn = (
-    focusOrigin?: FIXMEFocusableNode,
-    direction?: Direction
-) => FIXMEFocusableNode | undefined
+export type GetPreferredChildFn = (focusOrigin?: IFocusableNode, direction?: Direction) => IFocusableNode | undefined
 
 /**
  * The public API version of FocusableNode class's interface.
  */
-export interface FIXMEFocusableNode {
+export interface IFocusableNode {
     getFocusKey(): FocusKey
     getPath(): FocusKey[]
     getBoundingBox(): BoundingBox
-    getParent(): FIXMEFocusableNode | undefined
-    getChildren(): Map<FocusKey, FIXMEFocusableNode>
+    getParent(): IFocusableNode | undefined
+    getChildren(): Map<FocusKey, IFocusableNode>
     getPreferredChild: GetPreferredChildFn
     getLock(): Direction[] | Direction | undefined
 }

@@ -1,11 +1,11 @@
 import type { BoundingBox, Direction } from "../spatialNavigation/index.js"
-import type { CustomGetPreferredChildFn, FocusKey, FIXMEFocusableNode } from "./types.js"
+import type { CustomGetPreferredChildFn, FocusKey, IFocusableNode } from "./types.js"
 import { assert } from "../shared/assert.js"
 import getPreferredNode from "./getPreferredNode.js"
 
 export type FocusableNodesMap = Map<FocusKey, FocusableNode>
 
-export class FocusableNode implements FIXMEFocusableNode {
+export class FocusableNode implements IFocusableNode {
     private readonly revalidateFocusPath: () => void
     private readonly focusKey: FocusKey
     private readonly path: FocusKey[]
@@ -72,7 +72,7 @@ export class FocusableNode implements FIXMEFocusableNode {
         this.lock = lock
     }
 
-    public getPreferredChild(focusOrigin?: FIXMEFocusableNode, direction?: Direction) {
+    public getPreferredChild(focusOrigin?: IFocusableNode, direction?: Direction) {
         return this.customGetPreferredChild
             ? this.customGetPreferredChild({
                   focusableChildren: this.children,

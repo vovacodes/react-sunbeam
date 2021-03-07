@@ -1,9 +1,9 @@
-import type { FIXMEFocusableNode } from "./types.js"
+import type { IFocusableNode } from "./types.js"
 import type { FocusKey } from "./types.js"
 import type { Direction, BoundingBox } from "../spatialNavigation/index.js"
 import { getBestCandidate } from "../spatialNavigation/index.js"
 
-export function getClosestFocusableNodeInDirection<N extends FIXMEFocusableNode>(
+export function getClosestFocusableNodeInDirection<N extends IFocusableNode>(
     focusableNodes: Map<FocusKey, N>,
     focusOrigin: BoundingBox,
     direction: Direction

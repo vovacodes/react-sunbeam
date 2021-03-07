@@ -1,7 +1,7 @@
-import type { FocusPath, FIXMEFocusableNode } from "./types.js"
+import type { FocusPath, IFocusableNode } from "./types.js"
 import { FOCUSABLE_TREE_ROOT_KEY } from "./Constants.js"
 
-export function validateAndFixFocusPathIfNeeded(focusPath: FocusPath, treeRoot: FIXMEFocusableNode): FocusPath | null {
+export function validateAndFixFocusPathIfNeeded(focusPath: FocusPath, treeRoot: IFocusableNode): FocusPath | null {
     let fixedFocusPath: string[] | null = null // only initialize if we need to fix the path
     let currentNode = treeRoot
     let focusPathSegmentIndex = 0
@@ -45,18 +45,18 @@ export function validateAndFixFocusPathIfNeeded(focusPath: FocusPath, treeRoot: 
     return fixedFocusPath ? fixedFocusPath : null
 }
 
-export function getNodeByPath(path: FocusPath, treeRoot: FIXMEFocusableNode): FIXMEFocusableNode | undefined {
-    return path.reduce((node: FIXMEFocusableNode | undefined, focusKey: string) => {
+export function getNodeByPath(path: FocusPath, treeRoot: IFocusableNode): IFocusableNode | undefined {
+    return path.reduce((node: IFocusableNode | undefined, focusKey: string) => {
         if (node === undefined) return undefined
 
         return node.getChildren().get(focusKey)
     }, treeRoot)
 }
 
-export function getPathToNode(treeNode: FIXMEFocusableNode): FocusPath {
+export function getPathToNode(treeNode: IFocusableNode): FocusPath {
     const path: string[] = []
 
-    let currentNode: FIXMEFocusableNode | undefined = treeNode
+    let currentNode: IFocusableNode | undefined = treeNode
     while (currentNode) {
         const focusKey = currentNode.getFocusKey()
 
@@ -71,9 +71,9 @@ export function getPathToNode(treeNode: FIXMEFocusableNode): FocusPath {
     return path
 }
 
-export function getSiblings(focusableTreeNode: FIXMEFocusableNode): readonly FIXMEFocusableNode[] {
+export function getSiblings(focusableTreeNode: IFocusableNode): readonly IFocusableNode[] {
     const parent = focusableTreeNode.getParent()
-    const siblings: FIXMEFocusableNode[] = []
+    const siblings: IFocusableNode[] = []
 
     if (!parent) return siblings
 

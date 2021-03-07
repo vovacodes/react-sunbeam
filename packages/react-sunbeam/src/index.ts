@@ -6,7 +6,7 @@ export {
     useFocusManager,
     useFocusable,
     FocusEvent,
-    FIXMEFocusableNode,
+    IFocusableNode,
     defaultGetPreferredChildOnFocus,
 } from "./focus/index.js"
 export { Direction } from "./spatialNavigation/index.js"

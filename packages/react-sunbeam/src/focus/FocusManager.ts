@@ -1,4 +1,4 @@
-import type { FocusPath, FocusUpdatesSubscriber, FIXMEFocusableNode, UnsubscribeFromFocusUpdatesFn } from "./types.js"
+import type { FocusPath, FocusUpdatesSubscriber, IFocusableNode, UnsubscribeFromFocusUpdatesFn } from "./types.js"
 import { getNodeByPath, getPathToNode, getSiblings, validateAndFixFocusPathIfNeeded } from "./FocusableTreeUtils.js"
 import { Direction, getBestCandidate } from "../spatialNavigation/index.js"
 import { boxesWithinFrustumOfOrigin } from "../spatialNavigation/frustumFilteringUtils.js"
@@ -17,7 +17,7 @@ export class FocusManager {
      * path from the focusableRoot to the focusTarget.
      */
     private focusPath: readonly string[]
-    private focusableRoot: FIXMEFocusableNode | undefined
+    private focusableRoot: IFocusableNode | undefined
     private subscribers: Set<FocusUpdatesSubscriber>
 
     public constructor(options: Options = defaultOptions) {
@@ -68,7 +68,7 @@ export class FocusManager {
     // ===================================
 
     /** @private */
-    public setFocusableRoot(focusableRoot: FIXMEFocusableNode): void {
+    public setFocusableRoot(focusableRoot: IFocusableNode): void {
         this.focusableRoot = focusableRoot
 
         this.revalidateFocusPath()
@@ -129,10 +129,10 @@ export class FocusManager {
 }
 
 function findBestCandidateAmongSiblingsOf(
-    treeNode: FIXMEFocusableNode,
-    focusOrigin: FIXMEFocusableNode,
+    treeNode: IFocusableNode,
+    focusOrigin: IFocusableNode,
     direction: Direction
-): FIXMEFocusableNode | null {
+): IFocusableNode | null {
     // Focus doesn't move
     if (isDirectionLocked(direction, treeNode.getLock())) return null
 

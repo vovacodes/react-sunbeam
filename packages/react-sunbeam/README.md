@@ -183,7 +183,7 @@ render(
 ### `<Root>`
 
 `Root` is the root focusable component.
-It instantiates the focusable tree and holds its root node, as well as passing some utilities through the React context to other focusable components in the tree.
+It instantiates the focusable tree and holds its root node, as well as passing some utilities through React context to other focusable components in the tree.
 
 ```ts
 function Root(props: {
@@ -217,7 +217,7 @@ function useFocusable(params: {
 ```
 
 It can be used both for creating a leaf node or a branch node.
-If the latter is the goal, the node has to be passed down the tree through the React context.
+If the latter is the goal, the node has to be passed down the tree through React context.
 In order to do that, the user needs to render a Branch component and pass it the opaque `node` object returned from the `useFocusable()` call:
 
 ```ts
@@ -225,7 +225,7 @@ const { focused, node } = useFocusable(...)
 
 return (
     <Branch node={node}>
-        ...
+        {/*...*/}
     </Branch>
 )
 ```
