@@ -1,5 +1,5 @@
 import * as React from "react"
-import { HeaderLogo } from "./HeaderLogo"
+import { HeaderLogo } from "./HeaderLogo.js"
 
 export function Header() {
     return (

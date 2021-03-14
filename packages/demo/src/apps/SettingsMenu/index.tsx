@@ -2,10 +2,10 @@ import * as React from "react"
 import { useState } from "react"
 import { useHistory } from "react-router-dom"
 import { Focusable } from "react-sunbeam"
-import { Hint } from "../../components/Hint"
-import { Picker, PickerOption } from "./Picker"
-import { Slider } from "./Slider"
-import { Header } from "../../components/Header"
+import { Hint } from "../../components/Hint.js"
+import { Picker, PickerOption } from "./Picker.js"
+import { Slider } from "./Slider.js"
+import { Header } from "../../components/Header.js"
 
 const displayModes = [
     { label: "Fullscreen", value: "fullscreen" },

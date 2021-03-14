@@ -1,8 +1,8 @@
 import * as React from "react"
 import { memo, useCallback, useRef, useState } from "react"
 import { Focusable, FocusEvent } from "react-sunbeam"
-import { FocusableItem } from "./FocusableItem"
-import { Colors } from "../../styles"
+import { FocusableItem } from "./FocusableItem.js"
+import { Colors } from "../../styles.js"
 
 type Props = {
     onFocus: (event: FocusEvent) => void
@@ -45,7 +45,7 @@ export const GamesGallery = memo(function GamesGallery({ onFocus, onBlur, onItem
 
             onItemFocus(event)
         },
-        [scrollX]
+        [onItemFocus, scrollX]
     )
 
     return (

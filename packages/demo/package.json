@@ -3,14 +3,9 @@
     "version": "2.0.0-alpha.1",
     "main": "index.js",
     "repository": "git+https://github.com/wzrdzl/react-sunbeam.git",
-    "author": "Vladimir Guguiev <vladimir.guguiev@gmail.com>",
+    "author": "Vova Guguiev <vladimir.guguiev@gmail.com>",
     "license": "MIT",
     "private": true,
-    "scripts": {
-        "build": "parcel build index.html",
-        "dev": "parcel index.html --port 1234",
-        "type-check": "tsc --noEmit"
-    },
     "dependencies": {
         "framer-motion": "^2.9.4",
         "history": "^5.0.0",
@@ -24,7 +19,8 @@
         "@types/react": "^17.0.0",
         "@types/react-dom": "^17.0.0",
         "@types/react-router-dom": "^5.1.6",
-        "parcel-bundler": "^1.12.4",
+        "concurrently": "^6.0.0",
+        "http-server": "^0.12.3",
         "typescript": "^4.1.2"
     },
     "alias": {

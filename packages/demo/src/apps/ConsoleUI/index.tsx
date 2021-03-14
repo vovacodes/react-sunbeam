@@ -4,24 +4,24 @@ import { useHistory } from "react-router-dom"
 
 import { defaultGetPreferredChildOnFocus, Direction, IFocusableNode, Focusable, FocusEvent } from "react-sunbeam"
 
-import { ProfilesMenu } from "./ProfilesMenu"
-import { GamesGallery } from "./GamesGallery"
-import { NavigationMenu } from "./NavigationMenu"
-import { Header } from "../../components/Header"
-import { Colors } from "../../styles"
-import { Hint } from "../../components/Hint"
+import { ProfilesMenu } from "./ProfilesMenu.js"
+import { GamesGallery } from "./GamesGallery.js"
+import { NavigationMenu } from "./NavigationMenu.js"
+import { Header } from "../../components/Header.js"
+import { Colors } from "../../styles.js"
+import { Hint } from "../../components/Hint.js"
 
 export function ConsoleUI() {
-    const handleItemFocus = useCallback((event: FocusEvent) => {
+    const handleItemFocus = useCallback((_event: FocusEvent) => {
         // console.log(`onFocus: ${path}`)
     }, [])
-    const handleItemBlur = useCallback((event: FocusEvent) => {
+    const handleItemBlur = useCallback((_event: FocusEvent) => {
         // console.log(`onBlur: ${event.focusablePath.join("->")}`)
     }, [])
-    const handleContainerFocus = useCallback((event: FocusEvent) => {
+    const handleContainerFocus = useCallback((_event: FocusEvent) => {
         // console.log(`onFocus: ${event.focusablePath.join("->")}`)
     }, [])
-    const handleContainerBlur = useCallback((event: FocusEvent) => {
+    const handleContainerBlur = useCallback((_event: FocusEvent) => {
         // console.log(`onBlur: ${event.focusablePath.join("->")}`)
     }, [])
 

@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ReactNode } from "react"
-import { Typography } from "../styles"
+import { Typography } from "../styles.js"
 
 export function Hint({ children }: { children: ReactNode }) {
     return (

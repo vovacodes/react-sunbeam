@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Colors } from "../styles"
+import { Colors } from "../styles.js"
 
 export function HeaderLogo() {
     return (

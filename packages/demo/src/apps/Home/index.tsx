@@ -2,9 +2,9 @@ import * as React from "react"
 import { useRef, ReactElement } from "react"
 import { useHistory } from "react-router-dom"
 import { useFocusable } from "react-sunbeam"
-import { Colors, Typography } from "../../styles"
-import { Header } from "../../components/Header"
-import { Hint } from "../../components/Hint"
+import { Colors, Typography } from "../../styles.js"
+import { Header } from "../../components/Header.js"
+import { Hint } from "../../components/Hint.js"
 
 export function Home() {
     const history = useHistory()
@@ -229,6 +229,7 @@ function IconConsole() {
     )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function IconLock() {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46">
@@ -265,7 +266,7 @@ function IconGear() {
                 fill="#CCC"
                 stroke="hsl(0, 0%, 0%)"
                 strokeLinejoin="round"
-            ></path>
+            />
         </svg>
     )
 }

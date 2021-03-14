@@ -1,8 +1,8 @@
 import * as React from "react"
 import { memo } from "react"
 import { Direction, Focusable, FocusEvent } from "react-sunbeam"
-import { FocusableItem } from "./FocusableItem"
-import { Colors } from "../../styles"
+import { FocusableItem } from "./FocusableItem.js"
+import { Colors } from "../../styles.js"
 
 type Props = {
     onFocus: (event: FocusEvent) => void

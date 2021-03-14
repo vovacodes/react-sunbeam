@@ -2,7 +2,7 @@ import * as React from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Direction, Focusable } from "react-sunbeam"
-import { Colors, Typography } from "../../styles"
+import { Colors, Typography } from "../../styles.js"
 
 export function Slider({
     label,

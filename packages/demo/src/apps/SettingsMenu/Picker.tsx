@@ -2,7 +2,7 @@ import * as React from "react"
 import { ReactComponentElement, useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import { Direction, Focusable, useFocusable, useFocusManager } from "react-sunbeam"
-import { Colors, Typography } from "../../styles"
+import { Colors, Typography } from "../../styles.js"
 
 export function Picker({
     label,
@@ -49,12 +49,12 @@ export function Picker({
             }}
         >
             {({ focused, path }) => {
-                const { setFocus } = useFocusManager()
+                const focusManager = useFocusManager()
                 const prevOpen = usePrevious(open, open)
                 useEffect(() => {
                     if (!open || prevOpen === open) return
 
-                    setFocus(path.concat(focusKeyByValue[selectedOption.props.value]))
+                    focusManager.setFocus(path.concat(focusKeyByValue[selectedOption.props.value]))
                 })
 
                 return (

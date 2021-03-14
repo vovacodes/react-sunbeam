@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useRef, useCallback } from "react"
 import { useFocusable, useFocusManager, FocusEvent, KeyPressListener } from "react-sunbeam"
-import { Colors } from "../../styles"
+import { Colors } from "../../styles.js"
 
 type Props = {
     kind: "circle" | "square"
@@ -29,12 +29,12 @@ export function FocusableItem({ kind, color, width, height, focusKey, onKeyPress
         onBlur,
         onKeyPress,
     })
-    const { setFocus } = useFocusManager()
+    const focusManager = useFocusManager()
 
     // tap-to-focus
     const handleClick = useCallback(() => {
-        setFocus(path)
-    }, [path])
+        focusManager.setFocus(path)
+    }, [focusManager, path])
 
     return (
         <div
