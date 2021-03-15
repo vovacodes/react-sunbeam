@@ -49,6 +49,8 @@ export function Picker({
             }}
         >
             {({ focused, path }) => {
+                // This callback is called during rendering and it never changes so we can safely call hooks inside of it.
+                /* eslint-disable react-hooks/rules-of-hooks */
                 const focusManager = useFocusManager()
                 const prevOpen = usePrevious(open, open)
                 useEffect(() => {
@@ -56,6 +58,7 @@ export function Picker({
 
                     focusManager.setFocus(path.concat(focusKeyByValue[selectedOption.props.value]))
                 })
+                /* eslint-enable react-hooks/rules-of-hooks */
 
                 return (
                     <div

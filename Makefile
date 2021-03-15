@@ -13,8 +13,13 @@ dev: build
 	"make -C packages/react-sunbeam ${@}" \
 	"make -C packages/demo ${@}"
 
+lint:
+	make -C packages/react-sunbeam $@
+	make -C packages/demo $@
+
 type-check:
-	yarn tsc --noEmit
+	make -C packages/react-sunbeam $@
+	make -C packages/demo $@
 
 test:
 	make -C packages/react-sunbeam $@

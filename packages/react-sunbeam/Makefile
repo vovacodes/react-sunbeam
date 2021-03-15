@@ -12,7 +12,10 @@ dev:
 type-check:
 	yarn tsc --noEmit
 
+lint:
+	yarn eslint src --ext .ts,.tsx
+
 test:
 	yarn jest
 
-PHONY: clean build dev type-check test
+PHONY: clean build dev lint type-check test
