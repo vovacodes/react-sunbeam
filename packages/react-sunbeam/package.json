@@ -9,9 +9,7 @@
         "focus-management"
     ],
     "main": "./dist/cjs/index.js",
-    "exports": {
-        ".": "./dist/es/index.js"
-    },
+    "exports": "./dist/es/index.js",
     "module": "./dist/es/index.js",
     "types": "./dist/es/index.d.ts",
     "repository": {
@@ -21,14 +19,6 @@
     },
     "author": "Vova Guguiev <vladimir.guguiev@gmail.com>",
     "license": "MIT",
-    "scripts": {
-        "build": "tsc",
-        "clean": "rimraf dist",
-        "dev": "tsc --watch --preserveWatchOutput",
-        "prebuild": "npm run clean",
-        "test": "jest",
-        "type-check": "tsc --noEmit"
-    },
     "devDependencies": {
         "@testing-library/react": "^11.1.2",
         "@types/jest": "^26.0.15",
@@ -44,11 +34,5 @@
     "peerDependencies": {
         "react": "^16 || ^17",
         "react-dom": "^16 || ^17"
-    },
-    "browserslist": [
-        ">0.2%",
-        "not dead",
-        "not ie <= 11",
-        "not op_mini all"
-    ]
+    }
 }

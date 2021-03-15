@@ -1,6 +1,9 @@
 DEFAULT_GOAL: build
 
-build:
+clean:
+	rm -rf dist
+
+build: clean
 	yarn tsc
 
 dev:
