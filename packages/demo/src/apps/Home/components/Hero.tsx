@@ -10,7 +10,7 @@ export function Hero() {
     const [focused, setFocused] = useState(false)
 
     return (
-        <PageSlide ref={ref} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}>
+        <PageSlide id="hero" ref={ref} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}>
             <div
                 style={{
                     display: "flex",

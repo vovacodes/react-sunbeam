@@ -9,7 +9,7 @@ export function DemoSelector() {
     const history = useHistory()
 
     return (
-        <PageSlide>
+        <PageSlide id="demo-selector">
             <h1
                 style={{
                     ...Typography.heading2,

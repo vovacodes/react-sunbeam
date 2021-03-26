@@ -4,7 +4,12 @@ import { Branch, useFocusable, useFocusManager } from "react-sunbeam"
 import { useMergedRef } from "../apps/utils/useMergedRef.js"
 
 export const PageSlide = React.forwardRef(function PageSlide(
-    { children, onFocus, onBlur }: { children: React.ReactNode; onFocus?: () => void; onBlur?: () => void },
+    {
+        id,
+        children,
+        onFocus,
+        onBlur,
+    }: { id: string; children: React.ReactNode; onFocus?: () => void; onBlur?: () => void },
     ref
 ) {
     const innerRef = React.useRef<HTMLDivElement>(null)
@@ -49,6 +54,7 @@ export const PageSlide = React.forwardRef(function PageSlide(
     return (
         <Branch node={node}>
             <div
+                id={id}
                 ref={useMergedRef(innerRef, ref)}
                 style={{
                     boxSizing: "border-box",
