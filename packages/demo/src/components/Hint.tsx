@@ -6,7 +6,7 @@ export function Hint({ children }: { children: ReactNode }) {
     return (
         <div
             style={{
-                position: "absolute",
+                position: "fixed",
                 bottom: 20,
                 right: 20,
                 ...Typography.smallText,

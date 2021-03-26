@@ -7,7 +7,22 @@
             href="https://fonts.googleapis.com/css?family=Fira+Code:400,700|DM+Serif+Display&display=swap"
             rel="stylesheet"
         />
-
+    </head>
+    <style>
+        body {
+            margin: 0;
+            background-color: #fffcf5;
+        }
+        @keyframes hovering {
+            from {
+                transform: translate(0px, 0px);
+            }
+            to {
+                transform: translate(-4px, -4px);
+            }
+        }
+    </style>
+    <body>
         <!--
             JSPM Generator Import Map
             Edit URL: https://generator.jspm.io/#U2VgYGCzD0pNTC5RCC5JLCpJLWJIK0rMTS3Szc0vyczPczDWMzTQM2bIyCwuyS+qdDDVM9AzYCgCadBNyc91MDQHChhCBYryS4EGgMVN9Yzg6iDCyEJQbQCidtfSfgA
@@ -52,23 +67,8 @@
                 }
             }
         </script>
-    </head>
-    <style>
-        body {
-            margin: 0;
-            background-color: #fffcf5;
-        }
-        @keyframes hovering {
-            from {
-                transform: translate(0px, 0px);
-            }
-            to {
-                transform: translate(-4px, -4px);
-            }
-        }
-    </style>
-    <body>
-        <div id="app" />
         <script type="module" src="/demo/dist/apps/index.js"></script>
+
+        <div id="app" />
     </body>
 </html>

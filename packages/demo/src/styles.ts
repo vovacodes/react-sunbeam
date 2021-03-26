@@ -25,6 +25,13 @@ export const Typography = {
         lineHeight: 1.2,
         fontWeight: 400,
     },
+    subtitle: {
+        fontFamily: `"Fira Code", monospace`,
+        fontSize: 26,
+        lineHeight: 1.4,
+        color: Colors.textBlack,
+        fontWeight: 400,
+    },
     bodyText: {
         fontFamily: `"Fira Code", monospace`,
         fontSize: 16,

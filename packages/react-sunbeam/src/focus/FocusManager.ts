@@ -63,6 +63,10 @@ export class FocusManager {
         this.notifySubscribers()
     }
 
+    public getFocusPath(): FocusPath {
+        return this.focusPath
+    }
+
     // ===================================
     // Internal interface
     // ===================================
@@ -77,11 +81,6 @@ export class FocusManager {
     /** @private */
     public clearFocusableRoot(): void {
         this.focusableRoot = undefined
-    }
-
-    /** @private */
-    public getFocusPath(): FocusPath {
-        return this.focusPath
     }
 
     /** @private */

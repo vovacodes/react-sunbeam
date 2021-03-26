@@ -6,6 +6,7 @@ export interface FocusManagerAPI {
     moveUp(): void
     moveDown(): void
     setFocus(focusPath: readonly string[]): void
+    getFocusPath(): readonly string[]
 }
 
 /**
@@ -26,5 +27,9 @@ export const FocusManagerContext = createContext<FocusManagerAPI>({
     },
     setFocus() {
         console.warn('Attempted to call "setFocus" without FocusManagerContext.Provider present in the tree')
+    },
+    getFocusPath() {
+        console.warn('Attempted to call "getFocusPath" without FocusManagerContext.Provider present in the tree')
+        return []
     },
 })
