@@ -15,7 +15,7 @@ export function DemoSelector() {
                     ...Typography.heading2,
                 }}
             >
-                Choose a demo
+                Select a demo
             </h1>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                 <div style={{ margin: "20px 40px" }}>

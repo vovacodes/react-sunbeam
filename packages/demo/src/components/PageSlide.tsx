@@ -1,7 +1,7 @@
 import * as React from "react"
-import { RefObject } from "react"
 import { Branch, useFocusable, useFocusManager } from "react-sunbeam"
 import { useMergedRef } from "../apps/utils/useMergedRef.js"
+import { useIntersectionObserver } from "./useIntersectionObserver.js"
 
 export const PageSlide = React.forwardRef(function PageSlide(
     {
@@ -70,25 +70,3 @@ export const PageSlide = React.forwardRef(function PageSlide(
         </Branch>
     )
 })
-
-function useIntersectionObserver<T extends HTMLElement>(
-    ref: RefObject<T>,
-    percentage: number,
-    callback: (isIntersecting: boolean) => void
-) {
-    React.useEffect(() => {
-        if (!ref.current) return
-
-        const intersectionObserver = new IntersectionObserver(
-            (entries) => {
-                const entry = entries[0]
-                callback(entry.isIntersecting)
-            },
-            { threshold: percentage }
-        )
-
-        intersectionObserver.observe(ref.current)
-
-        return () => intersectionObserver.disconnect()
-    }, [ref, callback, percentage])
-}
