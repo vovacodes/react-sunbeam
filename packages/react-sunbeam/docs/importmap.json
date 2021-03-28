@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "react":"https://cdn.skypack.dev/react?dts"
+  }
+}
