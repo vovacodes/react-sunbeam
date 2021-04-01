@@ -18,7 +18,8 @@ npm install react-sunbeam
 ## 🧐 Why
 
 React Sunbeam provides a flexible and easy-to-use solution for spacial navigation and focus management.
-There is wide variety of applications that can benefit from it.
+It gives developers an abstraction that can be hooked to any input method the app uses, be it a keyboard, TV remote or gamepad.
+There is wide variety of applications that can benefit from React Sunbeam.
 
 ### 🎮 TV and Gaming Console Apps
 
@@ -59,6 +60,7 @@ export function Button() {
         <button
             ref={ref}
             style={{
+                // Define the "focused" and "blurred" styling
                 border: focused ? "2px solid black" : "none",
             }}
         >
