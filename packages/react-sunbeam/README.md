@@ -1,8 +1,8 @@
 <div align="center">
 <div align="center"><img src="./logo.svg" width="170" height="170" alt="Sunbeam Logo"/></div>
-<h1 align="center">react-sunbeam</h1>
+<h1 align="center">React Sunbeam</h1>
 <p>
-    Spatial navigation and key press management solution for React apps
+    Spatial navigation and key press management for React apps
 </p>
 <p align="center">
     <a href="https://github.com/vovaguguiev/react-sunbeam/actions?workflow=Test"><img src="https://github.com/vovaguguiev/react-sunbeam/workflows/Test/badge.svg" alt="Test Status"></a>
@@ -11,119 +11,107 @@
 </p>
 </div>
 
-## Installation
-
 ```bash
 npm install react-sunbeam
 ```
 
-or
+## 🧐 Why
 
-```bash
-yarn add react-sunbeam
-```
+React Sunbeam provides a flexible and easy-to-use solution for spacial navigation and focus management.
+There is wide variety of applications that can benefit from it.
 
-## Usage
+### 🎮 TV and Gaming Console Apps
 
-```js
-// app.js
-import React, { useCallback, useEffect } from "react"
-import { Root, Focusable, FocusManager, useFocusManager } from "react-sunbeam"
-import { FocusableCard } from "./FocusableCard"
+Most of the applications that are running on leanback devices and controlled with a remote or gaming controller need an implementation of directional navigation.
+A lot of companies end up rolling out their own custom solutions for that.
+Usually those solutions are either very simple, like using column and row indices, or implementing spatial navigation which works much better for the end user but is tricky to implement correctly and hard to maintain.
+React Sunbeam provides a well-tested, opensource implementation of spatial navigation that is easy to integrate into any existing React app.
 
-function App() {
-    const { setFocus, moveFocusLeft, moveFocusRight, moveFocusUp, moveFocusDown } = useFocusManager()
+### ⌨️ Web Apps with Keyboard Navigation
 
-    const onKeyDown = useCallback(
-        (event) => {
-            if (!(event instanceof KeyboardEvent)) return
-            switch (event.key) {
-                case "ArrowRight":
-                    moveFocusRight()
-                    return
-                case "ArrowLeft":
-                    moveFocusLeft()
-                    return
-                case "ArrowUp":
-                    moveFocusUp()
-                    return
-                case "ArrowDown":
-                    moveFocusDown()
-                    return
-            }
-        },
-        [focusManager]
-    )
+React Sunbeam can also be very useful in the regular web apps that want to add support for directional keyboard navigation and thus make this app more accessible to the keyboard-only users.
+Spreadsheets and tables, different kinds of dashboards etc, all can benefit from React Sunbeam.
 
-    useEffect(() => {
-        document.addEventListener("keydown", onKeyDown)
-        return () => document.removeEventListener("keydown", onKeyDown)
-    }, [onKeyDown])
+## 🪄 Demo
+
+Try our [demos](https://sunbeam.vova.codes/#demo-selector) on the documentation website to see what kind of interactions you can build with React Sunbeam.
+
+### [Home Screen](https://sunbeam.vova.codes/console-ui)
+
+![demo_home_screen](https://user-images.githubusercontent.com/1524432/113286891-1577a880-92ed-11eb-9119-0d8d4a781180.gif)
+
+### [Setting Menu](https://sunbeam.vova.codes/settings-menu)
+
+![demo_setting_menu](https://user-images.githubusercontent.com/1524432/113286880-114b8b00-92ed-11eb-983f-a2a9086a2042.gif)
+
+## 🎬 Getting Started
+
+**Create a focusable component**
+
+```tsx
+import { useFocusable } from "react-sunbeam"
+
+export function Button() {
+    const elementRef = useRef(null)
+    const { focused } = useFocusable({ elementRef })
 
     return (
-        <div>
-            <FocusableCard focusKey="card-1" />
-            <Focusable focusKey="item1">
-                {({ focused }) => <div>{focused ? "I am focused" : "I am not focused"}</div>}
-            </Focusable>
-            <Focusable focusKey="menuContainer">
-                <div>
-                    <Focusable focusKey="menuItem1">
-                        {({ focused }) => (
-                            <div style={{ backgroundColor: focused ? "salmon" : "deepskyblue" }}>
-                                You can nest Focusables
-                            </div>
-                        )}
-                    </Focusable>
-                    <Focusable focusKey="menuItem2">
-                        {({ focused }) => (
-                            <div style={{ backgroundColor: focused ? "salmon" : "deepskyblue" }}>
-                                In this case Sunbeam will try to find the best candidate for the focus within the common
-                                Focusable parent first
-                            </div>
-                        )}
-                    </Focusable>
-                </div>
-            </Focusable>
-            <Focusable focusKey="item2">
-                {({ focused, path }) => (
-                    <div style={{ textDecoration: focused ? "underline" : "none" }} onClick={() => setFocus(path)}>
-                        You can also programmatically change focus by using `setFocus` API
-                    </div>
-                )}
-            </Focusable>
-        </div>
+        <button
+            ref={ref}
+            style={{
+                border: focused ? "2px solid black" : "none",
+            }}
+        >
+            Click me
+        </button>
     )
 }
+```
 
-const focusManager = new FocusManager({
-    initialFocusPath: ["menuContainer", "menuItem2"],
+**Start managing focus**
+
+```tsx
+import { FocusManager, Root } from "react-sunbeam"
+
+// 1. Create a `FocusManager`.
+const focusManager = new FocusManager()
+
+// 2. Assign its method calls to an event listener of your choice.
+//    This can be a keyboard `keydown` event or your custom code using Gamepad API.
+window.addEventListener("keydown", (event) => {
+    switch (event.key) {
+        case "ArrowRight":
+            event.preventDefault()
+            focusManager.moveRight()
+            return
+
+        case "ArrowLeft":
+            event.preventDefault()
+            focusManager.moveLeft()
+            return
+
+        case "ArrowUp":
+            event.preventDefault()
+            focusManager.moveUp()
+            return
+
+        case "ArrowDown":
+            event.preventDefault()
+            focusManager.moveDown()
+            return
+    }
 })
 
-render(
+// 3. Pass the `focusMananger` instance into the `Root` provider that wraps the rest of your app.
+ReactDOM.render(
     <Root focusManager={focusManager}>
         <App />
     </Root>,
-    document.getElementById("app")
+    rootElement
 )
-
-// FocusableCard.js
-import React, { useRef } from "react"
-import { useFocusable } from "react-sunbeam"
-
-export function FocusableCard({ focusKey }) {
-    const elementRef = useRef(null)
-    const { focused } = useFocusable({ focusKey, elementRef })
-
-    return (
-        <div ref={elementRef} style={{ border: focused ? "1px solid salmon" : "1px solid transparent" }}>
-            Card
-        </div>
-    )
-}
 ```
 
-## API
+## 🍉 API
 
 ### `FocusManager`
 
