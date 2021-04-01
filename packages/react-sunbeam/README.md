@@ -5,9 +5,9 @@
     Spatial navigation and key press management for React apps
 </p>
 <p align="center">
-    <a href="https://github.com/vovaguguiev/react-sunbeam/actions?workflow=Test"><img src="https://github.com/vovaguguiev/react-sunbeam/workflows/Test/badge.svg" alt="Test Status"></a>
-    <a href="https://app.netlify.com/sites/romantic-wiles-3910cf/deploys"><img src="https://api.netlify.com/api/v1/badges/87d42de3-3413-493d-b30c-c12523a6062a/deploy-status" alt="Netlify Status"></a>
-    <a href="https://www.npmjs.com/package/react-sunbeam"><img src="https://badge.fury.io/js/react-sunbeam.svg" alt="npm version" height="18"></a>
+    <a href="https://sunbeam.vova.codes"><img src="https://img.shields.io/badge/website-3D3D3D?style=flat" alt="npm version" height="18"></a>
+    <a href="https://www.npmjs.com/package/react-sunbeam"><img src="https://img.shields.io/npm/v/react-sunbeam?style=flat&colorA=3D3D3D&colorB=3D3D3D" alt="npm version" height="18"></a>
+    <a href="https://github.com/vovaguguiev/react-sunbeam/actions?workflow=Test"><img src="https://img.shields.io/github/workflow/status/vovacodes/react-sunbeam/Test?style=flat&colorA=3D3D3D&label=tests&colorB=3D3D3D" alt="Test Status" height="18"></a>
 </p>
 </div>
 
