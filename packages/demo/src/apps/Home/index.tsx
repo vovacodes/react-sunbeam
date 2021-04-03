@@ -1,10 +1,11 @@
 import * as React from "react"
+import { AnimatePresence, motion } from "framer-motion"
 import { Header } from "../../components/Header.js"
 import { Hint } from "../../components/Hint.js"
 import { Hero } from "./components/Hero.js"
 import { ScrollHint } from "../../components/ScrollHint.js"
 import { DemoSelector } from "./components/DemoSelector.js"
-import { AnimatePresence, motion } from "framer-motion"
+import { PromoSection } from "./components/PromoSection.js"
 
 export function Home() {
     const hideScrollHintText = useScrollThreshold({ threshold: 10 })
@@ -21,6 +22,22 @@ export function Home() {
                 }}
             >
                 <Hero />
+                <PromoSection
+                    id="directional-navigation"
+                    heading="Directional navigation that feels natural"
+                    text={
+                        <>
+                            <p style={{ margin: 0, marginBottom: "6px" }}>
+                                React Sunbeam provides a set of easy-to-use primitives that make building modern TV and
+                                gaming console apps a breeze.
+                            </p>
+                            <p style={{ margin: 0 }}>
+                                It takes responsibility of managing focus-based navigation within your app and provides
+                                a focus-aware system for handling key presses.
+                            </p>
+                        </>
+                    }
+                />
                 <DemoSelector />
                 <AnimatePresence initial={false}>
                     {!hideScrollHintText && (

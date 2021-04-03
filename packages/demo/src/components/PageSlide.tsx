@@ -26,7 +26,7 @@ export const PageSlide = React.forwardRef(function PageSlide(
 
             if (isInViewportRef.current) return
 
-            window.scrollTo({ top: innerRef.current?.getBoundingClientRect().top, behavior: "smooth" })
+            window.scrollBy({ top: innerRef.current?.getBoundingClientRect().top, behavior: "smooth" })
         },
         onBlur() {
             isFocusedRef.current = false
