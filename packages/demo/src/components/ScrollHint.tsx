@@ -18,7 +18,7 @@ export function ScrollHint() {
                     marginBottom: 10,
                 }}
             >
-                Press <b>↓</b> key or scroll down
+                Press the <b>↓</b> key or scroll down
             </div>
             <Chevron />
         </div>

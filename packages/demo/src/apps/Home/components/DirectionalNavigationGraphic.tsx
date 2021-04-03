@@ -4,7 +4,7 @@ import { Colors } from "../../../styles.js"
 
 const blockSize = "40px"
 
-const boxStyles = { border: `2px solid ${Colors.textBlack}` }
+const boxStyles = { border: `2px solid ${Colors.textBlack}`, borderRadius: "4px" }
 
 export function DirectionalNavigationGraphic() {
     const [step, setStep] = React.useState(0)

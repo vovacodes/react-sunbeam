@@ -33,8 +33,8 @@ export function Home() {
                                 to.
                             </p>
                             <p style={{ margin: 0 }}>
-                                It ensures the interaction always feels natural to your users, but also allows
-                                fine-tuning that through the flexible API.
+                                It ensures the interaction always feels natural to the user, but also allows fine-tuning
+                                that through the flexible API.
                             </p>
                         </>
                     }

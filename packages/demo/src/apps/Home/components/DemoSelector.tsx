@@ -79,6 +79,7 @@ function FocusableCard({
                     width: 160,
                     height: 250,
                     border: `2px solid ${focused ? "black" : Colors.textBlack}`,
+                    borderRadius: "4px",
                     background: Colors.background,
                 }}
             >
@@ -107,6 +108,7 @@ function FocusableCard({
                         style={{
                             width: "100%",
                             height: "100%",
+                            borderRadius: "4px",
                             boxShadow: "10px 10px 0px 0px rgba(0, 0, 0, 1)",
                             willChange: "transform",
                             transform: focused ? "translate(0,0)" : "translate(-8px, -8px)",

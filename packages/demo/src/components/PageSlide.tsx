@@ -18,6 +18,7 @@ export const PageSlide = React.forwardRef(function PageSlide(
     const isFocusedRef = React.useRef(false)
 
     const { node, path } = useFocusable({
+        focusKey: id,
         elementRef: innerRef,
         onFocus() {
             isFocusedRef.current = true
