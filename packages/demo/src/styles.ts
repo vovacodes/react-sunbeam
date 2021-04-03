@@ -3,7 +3,7 @@ export const Colors = {
     textBlack: "#3D3D3D",
     lightGray: "#DEDEDE",
     sunRed: "rgba(242, 135, 135, 1)", // "#f28787"
-    paleCyan: "#CFFDFF",
+    paleCyan: "rgba(179, 244, 255, 1)", // "#CFFDFF",
     paleGreen: "#9ce3c5",
     palePink: "#ffe6e8",
     paleBlue: "#a5c5fd",

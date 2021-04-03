@@ -6,6 +6,7 @@ import { Hero } from "./components/Hero.js"
 import { ScrollHint } from "../../components/ScrollHint.js"
 import { DemoSelector } from "./components/DemoSelector.js"
 import { PromoSection } from "./components/PromoSection.js"
+import { DirectionalNavigationGraphic } from "./components/DirectionalNavigationGraphic.js"
 
 export function Home() {
     const hideScrollHintText = useScrollThreshold({ threshold: 10 })
@@ -28,15 +29,16 @@ export function Home() {
                     text={
                         <>
                             <p style={{ margin: 0, marginBottom: "6px" }}>
-                                React Sunbeam provides a set of easy-to-use primitives that make building modern TV and
-                                gaming console apps a breeze.
+                                React Sunbeam calculates the closest element in the specified direction to pass focus
+                                to.
                             </p>
                             <p style={{ margin: 0 }}>
-                                It takes responsibility of managing focus-based navigation within your app and provides
-                                a focus-aware system for handling key presses.
+                                It ensures the interaction always feels natural to your users, but also allows
+                                fine-tuning that through the flexible API.
                             </p>
                         </>
                     }
+                    graphic={<DirectionalNavigationGraphic />}
                 />
                 <DemoSelector />
                 <AnimatePresence initial={false}>
