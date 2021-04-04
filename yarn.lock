@@ -570,6 +570,18 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@stitches/core@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@stitches/core/-/core-0.1.4.tgz#1b33c3ef55c044f006049d8310b784720d669798"
+  integrity sha512-jFZMpw6uD7BRvkPp3n0JsUlLO6d7oRwBgInEHDB1xlsRLqB4yaepyEyJ1CqMx8HidyW5QeLXH6IYPzERxCUM/Q==
+
+"@stitches/react@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@stitches/react/-/react-0.1.4.tgz#f1a37911683cfc192906b0710c9685bddb316abc"
+  integrity sha512-/YI/cuyd8tCGaq5ewDF2goGVa/LuIQZbb4SKQM/DroluOrZ4W1Pwczk/vkijhP3pH11ssEHtD9/v8VzXb01nvw==
+  dependencies:
+    "@stitches/core" "^0.1.4"
+
 "@testing-library/dom@^7.28.1":
   version "7.30.0"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.30.0.tgz#53697851f7708a1448cc30b74a2ea056dd709cd6"

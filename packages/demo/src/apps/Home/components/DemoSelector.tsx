@@ -1,9 +1,8 @@
 import * as React from "react"
-import { ReactElement, useRef } from "react"
 import { useHistory } from "react-router-dom"
-import { useFocusable } from "react-sunbeam"
 import { Colors, Typography } from "../../../styles.js"
 import { PageSlide } from "../../../components/PageSlide.js"
+import { FocusableCard } from "../../../components/FocusableCard.js"
 
 export function DemoSelector() {
     const history = useHistory()
@@ -36,93 +35,6 @@ export function DemoSelector() {
                 </div>
             </div>
         </PageSlide>
-    )
-}
-
-function FocusableCard({
-    title,
-    onSelect,
-    icon,
-    background,
-}: {
-    title: string
-    onSelect: () => void
-    icon: ReactElement
-    background: ReactElement<{ grayscale: boolean }>
-}) {
-    const ref = useRef(null)
-    const { focused } = useFocusable({
-        elementRef: ref,
-        onKeyPress(event) {
-            if (event.key !== "Enter" && event.key !== " ") return
-            event.preventDefault()
-            onSelect()
-        },
-    })
-
-    const titleStyle = { marginTop: 10, ...Typography.bodyText }
-    if (focused) {
-        titleStyle.color = "black"
-    }
-
-    return (
-        <div
-            ref={ref}
-            style={{
-                display: "flex",
-                flexDirection: "column",
-            }}
-        >
-            <div
-                style={{
-                    position: "relative",
-                    width: 160,
-                    height: 250,
-                    border: `2px solid ${focused ? "black" : Colors.textBlack}`,
-                    borderRadius: "4px",
-                    background: Colors.background,
-                }}
-            >
-                <div
-                    style={{
-                        position: "absolute",
-                        width: "100%",
-                        height: "100%",
-                        overflow: "hidden",
-                    }}
-                >
-                    {React.cloneElement(background, { grayscale: !focused })}
-                </div>
-                {/*shadow*/}
-                <div
-                    style={{
-                        position: "absolute",
-                        zIndex: -1,
-                        width: "100%",
-                        height: "100%",
-                        willChange: "transform",
-                        animation: focused ? "600ms linear infinite alternate hovering" : "none",
-                    }}
-                >
-                    <div
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            borderRadius: "4px",
-                            boxShadow: "10px 10px 0px 0px rgba(0, 0, 0, 1)",
-                            willChange: "transform",
-                            transform: focused ? "translate(0,0)" : "translate(-8px, -8px)",
-                            transition: "transform 150ms ease-out",
-                            // animation: focused ? "600ms linear infinite alternate hovering" : "none",
-                        }}
-                    />
-                </div>
-                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-                    {icon}
-                </div>
-            </div>
-            <div style={titleStyle}>{title}</div>
-        </div>
     )
 }
 

@@ -50,8 +50,7 @@ export function Hero() {
                 <div style={{ marginTop: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <Button
                         icon={<IconPresentation />}
-                        onPress={(event) => {
-                            event.preventDefault()
+                        onPress={() => {
                             focusManager.setFocus(["demo-selector"])
                         }}
                     >
@@ -60,8 +59,7 @@ export function Hero() {
                     <div style={{ width: "80px" }} />
                     <Button
                         icon={<IconGithub />}
-                        onPress={(event) => {
-                            event.preventDefault()
+                        onPress={() => {
                             window.open(REPO_URL, "_blank") || location.assign(REPO_URL)
                         }}
                     >

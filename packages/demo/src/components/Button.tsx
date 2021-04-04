@@ -1,7 +1,39 @@
 import * as React from "react"
 import { motion } from "framer-motion"
 import { useFocusable } from "react-sunbeam"
-import { Colors, Typography } from "../styles.js"
+import { styled, theme, keyframes } from "../styles.js"
+
+const StyledButton = styled(motion.button, {
+    position: "relative" as const,
+    height: "40px",
+    border: `2px solid $graphite`,
+    borderRadius: "4px",
+    paddingLeft: "20px",
+    paddingRight: "20px",
+    backgroundColor: "$background",
+    typography: "bodyText",
+    outline: "none",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+})
+
+const ShadowWrapper = styled("div", {
+    position: "absolute",
+    zIndex: -1,
+    width: "100%",
+    height: "100%",
+    willChange: "transform",
+})
+
+const Shadow = styled("div", {
+    width: "100%",
+    height: "100%",
+    borderRadius: "4px",
+    boxShadow: "10px 10px 0px 0px $colors$pureBlack",
+    willChange: "transform",
+    transition: "transform 150ms ease-out",
+})
 
 export function Button({
     icon,
@@ -19,6 +51,7 @@ export function Button({
             if (!onPress) return
             if (event.key !== "Enter" && event.key !== " ") return
 
+            event.preventDefault()
             onPress(event)
         },
         [onPress]
@@ -26,59 +59,33 @@ export function Button({
 
     const { focused } = useFocusable({ elementRef: ref, onKeyPress })
 
-    const style = {
-        position: "relative" as const,
-        height: "40px",
-        border: `2px solid ${Colors.textBlack}`,
-        borderRadius: "4px",
-        paddingLeft: "20px",
-        paddingRight: "20px",
-        background: Colors.background,
-        ...Typography.bodyText,
-        outline: "none",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-    }
-    if (focused) {
-        style.color = "black"
-        icon = React.cloneElement(icon, { focused: true })
-    }
-
     return (
-        <motion.button
+        <StyledButton
             ref={ref}
-            animate={{ borderColor: focused ? "black" : Colors.textBlack }}
+            initial="blurred"
+            animate={focused ? "focused" : "blurred"}
+            variants={{
+                focused: {
+                    color: theme.colors.pureBlack.value,
+                    borderColor: theme.colors.pureBlack.value,
+                },
+                blurred: {
+                    color: theme.colors.graphite.value,
+                    borderColor: theme.colors.graphite.value,
+                },
+            }}
             transition={{ duration: 0.15 }}
-            style={style}
         >
-            {icon}
+            {focused ? React.cloneElement(icon, { focused: true }) : icon}
             <div style={{ width: "10px" }} />
             {children}
-            {/*shadow*/}
-            <div
-                style={{
-                    position: "absolute",
-                    zIndex: -1,
-                    width: "100%",
-                    height: "100%",
-                    willChange: "transform",
-                    animation: focused ? "600ms linear infinite alternate hovering" : "none",
+            <ShadowWrapper
+                css={{
+                    animation: focused ? `600ms linear infinite alternate ${keyframes.hovering}` : "none",
                 }}
             >
-                <div
-                    style={{
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: "4px",
-                        boxShadow: "10px 10px 0px 0px rgba(0, 0, 0, 1)",
-                        willChange: "transform",
-                        transform: focused ? "translate(0,0)" : "translate(-8px, -8px)",
-                        transition: "transform 150ms ease-out",
-                        // animation: focused ? "600ms linear infinite alternate hovering" : "none",
-                    }}
-                />
-            </div>
-        </motion.button>
+                <Shadow css={{ transform: focused ? "translate(0,0)" : "translate(-8px, -8px)" }} />
+            </ShadowWrapper>
+        </StyledButton>
     )
 }
