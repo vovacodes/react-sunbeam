@@ -1,5 +1,7 @@
 import { createCss } from "@stitches/react"
 
+export const MEDIA_QUERY_PHONE = "(max-width: 640px)"
+
 export const { styled, css, theme, keyframes: createKeyframes } = createCss({
     theme: {
         colors: {
@@ -22,6 +24,9 @@ export const { styled, css, theme, keyframes: createKeyframes } = createCss({
             mono: `"Fira Code", monospace`,
         },
     },
+    media: {
+        phone: MEDIA_QUERY_PHONE,
+    },
     utils: {
         typography: () => (value: "heading1" | "heading2" | "subtitle" | "bodyText" | "smallText") => {
             switch (value) {
@@ -32,6 +37,10 @@ export const { styled, css, theme, keyframes: createKeyframes } = createCss({
                         fontSize: "52px",
                         lineHeight: 1.2,
                         fontWeight: 400,
+
+                        "@phone": {
+                            fontSize: "36px",
+                        },
                     }
                 case "heading2":
                     return {
@@ -40,6 +49,10 @@ export const { styled, css, theme, keyframes: createKeyframes } = createCss({
                         fontSize: "36px",
                         lineHeight: 1.2,
                         fontWeight: 400,
+
+                        "@phone": {
+                            fontSize: "26px",
+                        },
                     }
                 case "subtitle":
                     return {
@@ -48,6 +61,10 @@ export const { styled, css, theme, keyframes: createKeyframes } = createCss({
                         lineHeight: 1.4,
                         color: "$text",
                         fontWeight: 400,
+
+                        "@phone": {
+                            fontSize: "18px",
+                        },
                     }
                 case "bodyText": {
                     return {

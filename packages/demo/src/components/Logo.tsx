@@ -1,9 +1,19 @@
 import * as React from "react"
 import { motion } from "framer-motion"
 
-export function Logo({ width = 60, height = 60, solid = true }: { width: number; height: number; solid?: boolean }) {
+export function Logo({
+    width = 60,
+    height = 60,
+    solid = true,
+    className,
+}: {
+    width?: number
+    height?: number
+    className?: string
+    solid?: boolean
+}) {
     return (
-        <svg viewBox="0 0 270 270" width={width} height={height}>
+        <svg viewBox="0 0 270 270" className={className} width={width} height={height}>
             <path d="M 0 136.35 L 270 136.35" strokeWidth="2.7" stroke="#F28787" />
             <motion.path
                 d="M 135 55 C 179.735 55 216 91.265 216 136 L 54 136 C 54 91.265 90.265 55 135 55 Z"

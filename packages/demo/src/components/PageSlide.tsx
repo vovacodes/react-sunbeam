@@ -2,6 +2,21 @@ import * as React from "react"
 import { Branch, useFocusable, useFocusManager } from "react-sunbeam"
 import { useMergedRef } from "../apps/utils/useMergedRef.js"
 import { useIntersectionObserver } from "./useIntersectionObserver.js"
+import { styled } from "../styles.js"
+
+const StyledPageSlide = styled("div", {
+    boxSizing: "border-box",
+    width: "100%",
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+
+    "@phone": {
+        height: "auto",
+    },
+})
 
 export const PageSlide = React.forwardRef(function PageSlide(
     {
@@ -9,7 +24,8 @@ export const PageSlide = React.forwardRef(function PageSlide(
         children,
         onFocus,
         onBlur,
-    }: { id: string; children: React.ReactNode; onFocus?: () => void; onBlur?: () => void },
+        className,
+    }: { className?: string; id: string; children: React.ReactNode; onFocus?: () => void; onBlur?: () => void },
     ref
 ) {
     const innerRef = React.useRef<HTMLDivElement>(null)
@@ -50,24 +66,13 @@ export const PageSlide = React.forwardRef(function PageSlide(
         [focusManager, path]
     )
 
-    useIntersectionObserver(innerRef, 0.6, onIntersectionUpdate)
+    useIntersectionObserver(innerRef, 0.7, onIntersectionUpdate)
 
     return (
         <Branch node={node}>
-            <div
-                id={id}
-                ref={useMergedRef(innerRef, ref)}
-                style={{
-                    boxSizing: "border-box",
-                    height: "100vh",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
+            <StyledPageSlide id={id} ref={useMergedRef(innerRef, ref)} className={className}>
                 {children}
-            </div>
+            </StyledPageSlide>
         </Branch>
     )
 })

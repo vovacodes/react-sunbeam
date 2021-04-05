@@ -1,9 +1,11 @@
 import * as React from "react"
+import { useCallback } from "react"
 import { motion } from "framer-motion"
-import { useFocusable } from "react-sunbeam"
-import { styled, theme, keyframes } from "../styles.js"
+import { useFocusable, useFocusManager } from "react-sunbeam"
+import { keyframes, styled, theme } from "../styles.js"
 
 const StyledButton = styled(motion.button, {
+    maxWidth: "300px",
     position: "relative" as const,
     height: "40px",
     border: `2px solid $graphite`,
@@ -57,7 +59,20 @@ export function Button({
         [onPress]
     )
 
-    const { focused } = useFocusable({ elementRef: ref, onKeyPress })
+    const { focused, path } = useFocusable({ elementRef: ref, onKeyPress })
+    const focusManager = useFocusManager()
+
+    // tap-to-focus
+    const handleTap = useCallback(
+        (event) => {
+            if (!focused) {
+                focusManager.setFocus(path)
+                return
+            }
+            onPress?.(event)
+        },
+        [focused, focusManager, path, onPress]
+    )
 
     return (
         <StyledButton
@@ -75,6 +90,7 @@ export function Button({
                 },
             }}
             transition={{ duration: 0.15 }}
+            onTap={handleTap}
         >
             {focused ? React.cloneElement(icon, { focused: true }) : icon}
             <div style={{ width: "10px" }} />

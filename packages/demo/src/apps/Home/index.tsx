@@ -7,21 +7,26 @@ import { ScrollHint } from "../../components/ScrollHint.js"
 import { DemoSelector } from "./components/DemoSelector.js"
 import { PromoSection } from "./components/PromoSection.js"
 import { DirectionalNavigationGraphic } from "./components/DirectionalNavigationGraphic.js"
+import { MEDIA_QUERY_PHONE, styled } from "../../styles.js"
+import { useMediaQuery } from "../utils/useMediaQuery.js"
+import { NoDemoBanner } from "./components/NoDemoBanner.js"
+
+const Main = styled("div", {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+})
 
 export function Home() {
     const hideScrollHintText = useScrollThreshold({ threshold: 10 })
 
+    const isPhone = useMediaQuery(MEDIA_QUERY_PHONE)
+
     return (
         <>
             <Header />
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
+            <Main>
                 <Hero />
                 <PromoSection
                     id="directional-navigation"
@@ -40,7 +45,7 @@ export function Home() {
                     }
                     graphic={<DirectionalNavigationGraphic />}
                 />
-                <DemoSelector />
+                {isPhone ? <NoDemoBanner /> : <DemoSelector />}
                 <AnimatePresence initial={false}>
                     {!hideScrollHintText && (
                         <motion.div
@@ -64,7 +69,7 @@ export function Home() {
                         Go back - <b>Backspace</b>
                     </div>
                 </Hint>
-            </div>
+            </Main>
         </>
     )
 }

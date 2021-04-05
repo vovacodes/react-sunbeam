@@ -2,9 +2,17 @@ import { motion } from "framer-motion"
 import * as React from "react"
 import { Colors } from "../../styles.js"
 
-export function IconPresentation({ focused }: { focused?: boolean }) {
+export function IconPresentation({
+    width = 24,
+    height = 24,
+    focused,
+}: {
+    width?: number
+    height?: number
+    focused?: boolean
+}) {
     return (
-        <svg width="24" height="24" fill="#000000" viewBox="0 0 256 256">
+        <svg width={width} height={height} fill="#000000" viewBox="0 0 256 256">
             <rect width="256" height="256" fill="none" />
             <motion.rect
                 animate={{ fill: focused ? Colors.paleGreen : Colors.lightGray }}

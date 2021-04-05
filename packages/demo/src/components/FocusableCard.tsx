@@ -1,6 +1,6 @@
 import * as React from "react"
-import { ReactElement, useRef } from "react"
-import { useFocusable } from "react-sunbeam"
+import { ReactElement, useCallback, useRef } from "react"
+import { useFocusable, useFocusManager } from "react-sunbeam"
 import { keyframes, styled } from "../styles.js"
 
 const Poster = styled("div", {
@@ -42,24 +42,34 @@ const Shadow = styled("div", {
 
 export function FocusableCard({
     title,
-    onSelect,
+    onPress,
     icon,
     background,
 }: {
     title: string
-    onSelect: () => void
+    onPress: () => void
     icon: ReactElement
     background: ReactElement<{ grayscale: boolean }>
 }) {
     const ref = useRef(null)
-    const { focused } = useFocusable({
+    const { focused, path } = useFocusable({
         elementRef: ref,
         onKeyPress(event) {
             if (event.key !== "Enter" && event.key !== " ") return
             event.preventDefault()
-            onSelect()
+            onPress()
         },
     })
+    const focusManager = useFocusManager()
+
+    // tap-to-focus
+    const handleTap = useCallback(() => {
+        if (!focused) {
+            focusManager.setFocus(path)
+            return
+        }
+        onPress?.()
+    }, [focused, focusManager, path, onPress])
 
     return (
         <div
@@ -68,6 +78,7 @@ export function FocusableCard({
                 display: "flex",
                 flexDirection: "column",
             }}
+            onClick={handleTap}
         >
             <Poster css={{ border: `2px solid ${focused ? "$pureBlack" : "$text"}` }}>
                 <BackgroundWrapper>{React.cloneElement(background, { grayscale: !focused })}</BackgroundWrapper>

@@ -25,6 +25,7 @@ export function DirectionalNavigationGraphic() {
                 gridTemplateRows: `${blockSize} ${blockSize} ${blockSize}`,
                 gap: "8px",
                 transform: "skewY(15deg)",
+                margin: "80px 0",
             }}
         >
             <motion.div

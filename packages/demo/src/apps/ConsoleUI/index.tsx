@@ -32,7 +32,7 @@ export function ConsoleUI() {
             <Header />
             <div
                 style={{
-                    height: "calc(100vh - 80px)",
+                    height: "100vh",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",

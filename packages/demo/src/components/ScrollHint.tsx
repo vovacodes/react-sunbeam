@@ -1,17 +1,21 @@
 import * as React from "react"
-import { Typography } from "../styles.js"
+import { styled, Typography } from "../styles.js"
 import { Chevron } from "./Chevron.js"
+
+const StyledScrollHint = styled("div", {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+
+    "@phone": {
+        display: "none",
+    },
+})
 
 export function ScrollHint() {
     return (
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-        >
+        <StyledScrollHint>
             <div
                 style={{
                     ...Typography.bodyText,
@@ -21,6 +25,6 @@ export function ScrollHint() {
                 Press the <b>↓</b> key or scroll down
             </div>
             <Chevron />
-        </div>
+        </StyledScrollHint>
     )
 }

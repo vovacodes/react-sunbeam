@@ -1,39 +1,38 @@
 import * as React from "react"
 import { useHistory } from "react-router-dom"
-import { Colors, Typography } from "../../../styles.js"
+import { styled, theme } from "../../../styles.js"
 import { PageSlide } from "../../../components/PageSlide.js"
+import { CenteringBox } from "../../../components/CenteringBox.js"
 import { FocusableCard } from "../../../components/FocusableCard.js"
+
+const Heading = styled("h1", { typography: "heading2" })
+
+const CardWrapper = styled("div", { margin: "20px 40px" })
 
 export function DemoSelector() {
     const history = useHistory()
 
     return (
         <PageSlide id="demo-selector">
-            <h1
-                style={{
-                    ...Typography.heading2,
-                }}
-            >
-                Select a demo
-            </h1>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <div style={{ margin: "20px 40px" }}>
+            <Heading>Select a demo</Heading>
+            <CenteringBox>
+                <CardWrapper>
                     <FocusableCard
                         title="Home screen"
-                        onSelect={() => history.push("/console-ui")}
+                        onPress={() => history.push("/console-ui")}
                         icon={<IconConsole />}
                         background={<Shape1 />}
                     />
-                </div>
-                <div style={{ margin: "20px 40px" }}>
+                </CardWrapper>
+                <CardWrapper>
                     <FocusableCard
                         title="Settings menu"
-                        onSelect={() => history.push("/settings-menu")}
+                        onPress={() => history.push("/settings-menu")}
                         icon={<IconGear />}
                         background={<Shape2 />}
                     />
-                </div>
-            </div>
+                </CardWrapper>
+            </CenteringBox>
         </PageSlide>
     )
 }
@@ -154,7 +153,7 @@ function IconGear() {
         <svg width="40" height="40" viewBox="0 0 256 256">
             <path
                 d="M226.00391,151.99854l-14.15284-18.87012q.15308-2.54408.15381-5.12744,0-2.58326-.15381-5.12867v-.00073l14.148-18.86938a7.99672,7.99672,0,0,0,1.24561-7.17945,103.32133,103.32133,0,0,0-7.01026-16.94262,8.00171,8.00171,0,0,0-5.96435-4.2063l-23.35059-3.3357q-1.69116-1.90722-3.51709-3.73437-1.82665-1.82665-3.73535-3.51782v-.00049l-3.33887-23.34668a7.99635,7.99635,0,0,0-4.1958-5.95752,103.33431,103.33431,0,0,0-16.937-7.02344,8.00348,8.00348,0,0,0-7.19189,1.24317L133.1333,44.15381q-2.54443-.15307-5.12744-.15381-2.58326,0-5.12891.154l-.00049-.00024L104.00684,30.0061a7.9938,7.9938,0,0,0-7.1792-1.2456,103.35208,103.35208,0,0,0-16.94287,7.00976,8.00291,8.00291,0,0,0-4.20606,5.96436L72.34326,65.08545q-1.90722,1.6908-3.73486,3.51684-1.82667,1.82667-3.51758,3.7356l-.00049.00024L41.74365,75.67676a7.9965,7.9965,0,0,0-5.95752,4.196A103.33174,103.33174,0,0,0,28.7627,96.80957a8.00347,8.00347,0,0,0,1.24316,7.19189l14.15283,18.87012q-.15307,2.54407-.15381,5.12744,0,2.58326.15381,5.12867v.00073l-14.148,18.86938a7.99672,7.99672,0,0,0-1.2456,7.17945,103.32129,103.32129,0,0,0,7.01025,16.94262,8.00173,8.00173,0,0,0,5.96436,4.2063l23.35058,3.3357q1.69116,1.90722,3.51709,3.73437,1.82667,1.82665,3.73535,3.51782l.00049.00049,3.33838,23.34668a7.99638,7.99638,0,0,0,4.1958,5.95752,103.35211,103.35211,0,0,0,16.937,7.02344,8.0035,8.0035,0,0,0,7.1919-1.24317l18.87011-14.15283q2.54444.15307,5.12745.15381,2.58324,0,5.1289-.15405l.00049.00024,18.86963,14.14771a7.9938,7.9938,0,0,0,7.1792,1.2456,103.35244,103.35244,0,0,0,16.94287-7.00976,8.0029,8.0029,0,0,0,4.20605-5.96436l3.33594-23.35083q1.90724-1.6908,3.73438-3.51684,1.82666-1.82667,3.51758-3.7356l.00048-.00024,23.34668-3.33863a7.9965,7.9965,0,0,0,5.95752-4.196,103.3309,103.3309,0,0,0,7.02344-16.93677A8.0035,8.0035,0,0,0,226.00391,151.99854ZM128.00488,176a48,48,0,1,1,48-48A47.99988,47.99988,0,0,1,128.00488,176Z"
-                fill={Colors.lightGray}
+                fill={theme.colors.lightGray.value}
             />
             <circle
                 cx="128.00488"
