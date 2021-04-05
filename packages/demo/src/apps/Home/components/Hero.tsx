@@ -32,7 +32,7 @@ const StyledHero = styled("div", {
     alignItems: "center",
     // Better visual alignment
     position: "relative",
-    top: -100,
+    // top: -100,
 
     "@phone": {
         top: 0,
