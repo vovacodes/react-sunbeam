@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useRef, useCallback } from "react"
-import { useFocusable, useFocusManager, FocusEvent, KeyPressListener } from "react-sunbeam"
+import { useFocusable, useFocusManager, FocusEvent, KeyPressEvent } from "react-sunbeam"
 import { motion } from "framer-motion"
 import { theme, styled, keyframes } from "../../styles.js"
 
@@ -37,7 +37,7 @@ export function FocusableItem({
     width,
     height,
     focusKey,
-    onKeyPress,
+    onKeyDown,
     onFocus,
     onBlur,
 }: {
@@ -45,8 +45,8 @@ export function FocusableItem({
     color: string
     width: number
     height: number
-    focusKey: string
-    onKeyPress?: KeyPressListener
+    focusKey?: string
+    onKeyDown?: (event: KeyPressEvent) => void
     onFocus?: (event: FocusEvent) => void
     onBlur?: (event: FocusEvent) => void
 }) {
@@ -56,7 +56,7 @@ export function FocusableItem({
         elementRef,
         onFocus,
         onBlur,
-        onKeyPress,
+        onKeyDown,
     })
     const focusManager = useFocusManager()
 

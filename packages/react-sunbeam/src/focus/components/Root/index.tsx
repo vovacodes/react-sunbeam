@@ -6,9 +6,11 @@ import type { CustomGetPreferredChildFn, FocusPath } from "../../types.js"
 import type { FocusManager } from "../../FocusManager.js"
 import {
     KeyPressListener,
-    KeyPressManager,
     KeyPressTreeContextProvider,
     KeyPressTreeNode,
+    KeyPressManager,
+    KeyboardKeyPressManager,
+    KeyPressEvent,
 } from "../../../keyPressManagement/index.js"
 import { useChildKeyPressTreeContextValue } from "../../hooks/useChildKeyPressTreeContextValue.js"
 import useOnFocusUpdate from "./useOnFocusUpdate.js"
@@ -17,23 +19,23 @@ import { FocusManagerInternalsContext } from "../../FocusManagerInternalsContext
 import { useFocusableNode } from "../../hooks/useFocusableNode.js"
 import { FocusableParentContextProvider } from "../../FocusableParentContext.js"
 
-type Props = {
+type Props<E = KeyPressEvent> = {
     focusManager: FocusManager
-    keyPressManager?: KeyPressManager
+    keyPressManager?: KeyPressManager<unknown>
     children: React.ReactNode
     onFocusUpdate?: (event: { focusPath: FocusPath }) => void
-    onKeyPress?: KeyPressListener
+    onKeyDown?: (event: E extends KeyPressEvent ? E : unknown) => void
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
 }
 
-export function Root({
+export function Root<E = KeyPressEvent>({
     focusManager,
     keyPressManager: customKeyPressManager,
     children,
     onFocusUpdate,
-    onKeyPress,
+    onKeyDown,
     getPreferredChildOnFocus,
-}: Props) {
+}: Props<E>) {
     useOnFocusUpdate(focusManager, onFocusUpdate)
     const [dispatcher] = useState(() => new Dispatcher())
     const wrapperRef = useRef<HTMLDivElement | null>(null)
@@ -58,15 +60,15 @@ export function Root({
     // Key press management
     // ====================================
     const childKeyPressTreeNodeRef = useRef<KeyPressTreeNode | undefined>(undefined)
-    const keyPressManager = useMemo<KeyPressManager>(() => {
+    const keyPressManager = useMemo<KeyPressManager<unknown>>(() => {
         if (customKeyPressManager != null) return customKeyPressManager
-        return new KeyPressManager()
+        return new KeyboardKeyPressManager()
     }, [customKeyPressManager])
     useEffect(() => {
-        keyPressManager.addListener(keyPressListener)
-        function keyPressListener(event: KeyboardEvent) {
+        keyPressManager.addKeyDownListener(keyPressListener)
+        function keyPressListener(event: unknown) {
             // first build up the array of listeners from the root to the leaf
-            const listeners: KeyPressListener[] = onKeyPress ? [onKeyPress] : []
+            const listeners: KeyPressListener[] = onKeyDown ? [onKeyDown as KeyPressListener] : []
             let keyPressTreeNode: KeyPressTreeNode | undefined = childKeyPressTreeNodeRef.current
             while (keyPressTreeNode) {
                 const listener = keyPressTreeNode.listenerRef.current
@@ -76,15 +78,15 @@ export function Root({
             // then process this array from the leaf to the root
             for (let i = listeners.length - 1; i >= 0; i--) {
                 const listener = listeners[i]
-                listener(event)
-                if (event.cancelBubble) break
+                listener(event as KeyPressEvent)
+                if ((event as KeyPressEvent).cancelBubble) break
             }
         }
 
         return () => {
-            keyPressManager.removeListener(keyPressListener)
+            keyPressManager.removeKeyDownListener(keyPressListener)
         }
-    }, [onKeyPress, keyPressManager])
+    }, [onKeyDown, keyPressManager])
     const childKeyPressTreeContextValue = useChildKeyPressTreeContextValue(childKeyPressTreeNodeRef)
 
     return (

@@ -17,17 +17,17 @@ describe("Key press management integration", () => {
 
         function FocusableButton({ focusKey, onKeyPress }: { focusKey: string; onKeyPress: KeyPressListener }) {
             const ref = useRef(null)
-            const { focused } = useFocusable({ focusKey, elementRef: ref, onKeyPress })
+            const { focused } = useFocusable({ focusKey, elementRef: ref, onKeyDown: onKeyPress })
             return <button ref={ref}>I am a{focused ? " focused " : " "}button</button>
         }
 
         const focusManager = new FocusManager({ initialFocusPath: ["Focusable-1"] })
         render(
-            <Root focusManager={focusManager} onKeyPress={sunbeamProviderKeyHandler}>
-                <Focusable focusKey={"Focusable-1"} onKeyPress={focusable1KeyHandler}>
+            <Root focusManager={focusManager} onKeyDown={sunbeamProviderKeyHandler}>
+                <Focusable focusKey={"Focusable-1"} onKeyDown={focusable1KeyHandler}>
                     hello
                 </Focusable>
-                <Focusable focusKey={"Focusable-2"} onKeyPress={focusable2KeyHandler}>
+                <Focusable focusKey={"Focusable-2"} onKeyDown={focusable2KeyHandler}>
                     <FocusableButton focusKey="FocusableButton-1" onKeyPress={focusableButton1KeyHandler} />
                     <FocusableButton focusKey="FocusableButton-2" onKeyPress={focusableButton2KeyHandler} />
                 </Focusable>

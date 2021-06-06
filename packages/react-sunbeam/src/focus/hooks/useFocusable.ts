@@ -1,7 +1,7 @@
 import { RefObject, useContext } from "react"
 import type { CustomGetPreferredChildFn, FocusEvent } from "../types.js"
 import type { Direction } from "../../spatialNavigation/index.js"
-import type { KeyPressListener } from "../../keyPressManagement/index.js"
+import type { KeyPressEvent, KeyPressListener } from "../../keyPressManagement/index.js"
 import { DispatcherContext } from "../Dispatcher.js"
 import { useOnFocusedChange } from "./useOnFocusedChange.js"
 import { useKeyPressTreeNode } from "./useKeyPressTreeNode.js"
@@ -15,12 +15,12 @@ type Element = RefObject<{
     getBoundingClientRect(): ClientRect
 }>
 
-export function useFocusable({
+export function useFocusable<E = KeyPressEvent>({
     elementRef,
     focusKey,
     focusable = true,
     lock = [],
-    onKeyPress,
+    onKeyDown,
     onFocus,
     onBlur,
     getPreferredChildOnFocus,
@@ -29,7 +29,7 @@ export function useFocusable({
     focusKey?: string
     focusable?: boolean
     lock?: Direction | Direction[]
-    onKeyPress?: KeyPressListener
+    onKeyDown?: (event: E extends KeyPressEvent ? E : unknown) => void
     onFocus?: (event: FocusEvent) => void
     onBlur?: (event: FocusEvent) => void
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
@@ -68,7 +68,7 @@ export function useFocusable({
         }
     })
 
-    const keyPressTreeNode = useKeyPressTreeNode({ onKeyPress, focused })
+    const keyPressTreeNode = useKeyPressTreeNode({ onKeyPress: onKeyDown as KeyPressListener, focused })
 
     return { focused, path, node: branchNodeFrom(focusableNode, keyPressTreeNode) }
 }

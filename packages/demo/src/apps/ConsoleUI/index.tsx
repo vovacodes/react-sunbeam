@@ -10,6 +10,7 @@ import { NavigationMenu } from "./NavigationMenu.js"
 import { Header } from "../../components/Header.js"
 import { Colors } from "../../styles.js"
 import { Hint } from "../../components/Hint.js"
+import { isCancel } from "../../keyPressUtils.js"
 
 export function ConsoleUI() {
     const handleItemFocus = useCallback((_event: FocusEvent) => {
@@ -41,10 +42,10 @@ export function ConsoleUI() {
                 }}
             >
                 <Focusable
-                    onKeyPress={(event) => {
-                        if (event.key !== "Backspace" && event.key !== "Escape") return
-
-                        history.goBack()
+                    onKeyDown={(event) => {
+                        if (isCancel(event)) {
+                            history.goBack()
+                        }
                     }}
                     getPreferredChildOnFocus={({
                         focusableChildren,

@@ -1,7 +1,7 @@
 import React from "react"
 import { act, render, fireEvent } from "@testing-library/react"
 import { Focusable, FocusManager } from "../../index.js"
-import { KeyPressManager } from "../../../keyPressManagement/index.js"
+import { KeyboardKeyPressManager } from "../../../keyPressManagement/index.js"
 import { Root } from "./index.js"
 
 describe("<Root>", () => {
@@ -64,14 +64,14 @@ describe("<Root>", () => {
                 key: "Enter",
             })
             const focusManager = new FocusManager()
-            const keyPressManager = new KeyPressManager()
-            keyPressManager.addListener(existingEnterKeyPressHandler)
+            const keyPressManager = new KeyboardKeyPressManager()
+            keyPressManager.addKeyDownListener(existingEnterKeyPressHandler)
 
             const { rerender } = render(
                 <Root
                     focusManager={focusManager}
                     keyPressManager={keyPressManager}
-                    onKeyPress={sunbeamProviderEnterKeyPressHandler}
+                    onKeyDown={sunbeamProviderEnterKeyPressHandler}
                 >
                     hello
                 </Root>
@@ -91,7 +91,7 @@ describe("<Root>", () => {
             expect(existingEnterKeyPressHandler).toHaveBeenCalledTimes(1)
             expect(sunbeamProviderEnterKeyPressHandler).not.toHaveBeenCalled()
 
-            keyPressManager.removeAllListeners()
+            keyPressManager.removeAllKeyDownListeners()
         })
 
         it("should allow to change the keyPressManager in the subsequent re-renders", async () => {
@@ -104,14 +104,14 @@ describe("<Root>", () => {
                 key: "a",
             })
             const focusManager = new FocusManager()
-            const keyPressManager1 = new KeyPressManager()
-            keyPressManager1.addListener(existingAKeyPressHandler1)
+            const keyPressManager1 = new KeyboardKeyPressManager()
+            keyPressManager1.addKeyDownListener(existingAKeyPressHandler1)
 
             const { rerender } = render(
                 <Root
                     focusManager={focusManager}
                     keyPressManager={keyPressManager1}
-                    onKeyPress={sunbeamProviderAKeyPressHandler}
+                    onKeyDown={sunbeamProviderAKeyPressHandler}
                 >
                     hello
                 </Root>
@@ -123,15 +123,15 @@ describe("<Root>", () => {
             expect(existingAKeyPressHandler1).not.toBeCalled()
             sunbeamProviderAKeyPressHandler.mockClear()
 
-            const keyPressManager2 = new KeyPressManager()
+            const keyPressManager2 = new KeyboardKeyPressManager()
             const existingAKeyPressHandler2 = jest.fn(aKeyHandler)
-            keyPressManager2.addListener(existingAKeyPressHandler2)
+            keyPressManager2.addKeyDownListener(existingAKeyPressHandler2)
 
             rerender(
                 <Root
                     focusManager={focusManager}
                     keyPressManager={keyPressManager2}
-                    onKeyPress={sunbeamProviderAKeyPressHandler}
+                    onKeyDown={sunbeamProviderAKeyPressHandler}
                 >
                     hello
                 </Root>
@@ -152,7 +152,7 @@ describe("<Root>", () => {
 
             const focusManager = new FocusManager()
             render(
-                <Root focusManager={focusManager} onKeyPress={keyPressHandler}>
+                <Root focusManager={focusManager} onKeyDown={keyPressHandler}>
                     hello
                 </Root>
             )
@@ -168,7 +168,7 @@ describe("<Root>", () => {
 
             const focusManager = new FocusManager()
             const { rerender } = render(
-                <Root focusManager={focusManager} onKeyPress={keyPressHandler}>
+                <Root focusManager={focusManager} onKeyDown={keyPressHandler}>
                     hello
                 </Root>
             )

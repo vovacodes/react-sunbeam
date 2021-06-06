@@ -1,19 +1,19 @@
 import * as React from "react"
 import { useMemo, useRef } from "react"
 import type { Direction } from "../../spatialNavigation/index.js"
-import type { KeyPressListener } from "../../keyPressManagement/index.js"
+import type { KeyPressEvent } from "../../keyPressManagement/types.js"
 import type { CustomGetPreferredChildFn, FocusEvent } from "../types.js"
 import { useFocusable } from "../hooks/useFocusable.js"
 import { Branch } from "./Branch.js"
 
-interface Props {
+interface Props<E = KeyPressEvent> {
     focusKey?: string
     children: React.ReactNode | ((param: { focused: boolean; path: readonly string[] }) => React.ReactNode)
     focusable?: boolean
     lock?: Direction | Direction[]
     style?: React.CSSProperties
     className?: string
-    onKeyPress?: KeyPressListener
+    onKeyDown?: (event: E extends KeyPressEvent ? E : unknown) => void
     onFocus?: (event: FocusEvent) => void
     onBlur?: (event: FocusEvent) => void
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
@@ -27,7 +27,7 @@ export function Focusable({
     focusable = true,
     lock = [],
     getPreferredChildOnFocus,
-    onKeyPress,
+    onKeyDown,
     onFocus,
     onBlur,
 }: Props) {
@@ -37,7 +37,7 @@ export function Focusable({
         focusKey,
         focusable,
         lock,
-        onKeyPress,
+        onKeyDown,
         onFocus,
         onBlur,
         getPreferredChildOnFocus,

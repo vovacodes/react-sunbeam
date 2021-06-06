@@ -23,7 +23,7 @@ export function useKeyPressTreeNode({
             listenerRef.current = undefined
         }
     }, [onKeyPress])
-    const keyPressTreeNode: KeyPressTreeNode = useMemo(
+    const keyPressTreeNode = useMemo<KeyPressTreeNode>(
         () => ({
             listenerRef,
             childKeyPressTreeNodeRef,

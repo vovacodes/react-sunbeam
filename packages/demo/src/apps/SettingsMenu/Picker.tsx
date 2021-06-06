@@ -3,6 +3,7 @@ import { ReactComponentElement, useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import { Direction, Focusable, useFocusable, useFocusManager } from "react-sunbeam"
 import { Colors, Typography } from "../../styles.js"
+import { isCancel, isSelect } from "../../keyPressUtils.js"
 
 export function Picker({
     label,
@@ -37,12 +38,12 @@ export function Picker({
     return (
         <Focusable
             lock={open ? [Direction.UP, Direction.DOWN] : undefined}
-            onKeyPress={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
+            onKeyDown={(event) => {
+                if (isSelect(event)) {
                     event.stopPropagation()
                     setOpen(true)
                 }
-                if ((event.key === "Backspace" || event.key === "Escape") && open) {
+                if (isCancel(event) && open) {
                     event.stopPropagation()
                     setOpen(false)
                 }
@@ -149,8 +150,8 @@ export function PickerOption({
         focusable,
         elementRef: ref,
         focusKey,
-        onKeyPress(event) {
-            if (event.key === "Enter" || event.key === " ") {
+        onKeyDown(event) {
+            if (isSelect(event)) {
                 event.stopPropagation()
                 if (onPick) onPick(value)
             }

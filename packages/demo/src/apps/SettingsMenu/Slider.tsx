@@ -1,8 +1,9 @@
 import * as React from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Direction, Focusable } from "react-sunbeam"
+import { Direction, Focusable, SyntheticGamepadKeyEvent } from "react-sunbeam"
 import { Colors, Typography } from "../../styles.js"
+import { isCancel, isLeft, isRight, isSelect } from "../../keyPressUtils.js"
 
 export function Slider({
     label,
@@ -24,12 +25,13 @@ export function Slider({
     return (
         <Focusable
             lock={active ? [Direction.UP, Direction.DOWN] : undefined}
-            onKeyPress={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
+            onKeyDown={(event) => {
+                if (isSelect(event)) {
                     event.stopPropagation()
                     setActive(true)
                 }
-                if ((event.key === "Backspace" || event.key === "Escape") && open) {
+
+                if (isCancel(event) && active) {
                     event.stopPropagation()
                     setActive(false)
                 }
@@ -134,8 +136,8 @@ function SliderControl({
         <Focusable
             focusable={active}
             style={{ position: "relative", height: "2px", width: "150px", background: Colors.lightGray }}
-            onKeyPress={(event) => {
-                if (event.key === "ArrowRight") {
+            onKeyDown={(event) => {
+                if (isRight(event)) {
                     event.stopPropagation()
                     setTransientValue((current) => {
                         if (current == null) {
@@ -145,7 +147,8 @@ function SliderControl({
                         return clamp(current + step, minValue, maxValue)
                     })
                 }
-                if (event.key === "ArrowLeft") {
+
+                if (isLeft(event)) {
                     event.stopPropagation()
                     setTransientValue((current) => {
                         if (current == null) {
@@ -155,7 +158,8 @@ function SliderControl({
                         return clamp(current - step, minValue, maxValue)
                     })
                 }
-                if ((event.key === "Enter" || event.key === " ") && transientValue != null) {
+
+                if (transientValue != null && isSelect(event)) {
                     event.stopPropagation()
                     onChange(transientValue)
                 }

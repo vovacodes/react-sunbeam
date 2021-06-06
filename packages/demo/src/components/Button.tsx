@@ -1,8 +1,9 @@
 import * as React from "react"
 import { useCallback } from "react"
 import { motion } from "framer-motion"
-import { useFocusable, useFocusManager } from "react-sunbeam"
+import { SyntheticGamepadKeyEvent, useFocusable, useFocusManager } from "react-sunbeam"
 import { keyframes, styled, theme } from "../styles.js"
+import { isSelect } from "../keyPressUtils.js"
 
 const StyledButton = styled(motion.button, {
     maxWidth: "300px",
@@ -48,18 +49,18 @@ export function Button({
 }) {
     const ref = React.useRef<HTMLButtonElement>(null)
 
-    const onKeyPress = React.useCallback(
-        (event: KeyboardEvent) => {
+    const onKeyDown = React.useCallback(
+        (event: KeyboardEvent | SyntheticGamepadKeyEvent) => {
             if (!onPress) return
-            if (event.key !== "Enter" && event.key !== " ") return
-
-            event.preventDefault()
-            onPress(event)
+            if (isSelect(event)) {
+                event.preventDefault()
+                onPress(event)
+            }
         },
         [onPress]
     )
 
-    const { focused, path } = useFocusable({ elementRef: ref, onKeyPress })
+    const { focused, path } = useFocusable({ elementRef: ref, onKeyDown })
     const focusManager = useFocusManager()
 
     // tap-to-focus

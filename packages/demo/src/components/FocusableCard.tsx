@@ -2,6 +2,7 @@ import * as React from "react"
 import { ReactElement, useCallback, useRef } from "react"
 import { useFocusable, useFocusManager } from "react-sunbeam"
 import { keyframes, styled } from "../styles.js"
+import { isSelect } from "../keyPressUtils.js"
 
 const Poster = styled("div", {
     position: "relative",
@@ -54,10 +55,11 @@ export function FocusableCard({
     const ref = useRef(null)
     const { focused, path } = useFocusable({
         elementRef: ref,
-        onKeyPress(event) {
-            if (event.key !== "Enter" && event.key !== " ") return
-            event.preventDefault()
-            onPress()
+        onKeyDown(event) {
+            if (isSelect(event)) {
+                event.preventDefault()
+                onPress()
+            }
         },
     })
     const focusManager = useFocusManager()
