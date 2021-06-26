@@ -19,6 +19,9 @@
     },
     "author": "Vova Guguiev <vladimir.guguiev@gmail.com>",
     "license": "MIT",
+    "scripts": {
+        "prepublish": "make"
+    },
     "devDependencies": {
         "@testing-library/react": "^11.1.2",
         "@types/jest": "^26.0.15",
