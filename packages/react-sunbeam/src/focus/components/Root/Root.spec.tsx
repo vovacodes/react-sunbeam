@@ -109,6 +109,8 @@ describe("<Root>", () => {
 
             const { rerender } = render(
                 <Root
+                    as="section"
+                    aria-details="focusable root"
                     focusManager={focusManager}
                     keyPressManager={keyPressManager1}
                     onKeyDown={sunbeamProviderAKeyPressHandler}

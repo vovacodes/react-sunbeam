@@ -58,7 +58,7 @@ export function Button() {
 
     return (
         <button
-            ref={ref}
+            ref={elementRef}
             style={{
                 // Define the "focused" and "blurred" styling
                 border: focused ? "2px solid black" : "none",

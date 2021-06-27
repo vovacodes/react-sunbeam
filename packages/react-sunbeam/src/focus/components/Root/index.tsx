@@ -26,7 +26,8 @@ type Props<E = KeyPressEvent> = {
     onFocusUpdate?: (event: { focusPath: FocusPath }) => void
     onKeyDown?: (event: E extends KeyPressEvent ? E : unknown) => void
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
-}
+    as?: keyof JSX.IntrinsicElements
+} & Omit<React.HTMLAttributes<any>, "onKeyDown">
 
 export function Root<E = KeyPressEvent>({
     focusManager,
@@ -35,9 +36,15 @@ export function Root<E = KeyPressEvent>({
     onFocusUpdate,
     onKeyDown,
     getPreferredChildOnFocus,
+    as = "div",
+    ...htmlProps
 }: Props<E>) {
     useOnFocusUpdate(focusManager, onFocusUpdate)
     const [dispatcher] = useState(() => new Dispatcher())
+
+    // This is an unsafe coercion that makes TS happy, but we are fine with that
+    // because we only care about `el.getBoundingClientRect()` which all intrinsic elements have.
+    const WrapperComponent = as as "div"
     const wrapperRef = useRef<HTMLDivElement | null>(null)
 
     const focusableTreeRoot = useFocusableNode(
@@ -95,7 +102,9 @@ export function Root<E = KeyPressEvent>({
                 <FocusableParentContextProvider value={focusableTreeRoot}>
                     <KeyPressTreeContextProvider value={childKeyPressTreeContextValue}>
                         <FocusManagerContext.Provider value={focusManager}>
-                            <div ref={wrapperRef}>{children}</div>
+                            <WrapperComponent ref={wrapperRef} {...htmlProps}>
+                                {children}
+                            </WrapperComponent>
                         </FocusManagerContext.Provider>
                     </KeyPressTreeContextProvider>
                 </FocusableParentContextProvider>
