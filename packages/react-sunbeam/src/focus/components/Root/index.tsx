@@ -28,7 +28,7 @@ type Props<E = KeyPressEvent> = {
     onKeyUp?: (event: E extends KeyPressEvent ? E : unknown) => void
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
     as?: keyof JSX.IntrinsicElements
-} & Omit<React.HTMLAttributes<any>, "onKeyDown" | "onKeyUp">
+} & Omit<React.HTMLAttributes<unknown>, "onKeyDown" | "onKeyUp">
 
 export function Root<E = KeyPressEvent>({
     focusManager,
