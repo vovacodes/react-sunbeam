@@ -21,6 +21,7 @@ export function useFocusable<E = KeyPressEvent>({
     focusable = true,
     lock = [],
     onKeyDown,
+    onKeyUp,
     onFocus,
     onBlur,
     getPreferredChildOnFocus,
@@ -32,6 +33,7 @@ export function useFocusable<E = KeyPressEvent>({
     onKeyDown?: (event: E extends KeyPressEvent ? E : unknown) => void
     onFocus?: (event: FocusEvent) => void
     onBlur?: (event: FocusEvent) => void
+    onKeyUp?: (event: E extends KeyPressEvent ? E : unknown) => void
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
 }): { focused: boolean; path: string[]; node: BranchNode } {
     const focusManagerInternals = useFocusManagerInternals()
@@ -68,7 +70,11 @@ export function useFocusable<E = KeyPressEvent>({
         }
     })
 
-    const keyPressTreeNode = useKeyPressTreeNode({ onKeyPress: onKeyDown as KeyPressListener, focused })
+    const keyPressTreeNode = useKeyPressTreeNode({
+        onKeyDown: onKeyDown as KeyPressListener,
+        onKeyUp: onKeyUp as KeyPressListener,
+        focused,
+    })
 
     return { focused, path, node: branchNodeFrom(focusableNode, keyPressTreeNode) }
 }

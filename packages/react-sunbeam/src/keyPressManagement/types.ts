@@ -11,13 +11,16 @@ export type KeyPressListener<E = KeyPressEvent> = (event: E) => void
  */
 export interface KeyPressManager<E = KeyPressEvent> {
     addKeyDownListener(listener: KeyPressListener<E>): void
-
     removeKeyDownListener(listener: KeyPressListener<E>): void
-
     removeAllKeyDownListeners(): void
+
+    addKeyUpListener(listener: KeyPressListener<E>): void
+    removeKeyUpListener(listener: KeyPressListener<E>): void
+    removeAllKeyUpListeners(): void
 }
 
 export type KeyPressTreeNode = {
-    listenerRef: MutableRefObject<KeyPressListener | undefined>
+    keyDownListenerRef: MutableRefObject<KeyPressListener | undefined>
+    keyUpListenerRef: MutableRefObject<KeyPressListener | undefined>
     childKeyPressTreeNodeRef: MutableRefObject<KeyPressTreeNode | undefined>
 }
