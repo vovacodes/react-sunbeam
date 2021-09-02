@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Direction, Focusable, SyntheticGamepadKeyEvent } from "react-sunbeam"
+import { Direction, Focusable } from "react-sunbeam"
 import { Colors, Typography } from "../../styles.js"
 import { isCancel, isLeft, isRight, isSelect } from "../../keyPressUtils.js"
 

@@ -31,7 +31,7 @@ export class FocusableNode implements IFocusableNode {
         customGetPreferredChild?: CustomGetPreferredChildFn
         lock: Direction[] | Direction | undefined
     }) {
-        focusKey = focusKey ?? `focusable:${randomId()}`
+        focusKey = focusKey || `focusable:${randomId()}`
         this.focusKey = focusKey
         this.path = [...parentPath, focusKey]
         this.getBoundingBox = getBoundingBox
