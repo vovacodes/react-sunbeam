@@ -1,11 +1,18 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es2017",
+        "module": "esnext",
+        "target": "es2020",
         "moduleResolution": "node",
         "strict": true,
         "sourceMap": true,
-        "jsx": "react"
+        "jsx": "react",
+        "outDir": "dist",
+        "baseUrl": ".",
+        "paths": {
+            "react-sunbeam": ["../react-sunbeam/dist/index.d.ts"]
+        },
+        // TODO: remove this when https://github.com/modulz/stitches/issues/494 is fixed
+        "skipLibCheck": true,
     },
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "dist"]
 }

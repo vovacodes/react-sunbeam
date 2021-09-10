@@ -1,129 +1,119 @@
 <div align="center">
-<div align="center"><img src="https://user-images.githubusercontent.com/1524432/66853526-c8c8d200-ef7f-11e9-8fcf-65da77392158.png" width="170" height="170" alt="Sunbeam Logo"/></div>
-<h1 align="center">react-sunbeam</h1>
+<div align="center"><img src="./logo.svg" width="170" height="170" alt="Sunbeam Logo"/></div>
+<h1 align="center">React Sunbeam</h1>
 <p>
-    Spatial navigation and focus management system for React apps
+    Spatial navigation and key press management for React apps
 </p>
 <p align="center">
-    <a href="https://github.com/vovaguguiev/react-sunbeam/actions?workflow=Test"><img src="https://github.com/vovaguguiev/react-sunbeam/workflows/Test/badge.svg" alt="Test Status"></a>
-    <a href="https://app.netlify.com/sites/romantic-wiles-3910cf/deploys"><img src="https://api.netlify.com/api/v1/badges/87d42de3-3413-493d-b30c-c12523a6062a/deploy-status" alt="Netlify Status"></a>
-    <a href="https://www.npmjs.com/package/react-sunbeam"><img src="https://badge.fury.io/js/react-sunbeam.svg" alt="npm version" height="18"></a>
+    <a href="https://sunbeam.vova.codes"><img src="https://img.shields.io/badge/website-3D3D3D?style=flat" alt="npm version" height="18"></a>
+    <a href="https://www.npmjs.com/package/react-sunbeam"><img src="https://img.shields.io/npm/v/react-sunbeam?style=flat&colorA=3D3D3D&colorB=3D3D3D" alt="npm version" height="18"></a>
+    <a href="https://github.com/vovaguguiev/react-sunbeam/actions?workflow=Test"><img src="https://img.shields.io/github/workflow/status/vovacodes/react-sunbeam/Test?style=flat&colorA=3D3D3D&label=tests&colorB=3D3D3D" alt="Test Status" height="18"></a>
 </p>
 </div>
-
-## Installation
 
 ```bash
 npm install react-sunbeam
 ```
 
-or
+## 🧐 Why
 
-```bash
-yarn add react-sunbeam
-```
+React Sunbeam provides a flexible and easy-to-use solution for spacial navigation and focus management.
+It gives developers an abstraction that can be hooked to any input method the app uses, be it a keyboard, TV remote or gamepad.
+There is wide variety of applications that can benefit from React Sunbeam.
 
-## Usage
+### 🎮 TV and Gaming Console Apps
 
-```js
-// app.js
-import React, { useCallback, useEffect } from "react"
-import { Focusable, SunbeamProvider, FocusManager, useSunbeam } from "react-sunbeam"
-import { FocusableCard } from "./FocusableCard"
+Most of the applications that are running on leanback devices and controlled with a remote or gaming controller need an implementation of directional navigation.
+A lot of companies end up rolling out their own custom solutions for that.
+Usually those solutions are either very simple, like using column and row indices, or implementing spatial navigation which works much better for the end user but is tricky to implement correctly and hard to maintain.
+React Sunbeam provides a well-tested, opensource implementation of spatial navigation that is easy to integrate into any existing React app.
 
-function App() {
-    const { setFocus, moveFocusLeft, moveFocusRight, moveFocusUp, moveFocusDown } = useSunbeam()
+### ⌨️ Web Apps with Keyboard Navigation
 
-    const onKeyDown = useCallback(
-        (event) => {
-            if (!(event instanceof KeyboardEvent)) return
-            switch (event.key) {
-                case "ArrowRight":
-                    moveFocusRight()
-                    return
-                case "ArrowLeft":
-                    moveFocusLeft()
-                    return
-                case "ArrowUp":
-                    moveFocusUp()
-                    return
-                case "ArrowDown":
-                    moveFocusDown()
-                    return
-            }
-        },
-        [focusManager]
-    )
+React Sunbeam can also be very useful in the regular web apps that want to add support for directional keyboard navigation and thus make this app more accessible to the keyboard-only users.
+Spreadsheets and tables, different kinds of dashboards etc, all can benefit from React Sunbeam.
 
-    useEffect(() => {
-        document.addEventListener("keydown", onKeyDown)
-        return () => document.removeEventListener("keydown", onKeyDown)
-    }, [onKeyDown])
+## 🪄 Demo
 
-    return (
-        <div>
-            <FocusableCard focusKey="card-1" />
-            <Focusable focusKey="item1">
-                {({ focused }) => <div>{focused ? "I am focused" : "I am not focused"}</div>}
-            </Focusable>
-            <Focusable focusKey="menuContainer">
-                <div>
-                    <Focusable focusKey="menuItem1">
-                        {({ focused }) => (
-                            <div style={{ backgroundColor: focused ? "salmon" : "deepskyblue" }}>
-                                You can nest Focusables
-                            </div>
-                        )}
-                    </Focusable>
-                    <Focusable focusKey="menuItem2">
-                        {({ focused }) => (
-                            <div style={{ backgroundColor: focused ? "salmon" : "deepskyblue" }}>
-                                In this case Sunbeam will try to find the best candidate for the focus within the common
-                                Focusable parent first
-                            </div>
-                        )}
-                    </Focusable>
-                </div>
-            </Focusable>
-            <Focusable focusKey="item2">
-                {({ focused, path }) => (
-                    <div style={{ textDecoration: focused ? "underline" : "none" }} onClick={() => setFocus(path)}>
-                        You can also programmatically change focus by using `setFocus` API
-                    </div>
-                )}
-            </Focusable>
-        </div>
-    )
-}
+Try our [demos](https://sunbeam.vova.codes/#demo-selector) on the documentation website to see what kind of interactions you can build with React Sunbeam.
 
-const focusManager = new FocusManager({
-    initialFocusPath: ["menuContainer", "menuItem2"],
-})
+### [Home Screen](https://sunbeam.vova.codes/console-ui)
 
-render(
-    <SunbeamProvider focusManager={focusManager}>
-        <App />
-    </SunbeamProvider>,
-    document.getElementById("app")
-)
+![demo_home_screen](https://user-images.githubusercontent.com/1524432/113286891-1577a880-92ed-11eb-9119-0d8d4a781180.gif)
 
-// FocusableCard.js
-import React, { useRef } from "react"
+### [Setting Menu](https://sunbeam.vova.codes/settings-menu)
+
+![demo_setting_menu](https://user-images.githubusercontent.com/1524432/113286880-114b8b00-92ed-11eb-983f-a2a9086a2042.gif)
+
+## 🎬 Getting Started
+
+**Create a focusable component**
+
+```tsx
 import { useFocusable } from "react-sunbeam"
 
-export function FocusableCard({ focusKey }) {
+export function Button() {
     const elementRef = useRef(null)
-    const { focused } = useFocusable({ focusKey, elementRef })
+    const { focused } = useFocusable({ elementRef })
 
     return (
-        <div ref={elementRef} style={{ border: focused ? "1px solid salmon" : "1px solid transparent" }}>
-            Card
-        </div>
+        <button
+            ref={elementRef}
+            style={{
+                // Define the "focused" and "blurred" styling
+                border: focused ? "2px solid black" : "none",
+            }}
+        >
+            Click me
+        </button>
     )
 }
 ```
 
-## API
+**Start managing focus**
+
+```tsx
+import { FocusManager, Root } from "react-sunbeam"
+
+// 1. Create a `FocusManager`.
+const focusManager = new FocusManager()
+
+// 2. Assign its method calls to an event listener of your choice.
+//    This can be a keyboard `keydown` event or your custom code using Gamepad API.
+window.addEventListener("keydown", (event) => {
+    switch (event.key) {
+        case "ArrowRight":
+            event.preventDefault()
+            focusManager.moveRight()
+            return
+
+        case "ArrowLeft":
+            event.preventDefault()
+            focusManager.moveLeft()
+            return
+
+        case "ArrowUp":
+            event.preventDefault()
+            focusManager.moveUp()
+            return
+
+        case "ArrowDown":
+            event.preventDefault()
+            focusManager.moveDown()
+            return
+    }
+})
+
+// 3. Pass the `focusMananger` instance into the `Root` provider that wraps the rest of your app.
+ReactDOM.render(
+    <Root focusManager={focusManager}>
+        <App />
+    </Root>,
+    rootElement
+)
+```
+
+## 🍉 API
 
 ### `FocusManager`
 
@@ -144,7 +134,7 @@ Immediately makes focused the focusable node with the given `path`.
 
 ```js
 import { render } from "react-dom"
-import { SunbeamProvider, FocusManager } from "react-sunbeam"
+import { Root, FocusManager } from "react-sunbeam"
 import { App } from "./App"
 
 const focusManager = new FocusManager({
@@ -173,45 +163,64 @@ document.addEventListener("keydown", (event) => {
 })
 
 render(
-    <SunbeamProvider focusManager={focusManager}>
+    <Root focusManager={focusManager}>
         <App />
-    </SunbeamProvider>,
+    </Root>,
     document.getElementById("app")
 )
 ```
 
-### `SunbeamProvider`
+### `<Root>`
 
-### `Focusable`
+`Root` is the root focusable component.
+It instantiates the focusable tree and holds its root node, as well as passing some utilities through React context to other focusable components in the tree.
 
-### `useSunbeam(): { setFocus(focusPath: readonly string[]): void; moveFocusRight(): void; moveFocusLeft(): void; moveFocusUp(): void; moveFocusDown(): void; }`
-
-This hook provides access to some public methods of `FocusManager` inside the React components.
-It expects `<SunbeamProvider>` to be present in the tree, otherwise it returns no-op versions of the methods
-
-### `useFocusable(options: Options): { focused: boolean; path: string[] }`
-
-This hook makes the enclosing component focusable. It can only be used for the "leaf" focusables so the component
-that uses it cannot have other focusable children. If you need the latter behaviour use `<Focusable>` instead.
-
-#### Options
-
-```typescript
-type Options = {
-    // Ref object pointing to a DOM Element or any other object that has 'getBoundingClientRect(): ClientRect' method
-    elementRef: React.RefObject<{ getBoundingClientRect(): ClientRect }>
-    // If set to false the node is ignored in focus management process. Default: true
-    focusable?: boolean
-    focusKey?: string
-    // If set prevents the node from losing focus when navigating in the given directions
-    lock?: Direction | Direction[]
-    onKeyPress?: (event: KeyboardEvent) => void
-    onFocus?: (event: { focusablePath: readonly string[]; getBoundingClientRect: () => ClientRect }) => void
-    onBlur?: (event: { focusablePath: readonly string[]; getBoundingClientRect: () => ClientRect }) => void
-}
+```ts
+function Root(props: {
+    focusManager: FocusManager
+    keyPressManager?: KeyPressManager
+    onFocusUpdate?: (event: { focusPath: FocusPath }) => void
+    onKeyPress?: KeyPressListener
+    getPreferredChildOnFocus?: CustomGetPreferredChildFn
+    children: React.ReactNode
+})
 ```
 
-#### Example
+### `useFocusable()`
+
+A hook that makes the component that uses it a focusable node in the tree.
+
+```ts
+function useFocusable(params: {
+    // Ref object pointing to a DOM Element or any other object that has 'getBoundingClientRect(): ClientRect' method
+    elementRef: Element
+    focusKey?: string
+    // If set to false the node is ignored in focus management process. Default: true
+    focusable?: boolean
+    // If set prevents the node from losing focus when navigating in the given directions
+    lock?: Direction | Direction[]
+    onKeyPress?: KeyPressListener
+    onFocus?: (event: FocusEvent) => void
+    onBlur?: (event: FocusEvent) => void
+    getPreferredChildOnFocus?: CustomGetPreferredChildFn
+}): { focused: boolean; path: string[]; node: BranchNode }
+```
+
+It can be used both for creating a leaf node or a branch node.
+If the latter is the goal, the node has to be passed down the tree through React context.
+In order to do that, the user needs to render a Branch component and pass it the opaque `node` object returned from the `useFocusable()` call:
+
+```ts
+const { focused, node } = useFocusable(...)
+
+return (
+    <Branch node={node}>
+        {/*...*/}
+    </Branch>
+)
+```
+
+#### Example: Focusable Button
 
 ```typescript jsx
 import React from "react"
@@ -234,6 +243,38 @@ export function FocusableButton({ children }) {
             {children}
         </button>
     )
+}
+```
+
+### `<Branch>`
+
+The sole purpose of the `Branch` component is to enable a focusable node to have other focusable children.
+The focusable components rendered inside `Branch` will become its focusable children.
+
+```ts
+const { focused, node } = useFocusable(...)
+
+return (
+    <Branch node={node}>
+        ...
+    </Branch>
+)
+```
+
+### `<Focusable>`
+
+### `useFocusManager()`
+
+This hook provides access to some public methods of `FocusManager` inside the React components.
+The methods can be used to manipulate focus programmatically.
+
+```ts
+function useFocusManager(): {
+    setFocus(focusPath: readonly string[]): void
+    moveRight(): void
+    moveLeft(): void
+    moveUp(): void
+    moveFocusDown(): void
 }
 ```
 

@@ -1,16 +1,16 @@
-import type { FocusableNodesMap, FocusableTreeNode, FocusPath } from "./types.js"
+import type { FocusPath, IFocusableNode } from "./types.js"
 import { FOCUSABLE_TREE_ROOT_KEY } from "./Constants.js"
 
-export function validateAndFixFocusPathIfNeeded(focusPath: FocusPath, treeRoot: FocusableTreeNode): FocusPath | null {
+export function validateAndFixFocusPathIfNeeded(focusPath: FocusPath, treeRoot: IFocusableNode): FocusPath | null {
     let fixedFocusPath: string[] | null = null // only initialize if we need to fix the path
-    let focusedNode: FocusableTreeNode = treeRoot
+    let currentNode = treeRoot
     let focusPathSegmentIndex = 0
 
-    while (focusedNode) {
+    while (currentNode) {
         const focusedChildKey: string | undefined = fixedFocusPath
             ? fixedFocusPath[focusPathSegmentIndex]
             : focusPath[focusPathSegmentIndex]
-        const focusableChildren: FocusableNodesMap = focusedNode.getChildren()
+        const focusableChildren = currentNode.getChildren()
         if (focusableChildren.size === 0) {
             // leaf node
             if (focusPath.length >= focusPathSegmentIndex + 1 && !fixedFocusPath) {
@@ -20,44 +20,45 @@ export function validateAndFixFocusPathIfNeeded(focusPath: FocusPath, treeRoot: 
             break
         }
 
-        if (!focusableChildren.has(focusedChildKey)) {
-            const preferredChild: FocusableTreeNode | undefined = focusedNode.getPreferredChild()
+        const focusableNode = focusableChildren.get(focusedChildKey)
+        if (!focusableNode) {
+            const preferredChild = currentNode.getPreferredChild()
             if (!preferredChild) {
                 throw new Error(
-                    `can not find a preferred child to focus ` + `in node with focusKey=${focusedNode.focusKey}`
+                    `can not find a preferred child to focus ` + `in node with focusKey=${currentNode.getFocusKey()}`
                 )
             }
             if (!fixedFocusPath) {
                 fixedFocusPath = focusPath.slice(0, focusPathSegmentIndex)
             }
-            fixedFocusPath.push(preferredChild.focusKey)
-            focusedNode = preferredChild
+            fixedFocusPath.push(preferredChild.getFocusKey())
+            currentNode = preferredChild
             focusPathSegmentIndex++
             continue
         }
 
         // move to the next focused child
-        focusedNode = focusableChildren.get(focusedChildKey) as FocusableTreeNode // we already checked for existence above
+        currentNode = focusableNode
         focusPathSegmentIndex++
     }
 
     return fixedFocusPath ? fixedFocusPath : null
 }
 
-export function getNodeByPath(path: FocusPath, treeRoot: FocusableTreeNode): FocusableTreeNode | undefined {
-    return path.reduce((node: FocusableTreeNode | undefined, focusKey: string) => {
+export function getNodeByPath(path: FocusPath, treeRoot: IFocusableNode): IFocusableNode | undefined {
+    return path.reduce((node: IFocusableNode | undefined, focusKey: string) => {
         if (node === undefined) return undefined
 
         return node.getChildren().get(focusKey)
     }, treeRoot)
 }
 
-export function getPathToNode(treeNode: FocusableTreeNode): FocusPath {
+export function getPathToNode(treeNode: IFocusableNode): FocusPath {
     const path: string[] = []
 
-    let currentNode: FocusableTreeNode | undefined = treeNode
+    let currentNode: IFocusableNode | undefined = treeNode
     while (currentNode) {
-        const focusKey = currentNode.focusKey
+        const focusKey = currentNode.getFocusKey()
 
         // we don't include the root key in the path
         if (focusKey !== FOCUSABLE_TREE_ROOT_KEY) {
@@ -70,9 +71,9 @@ export function getPathToNode(treeNode: FocusableTreeNode): FocusPath {
     return path
 }
 
-export function getSiblings(focusableTreeNode: FocusableTreeNode): readonly FocusableTreeNode[] {
+export function getSiblings(focusableTreeNode: IFocusableNode): readonly IFocusableNode[] {
     const parent = focusableTreeNode.getParent()
-    const siblings: FocusableTreeNode[] = []
+    const siblings: IFocusableNode[] = []
 
     if (!parent) return siblings
 

@@ -1,14 +1,15 @@
 {
     "compilerOptions": {
         "declaration": true,
-        "target": "es2017",
+        "target": "es2019",
         "lib": ["dom"],
         "moduleResolution": "node",
         "strict": true,
         "esModuleInterop": true,
         "jsx": "react",
         "rootDir": "src",
-        "importsNotUsedAsValues": "error"
+        "importsNotUsedAsValues": "error",
+        "outDir": "dist"
     },
     "exclude": ["dist"]
 }

@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <title>ReactSunbeam demo</title>
         <link
             href="https://fonts.googleapis.com/css?family=Fira+Code:400,700|DM+Serif+Display&display=swap"
@@ -13,17 +14,60 @@
             margin: 0;
             background-color: #fffcf5;
         }
-        @keyframes hovering {
-            from {
-                transform: translate(0px, 0px);
-            }
-            to {
-                transform: translate(-4px, -4px);
-            }
-        }
     </style>
     <body>
-        <div id="app"></div>
-        <script src="./src/apps/index.tsx"></script>
+        <!--
+            JSPM Generator Import Map
+            Edit URL: https://generator.jspm.io/#U2VgYGCvD0pNTC5RCC5JLCpJLWJwKC7JLEnOSC3WLwKJOxjoGeqZMKQVJeamFunm5pdk5uc5GOsZGugZM2RkFpfkF1U6mOoZ6BkwgJXrpuTnOhiaAwUMoQJF+aVAY8HipnpGcHUQYWQhqDYAPBIY+pQA
+        -->
+        <script type="importmap">
+            {
+                "imports": {
+                    "app": "/demo/dist/apps/index.js",
+
+                    "react-sunbeam": "../react-sunbeam/dist/index.js",
+
+                    "@stitches/react": "https://ga.jspm.io/npm:@stitches/react@0.1.4/dist/index.mjs",
+                    "framer-motion": "https://ga.jspm.io/npm:framer-motion@3.10.3/dist/dev.framer-motion.cjs.js",
+                    "history": "https://ga.jspm.io/npm:history@5.0.0/dev.main.js",
+                    "react": "https://ga.jspm.io/npm:react@17.0.2/dev.index.js",
+                    "react-dom": "https://ga.jspm.io/npm:react-dom@17.0.2/dev.index.js",
+                    "react-router": "https://ga.jspm.io/npm:react-router@5.2.0/dev.index.js",
+                    "react-router-dom": "https://ga.jspm.io/npm:react-router-dom@5.2.0/dev.index.js"
+                },
+                "scopes": {
+                    "https://ga.jspm.io/": {
+                        "@babel/runtime/helpers/inheritsLoose": "https://ga.jspm.io/npm:@babel/runtime@7.13.10/helpers/inheritsLoose.js",
+                        "@emotion/is-prop-valid": "https://ga.jspm.io/npm:@emotion/is-prop-valid@0.8.8/dist/is-prop-valid.browser.cjs.js",
+                        "@emotion/memoize": "https://ga.jspm.io/npm:@emotion/memoize@0.7.4/dist/memoize.browser.cjs.js",
+                        "framesync": "https://ga.jspm.io/npm:framesync@5.2.0/lib/index.js",
+                        "hey-listen": "https://ga.jspm.io/npm:hey-listen@1.0.8/dist/dev.index.js",
+                        "history": "https://ga.jspm.io/npm:history@4.10.1/dev.index.js",
+                        "hoist-non-react-statics": "https://ga.jspm.io/npm:hoist-non-react-statics@3.3.2/dist/hoist-non-react-statics.cjs.js",
+                        "isarray": "https://ga.jspm.io/npm:isarray@0.0.1/index.js",
+                        "mini-create-react-context": "https://ga.jspm.io/npm:mini-create-react-context@0.4.1/dist/cjs/dev.index.js",
+                        "object-assign": "https://ga.jspm.io/npm:object-assign@4.1.1/index.js",
+                        "path-to-regexp": "https://ga.jspm.io/npm:path-to-regexp@1.8.0/index.js",
+                        "popmotion": "https://ga.jspm.io/npm:popmotion@9.3.1/lib/index.js",
+                        "prop-types": "https://ga.jspm.io/npm:prop-types@15.7.2/dev.index.js",
+                        "react-is": "https://ga.jspm.io/npm:react-is@16.13.1/dev.index.js",
+                        "resolve-pathname": "https://ga.jspm.io/npm:resolve-pathname@3.0.0/dev.index.js",
+                        "scheduler": "https://ga.jspm.io/npm:scheduler@0.20.2/dev.index.js",
+                        "scheduler/tracing": "https://ga.jspm.io/npm:scheduler@0.20.2/dev.tracing.js",
+                        "style-value-types": "https://ga.jspm.io/npm:style-value-types@4.1.1/lib/index.js",
+                        "tiny-invariant": "https://ga.jspm.io/npm:tiny-invariant@1.1.0/dist/dev.tiny-invariant.cjs.js",
+                        "tiny-warning": "https://ga.jspm.io/npm:tiny-warning@1.0.3/dist/dev.tiny-warning.cjs.js",
+                        "tslib": "https://ga.jspm.io/npm:tslib@1.14.1/tslib.js",
+                        "value-equal": "https://ga.jspm.io/npm:value-equal@1.0.1/dev.index.js"
+                    }
+                }
+            }
+        </script>
+        <!-- ES Module Shims: Import maps polyfill for modules browsers without import maps support (all except Chrome 89+) -->
+        <script type="module" src="https://ga.jspm.io/npm:es-module-shims@0.10.6/dist/es-module-shims.js"></script>
+        <script type="module">
+            import "app"
+        </script>
+        <div id="app" />
     </body>
 </html>

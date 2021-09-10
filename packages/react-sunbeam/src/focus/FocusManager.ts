@@ -1,7 +1,8 @@
-import type { FocusableTreeNode, FocusPath } from "./types.js"
+import type { FocusPath, FocusUpdatesSubscriber, IFocusableNode, UnsubscribeFromFocusUpdatesFn } from "./types.js"
 import { getNodeByPath, getPathToNode, getSiblings, validateAndFixFocusPathIfNeeded } from "./FocusableTreeUtils.js"
 import { Direction, getBestCandidate } from "../spatialNavigation/index.js"
 import { boxesWithinFrustumOfOrigin } from "../spatialNavigation/frustumFilteringUtils.js"
+import { unstable_batchedUpdates } from "react-dom"
 
 interface Options {
     initialFocusPath: FocusPath
@@ -16,8 +17,8 @@ export class FocusManager {
      * path from the focusableRoot to the focusTarget.
      */
     private focusPath: readonly string[]
-    private focusableRoot: FocusableTreeNode | undefined
-    private subscribers: Set<() => void>
+    private focusableRoot: IFocusableNode | undefined
+    private subscribers: Set<FocusUpdatesSubscriber>
 
     public constructor(options: Options = defaultOptions) {
         this.focusPath = options.initialFocusPath
@@ -25,48 +26,9 @@ export class FocusManager {
         this.subscribers = new Set()
     }
 
-    public setFocusableRoot(focusableRoot: FocusableTreeNode): void {
-        this.focusableRoot = focusableRoot
-
-        this.revalidateFocusPath()
-    }
-
-    public clearFocusableRoot(): void {
-        this.focusableRoot = undefined
-    }
-
-    public setFocus(focusPath: FocusPath): void {
-        if (!this.focusableRoot) return
-
-        const fixedFocusPath = validateAndFixFocusPathIfNeeded(focusPath, this.focusableRoot)
-        this.focusPath = fixedFocusPath ?? focusPath
-
-        this.notifySubscribers()
-    }
-
-    public getFocusPath(): FocusPath {
-        return this.focusPath
-    }
-
-    public revalidateFocusPath(): void {
-        if (!this.focusableRoot) {
-            this.setFocus([])
-            return
-        }
-
-        const fixedFocusPath = validateAndFixFocusPathIfNeeded(this.focusPath, this.focusableRoot)
-        if (fixedFocusPath) {
-            this.setFocus(fixedFocusPath)
-        }
-    }
-
-    public subscribe(subscriber: () => void): () => void {
-        this.subscribers.add(subscriber)
-
-        return () => {
-            this.subscribers.delete(subscriber)
-        }
-    }
+    // ===================================
+    // Public interface
+    // ===================================
 
     public moveLeft(): void {
         this.moveFocusInDirection(Direction.LEFT)
@@ -84,13 +46,68 @@ export class FocusManager {
         this.moveFocusInDirection(Direction.DOWN)
     }
 
+    public subscribe(subscriber: FocusUpdatesSubscriber): UnsubscribeFromFocusUpdatesFn {
+        this.subscribers.add(subscriber)
+
+        return () => {
+            this.subscribers.delete(subscriber)
+        }
+    }
+
+    public setFocus(focusPath: FocusPath): void {
+        if (!this.focusableRoot) return
+
+        const fixedFocusPath = validateAndFixFocusPathIfNeeded(focusPath, this.focusableRoot)
+        this.focusPath = fixedFocusPath ?? focusPath
+
+        this.notifySubscribers()
+    }
+
+    public getFocusPath(): FocusPath {
+        return this.focusPath
+    }
+
+    // ===================================
+    // Internal interface
+    // ===================================
+
+    /** @private */
+    public setFocusableRoot(focusableRoot: IFocusableNode): void {
+        this.focusableRoot = focusableRoot
+
+        this.revalidateFocusPath()
+    }
+
+    /** @private */
+    public clearFocusableRoot(): void {
+        this.focusableRoot = undefined
+    }
+
+    /** @private */
+    public revalidateFocusPath(): void {
+        if (!this.focusableRoot) {
+            this.setFocus([])
+            return
+        }
+
+        const fixedFocusPath = validateAndFixFocusPathIfNeeded(this.focusPath, this.focusableRoot)
+        if (fixedFocusPath) {
+            this.setFocus(fixedFocusPath)
+        }
+    }
+
     // ===================================
     // Private methods
     // ===================================
 
     private notifySubscribers(): void {
-        this.subscribers.forEach((subscriber) => {
-            subscriber()
+        const { focusPath } = this
+        // We need to batch the React state updates caused by the subscribers' calls,
+        // to prevent double/triple re-rendering.
+        unstable_batchedUpdates(() => {
+            this.subscribers.forEach((subscriber) => {
+                subscriber({ focusPath })
+            })
         })
     }
 
@@ -111,12 +128,12 @@ export class FocusManager {
 }
 
 function findBestCandidateAmongSiblingsOf(
-    treeNode: FocusableTreeNode,
-    focusOrigin: FocusableTreeNode,
+    treeNode: IFocusableNode,
+    focusOrigin: IFocusableNode,
     direction: Direction
-): FocusableTreeNode | null {
+): IFocusableNode | null {
     // Focus doesn't move
-    if (treeNode.lock.includes(direction)) return null
+    if (isDirectionLocked(direction, treeNode.getLock())) return null
 
     // 2. Search for the best candidate among siblings of the current focusOrigin
     // If not found repeat the same process for the parent FocusableNode's siblings
@@ -157,4 +174,14 @@ function findBestCandidateAmongSiblingsOf(
     }
 
     return bestCandidateNode
+}
+
+function isDirectionLocked(direction: Direction, lock: Direction[] | Direction | undefined): boolean {
+    if (!lock) return false
+
+    if (Array.isArray(lock)) {
+        return lock.includes(direction)
+    } else {
+        return lock === direction
+    }
 }

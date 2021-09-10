@@ -1,3 +1,4 @@
-export { KeyPressManager, KeyPressListener } from "./KeyPressManager.js"
+export { KeyboardKeyPressManager, KeyboardKeyPressListener } from "./KeyboardKeyPressManager.js"
 export { KeyPressTreeContextProvider, useKeyPressTreeContext, KeyPressTreeContextValue } from "./KeyPressTreeContext.js"
-export { KeyPressTreeNode } from "./types.js"
+export type { KeyPressManager, KeyPressTreeNode, KeyPressListener, KeyPressEvent } from "./types.js"
+export { combineKeyPressManagers } from "./combineKeyPressManagers.js"

@@ -1,8 +1,9 @@
 import * as React from "react"
 import { ReactComponentElement, useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
-import { Direction, Focusable, useFocusable, useSunbeam } from "react-sunbeam"
-import { Colors, Typography } from "../../styles"
+import { Direction, Focusable, useFocusable, useFocusManager } from "react-sunbeam"
+import { Colors, Typography } from "../../styles.js"
+import { isCancel, isSelect } from "../../keyPressUtils.js"
 
 export function Picker({
     label,
@@ -37,25 +38,28 @@ export function Picker({
     return (
         <Focusable
             lock={open ? [Direction.UP, Direction.DOWN] : undefined}
-            onKeyPress={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
+            onKeyDown={(event) => {
+                if (isSelect(event)) {
                     event.stopPropagation()
                     setOpen(true)
                 }
-                if ((event.key === "Backspace" || event.key === "Escape") && open) {
+                if (isCancel(event) && open) {
                     event.stopPropagation()
                     setOpen(false)
                 }
             }}
         >
             {({ focused, path }) => {
-                const { setFocus } = useSunbeam()
+                // This callback is called during rendering and it never changes so we can safely call hooks inside of it.
+                /* eslint-disable react-hooks/rules-of-hooks */
+                const focusManager = useFocusManager()
                 const prevOpen = usePrevious(open, open)
                 useEffect(() => {
                     if (!open || prevOpen === open) return
 
-                    setFocus(path.concat(focusKeyByValue[selectedOption.props.value]))
+                    focusManager.setFocus(path.concat(focusKeyByValue[selectedOption.props.value]))
                 })
+                /* eslint-enable react-hooks/rules-of-hooks */
 
                 return (
                     <div
@@ -146,8 +150,8 @@ export function PickerOption({
         focusable,
         elementRef: ref,
         focusKey,
-        onKeyPress(event) {
-            if (event.key === "Enter" || event.key === " ") {
+        onKeyDown(event) {
+            if (isSelect(event)) {
                 event.stopPropagation()
                 if (onPick) onPick(value)
             }

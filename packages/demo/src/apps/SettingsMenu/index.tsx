@@ -2,10 +2,11 @@ import * as React from "react"
 import { useState } from "react"
 import { useHistory } from "react-router-dom"
 import { Focusable } from "react-sunbeam"
-import { Hint } from "../../components/Hint"
-import { Picker, PickerOption } from "./Picker"
-import { Slider } from "./Slider"
-import { Header } from "../../components/Header"
+import { Hint } from "../../components/Hint.js"
+import { Picker, PickerOption } from "./Picker.js"
+import { Slider } from "./Slider.js"
+import { Header } from "../../components/Header.js"
+import { isCancel } from "../../keyPressUtils.js"
 
 const displayModes = [
     { label: "Fullscreen", value: "fullscreen" },
@@ -30,10 +31,11 @@ export function SettingsMenu() {
         <>
             <Header />
             <Focusable
-                onKeyPress={(event) => {
-                    if (event.key !== "Backspace" && event.key !== "Escape") return
-                    event.stopPropagation()
-                    history.goBack()
+                onKeyDown={(event) => {
+                    if (isCancel(event)) {
+                        event.stopPropagation()
+                        history.goBack()
+                    }
                 }}
                 style={{
                     padding: "100px 60px",

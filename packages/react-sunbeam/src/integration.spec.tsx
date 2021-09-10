@@ -1,7 +1,11 @@
 import React, { useRef } from "react"
 import { act, render, fireEvent } from "@testing-library/react"
-import { SunbeamProvider, FocusManager, Focusable, useFocusable } from "./focus/index.js"
+import { Root, FocusManager, Focusable, useFocusable } from "./focus/index.js"
 import type { KeyPressListener } from "./keyPressManagement/index.js"
+
+describe("Sunbeam integration", () => {
+    test.todo("should re-render only the affected nodes on focus change")
+})
 
 describe("Key press management integration", () => {
     test("Nested key handlers", () => {
@@ -13,21 +17,21 @@ describe("Key press management integration", () => {
 
         function FocusableButton({ focusKey, onKeyPress }: { focusKey: string; onKeyPress: KeyPressListener }) {
             const ref = useRef(null)
-            const { focused } = useFocusable({ focusKey, elementRef: ref, onKeyPress })
+            const { focused } = useFocusable({ focusKey, elementRef: ref, onKeyDown: onKeyPress })
             return <button ref={ref}>I am a{focused ? " focused " : " "}button</button>
         }
 
         const focusManager = new FocusManager({ initialFocusPath: ["Focusable-1"] })
         render(
-            <SunbeamProvider focusManager={focusManager} onKeyPress={sunbeamProviderKeyHandler}>
-                <Focusable focusKey={"Focusable-1"} onKeyPress={focusable1KeyHandler}>
+            <Root focusManager={focusManager} onKeyDown={sunbeamProviderKeyHandler}>
+                <Focusable focusKey={"Focusable-1"} onKeyDown={focusable1KeyHandler}>
                     hello
                 </Focusable>
-                <Focusable focusKey={"Focusable-2"} onKeyPress={focusable2KeyHandler}>
+                <Focusable focusKey={"Focusable-2"} onKeyDown={focusable2KeyHandler}>
                     <FocusableButton focusKey="FocusableButton-1" onKeyPress={focusableButton1KeyHandler} />
                     <FocusableButton focusKey="FocusableButton-2" onKeyPress={focusableButton2KeyHandler} />
                 </Focusable>
-            </SunbeamProvider>
+            </Root>
         )
 
         fireEvent(window, new KeyboardEvent("keydown"))

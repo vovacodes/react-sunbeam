@@ -1,39 +1,14 @@
 {
     "name": "demo",
-    "version": "1.0.4",
-    "main": "index.js",
-    "repository": "git+https://github.com/wzrdzl/react-sunbeam.git",
-    "author": "Vladimir Guguiev <vladimir.guguiev@gmail.com>",
-    "license": "MIT",
+    "version": "1.0.0",
     "private": true,
-    "scripts": {
-        "build": "parcel build index.html",
-        "dev": "parcel index.html --port 1234",
-        "type-check": "tsc --noEmit"
-    },
-    "dependencies": {
-        "framer-motion": "^2.9.4",
-        "history": "^5.0.0",
-        "react": "^17.0.1",
-        "react-dom": "^17.0.1",
-        "react-router": "^5.2.0",
-        "react-router-dom": "^5.2.0",
-        "react-sunbeam": "^1.0.4"
-    },
     "devDependencies": {
-        "@types/react": "^16.9.56",
-        "@types/react-dom": "^16.9.9",
-        "@types/react-router-dom": "^5.1.6",
-        "parcel-bundler": "^1.12.4",
-        "typescript": "^4.0.5"
-    },
-    "alias": {
-        "scheduler/tracing": "scheduler/tracing-profiling"
-    },
-    "browserslist": [
-        ">5%",
-        "not dead",
-        "not ie <= 11",
-        "not op_mini all"
-    ]
+        "@stitches/react": "^0.1.4",
+        "@types/react": "^17.0.0",
+        "@types/react-dom": "^17.0.0",
+        "@types/react-router-dom": "5.1.6",
+        "concurrently": "^6.0.0",
+        "framer-motion": "^3.10.3",
+        "react-router": "^5.2.0"
+    }
 }

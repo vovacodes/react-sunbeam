@@ -1,6 +1,6 @@
 import React from "react"
 import { act, render } from "@testing-library/react"
-import { FocusManager, SunbeamProvider } from "../index.js"
+import { FocusManager, Root } from "../index.js"
 import { Focusable } from "./Focusable.js"
 import { mockGetBoundingClientRect, waitForFocusTreeUpdates } from "../../test/utils.js"
 import { Direction } from "../../spatialNavigation/index.js"
@@ -8,20 +8,22 @@ import { Direction } from "../../spatialNavigation/index.js"
 describe("Focusable", () => {
     mockGetBoundingClientRect()
 
+    it.todo("should render in isolation (without Provider) with no errors")
+
     it("should pass `focused` and `path` to its render callback when one is provided", () => {
         const fn = jest.fn()
         const focusKey = "my-focusable"
         const focusManager = new FocusManager({ initialFocusPath: [focusKey] })
 
         render(
-            <SunbeamProvider focusManager={focusManager}>
+            <Root focusManager={focusManager}>
                 <Focusable focusKey={focusKey}>
                     {({ focused, path }) => {
                         fn({ focused, path })
                         return <div />
                     }}
                 </Focusable>
-            </SunbeamProvider>
+            </Root>
         )
 
         expect(fn).toBeCalledTimes(1)
@@ -31,11 +33,11 @@ describe("Focusable", () => {
     it("should render children passed to it", () => {
         const focusManager = new FocusManager()
         const { getByText } = render(
-            <SunbeamProvider focusManager={focusManager}>
+            <Root focusManager={focusManager}>
                 <Focusable>
                     <div>I am a child</div>
                 </Focusable>
-            </SunbeamProvider>
+            </Root>
         )
         expect(getByText("I am a child")).toBeTruthy()
     })
@@ -55,7 +57,7 @@ describe("Focusable", () => {
             const onBlurRightChild = jest.fn()
             const focusManager = new FocusManager({ initialFocusPath: ["left-parent", "left-child"] })
             render(
-                <SunbeamProvider focusManager={focusManager}>
+                <Root focusManager={focusManager}>
                     <Focusable onFocus={onFocusLeftParent} onBlur={onBlurLeftParent} focusKey="left-parent">
                         <Focusable onFocus={onFocusLeftChild} onBlur={onBlurLeftChild} focusKey="left-child">
                             Left
@@ -66,7 +68,7 @@ describe("Focusable", () => {
                             Right
                         </Focusable>
                     </Focusable>
-                </SunbeamProvider>
+                </Root>
             )
 
             // no sync calls
@@ -130,7 +132,7 @@ describe("Focusable", () => {
         const focusManager = new FocusManager({ initialFocusPath: ["left"] })
 
         const { rerender } = render(
-            <SunbeamProvider focusManager={focusManager}>
+            <Root focusManager={focusManager}>
                 <Focusable focusKey="left" style={{ width: "100px", height: "200px", top: 0, left: 0 }}>
                     Left
                 </Focusable>
@@ -139,7 +141,7 @@ describe("Focusable", () => {
                         Right
                     </Focusable>
                 </Focusable>
-            </SunbeamProvider>
+            </Root>
         )
 
         act(() => focusManager.moveRight())
@@ -148,22 +150,20 @@ describe("Focusable", () => {
 
         // make "rightChild" not "focusable"
         rerender(
-            <SunbeamProvider focusManager={focusManager}>
-                <SunbeamProvider focusManager={focusManager}>
-                    <Focusable focusKey="left" style={{ width: "100px", height: "200px", top: 0, left: 0 }}>
-                        Left
+            <Root focusManager={focusManager}>
+                <Focusable focusKey="left" style={{ width: "100px", height: "200px", top: 0, left: 0 }}>
+                    Left
+                </Focusable>
+                <Focusable focusKey="rightParent" style={{ width: "100px", height: "200px", top: 0, left: 200 }}>
+                    <Focusable
+                        focusable={false}
+                        focusKey="rightChild"
+                        style={{ width: "100px", height: "200px", top: 0, left: 200 }}
+                    >
+                        Right
                     </Focusable>
-                    <Focusable focusKey="rightParent" style={{ width: "100px", height: "200px", top: 0, left: 200 }}>
-                        <Focusable
-                            focusable={false}
-                            focusKey="rightChild"
-                            style={{ width: "100px", height: "200px", top: 0, left: 200 }}
-                        >
-                            Right
-                        </Focusable>
-                    </Focusable>
-                </SunbeamProvider>
-            </SunbeamProvider>
+                </Focusable>
+            </Root>
         )
         await waitForFocusTreeUpdates()
 
@@ -171,22 +171,20 @@ describe("Focusable", () => {
 
         // make "rightParent" not "focusable"
         rerender(
-            <SunbeamProvider focusManager={focusManager}>
-                <SunbeamProvider focusManager={focusManager}>
-                    <Focusable focusKey="left" style={{ width: "100px", height: "200px", top: 0, left: 0 }}>
-                        Left
+            <Root focusManager={focusManager}>
+                <Focusable focusKey="left" style={{ width: "100px", height: "200px", top: 0, left: 0 }}>
+                    Left
+                </Focusable>
+                <Focusable
+                    focusable={false}
+                    focusKey="rightParent"
+                    style={{ width: "100px", height: "200px", top: 0, left: 200 }}
+                >
+                    <Focusable focusKey="rightChild" style={{ width: "100px", height: "200px", top: 0, left: 200 }}>
+                        Right
                     </Focusable>
-                    <Focusable
-                        focusable={false}
-                        focusKey="rightParent"
-                        style={{ width: "100px", height: "200px", top: 0, left: 200 }}
-                    >
-                        <Focusable focusKey="rightChild" style={{ width: "100px", height: "200px", top: 0, left: 200 }}>
-                            Right
-                        </Focusable>
-                    </Focusable>
-                </SunbeamProvider>
-            </SunbeamProvider>
+                </Focusable>
+            </Root>
         )
         await waitForFocusTreeUpdates()
 
@@ -201,7 +199,7 @@ describe("Focusable", () => {
         const focusManager = new FocusManager({ initialFocusPath: ["top-left"] })
 
         render(
-            <SunbeamProvider focusManager={focusManager}>
+            <Root focusManager={focusManager}>
                 <Focusable
                     lock={Direction.RIGHT}
                     focusKey="top-left"
@@ -222,7 +220,7 @@ describe("Focusable", () => {
                 <Focusable focusKey="bottom-right" style={{ width: 100, height: 200, top: 300, left: 200 }}>
                     Bottom Right
                 </Focusable>
-            </SunbeamProvider>
+            </Root>
         )
 
         act(() => focusManager.moveRight())
@@ -245,7 +243,7 @@ describe("Focusable", () => {
         const focusManager = new FocusManager({ initialFocusPath: ["leftParent", "topChild"] })
 
         const { rerender } = render(
-            <SunbeamProvider focusManager={focusManager}>
+            <Root focusManager={focusManager}>
                 <Focusable
                     lock={Direction.RIGHT}
                     focusKey="leftParent"
@@ -261,7 +259,7 @@ describe("Focusable", () => {
                 <Focusable focusKey="right" style={{ width: 100, height: 200, top: 0, left: 200 }}>
                     Right
                 </Focusable>
-            </SunbeamProvider>
+            </Root>
         )
 
         act(() => focusManager.moveRight())
@@ -276,7 +274,7 @@ describe("Focusable", () => {
 
         // release the focus lock
         rerender(
-            <SunbeamProvider focusManager={focusManager}>
+            <Root focusManager={focusManager}>
                 <Focusable focusKey="leftParent" style={{ width: 100, height: 300, top: 0, left: 0 }}>
                     <Focusable focusKey="topChild" style={{ width: 100, height: 100, top: 0, left: 0 }}>
                         Left Top
@@ -288,7 +286,7 @@ describe("Focusable", () => {
                 <Focusable focusKey="right" style={{ width: 100, height: 200, top: 0, left: 200 }}>
                     Right
                 </Focusable>
-            </SunbeamProvider>
+            </Root>
         )
         await waitForFocusTreeUpdates()
 
@@ -297,11 +295,11 @@ describe("Focusable", () => {
     })
 
     describe("getPreferredChildOnFocus", () => {
-        it("selects which child to focus on when SunbeamProvider becomes focused", () => {
+        it("selects which child to focus on when Root becomes focused", () => {
             const focusManager = new FocusManager()
 
             render(
-                <SunbeamProvider focusManager={focusManager}>
+                <Root focusManager={focusManager}>
                     <Focusable
                         getPreferredChildOnFocus={({ focusableChildren }) => {
                             return focusableChildren.get("middleChild")
@@ -313,7 +311,7 @@ describe("Focusable", () => {
                         <Focusable focusKey="bottomChild">Left Bottom</Focusable>
                     </Focusable>
                     <Focusable focusKey="right">Right</Focusable>
-                </SunbeamProvider>
+                </Root>
             )
 
             expect(focusManager.getFocusPath()).toEqual(["leftParent", "middleChild"])

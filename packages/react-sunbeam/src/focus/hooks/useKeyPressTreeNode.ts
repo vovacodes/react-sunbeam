@@ -9,23 +9,31 @@ import { useChildKeyPressTreeContextValue } from "./useChildKeyPressTreeContextV
 
 export function useKeyPressTreeNode({
     focused,
-    onKeyPress,
+    onKeyDown,
+    onKeyUp,
 }: {
     focused: boolean
-    onKeyPress: KeyPressListener | undefined
+    onKeyDown: KeyPressListener | undefined
+    onKeyUp: KeyPressListener | undefined
 }): KeyPressTreeContextValue {
     const childKeyPressTreeNodeRef = useRef<KeyPressTreeNode | undefined>(undefined)
     const { registerActiveKeyPressTreeNode, unregisterActiveKeyPressTreeNode } = useKeyPressTreeContext()
-    const listenerRef = useRef<KeyPressListener | undefined>(undefined)
+    const keyDownListenerRef = useRef<KeyPressListener | undefined>(undefined)
+    const keyUpListenerRef = useRef<KeyPressListener | undefined>(undefined)
+
     useEffect(() => {
-        listenerRef.current = onKeyPress
+        keyDownListenerRef.current = onKeyDown
+        keyUpListenerRef.current = onKeyUp
+
         return () => {
-            listenerRef.current = undefined
+            keyDownListenerRef.current = undefined
+            keyUpListenerRef.current = undefined
         }
-    }, [onKeyPress])
-    const keyPressTreeNode: KeyPressTreeNode = useMemo(
+    }, [onKeyDown, onKeyUp])
+    const keyPressTreeNode = useMemo<KeyPressTreeNode>(
         () => ({
-            listenerRef,
+            keyDownListenerRef,
+            keyUpListenerRef,
             childKeyPressTreeNodeRef,
         }),
         []

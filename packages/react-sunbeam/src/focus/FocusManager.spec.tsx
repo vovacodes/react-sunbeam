@@ -1,6 +1,6 @@
 import * as React from "react"
 import { act, render } from "@testing-library/react"
-import { SunbeamProvider } from "./components/SunbeamProvider/index.js"
+import { Root } from "./components/Root/index.js"
 import { Focusable } from "./components/Focusable.js"
 import { FocusManager } from "./FocusManager.js"
 
@@ -10,14 +10,14 @@ describe("FocusManager", () => {
             const focusManager = new FocusManager({ initialFocusPath: ["left-parent", "left-child"] })
 
             render(
-                <SunbeamProvider focusManager={focusManager}>
+                <Root focusManager={focusManager}>
                     <Focusable focusKey="left-parent">
                         <Focusable focusKey="left-child">Left child</Focusable>
                     </Focusable>
                     <Focusable focusKey="right-parent">
                         <Focusable focusKey="right-child">Right child</Focusable>
                     </Focusable>
-                </SunbeamProvider>
+                </Root>
             )
 
             expect(focusManager.getFocusPath()).toEqual(["left-parent", "left-child"])

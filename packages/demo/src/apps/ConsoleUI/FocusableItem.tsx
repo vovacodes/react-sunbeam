@@ -1,18 +1,29 @@
 import * as React from "react"
 import { useRef, useCallback } from "react"
-import { useFocusable, useSunbeam, FocusEvent, KeyPressListener } from "react-sunbeam"
-import { Colors } from "../../styles"
+import { useFocusable, useFocusManager, FocusEvent, KeyPressEvent } from "react-sunbeam"
+import { motion } from "framer-motion"
+import { theme, styled, keyframes } from "../../styles.js"
 
-type Props = {
-    kind: "circle" | "square"
-    color: string
-    width: number
-    height: number
-    focusKey: string
-    onKeyPress?: KeyPressListener
-    onFocus?: (event: FocusEvent) => void
-    onBlur?: (event: FocusEvent) => void
-}
+const StyledFocusableItem = styled(motion.div, {
+    position: "relative",
+    border: `2px solid $text`,
+    boxSizing: "border-box",
+    backgroundColor: "$lightGray",
+})
+
+const ShadowWrapper = styled("div", {
+    position: "absolute",
+    zIndex: -1,
+    willChange: "transform",
+})
+
+const Shadow = styled("div", {
+    width: "100%",
+    height: "100%",
+    boxShadow: `8px 6px 0px 0px $colors$graphite`,
+    willChange: "transform",
+    transition: "transform 150ms ease-out",
+})
 
 /**
  * This is an example of how an abstraction for a "focusable" element can look like in your app.
@@ -20,59 +31,70 @@ type Props = {
  * to the app. For example `FocusableItem` uses "tap-to-focus" functionality because the app requires it
  * even though `react-sunbeam` doesn't implement it out-of-the-box
  */
-export function FocusableItem({ kind, color, width, height, focusKey, onKeyPress, onFocus, onBlur }: Props) {
+export function FocusableItem({
+    kind,
+    color,
+    width,
+    height,
+    focusKey,
+    onKeyDown,
+    onFocus,
+    onBlur,
+}: {
+    kind: "circle" | "square"
+    color: string
+    width: number
+    height: number
+    focusKey?: string
+    onKeyDown?: (event: KeyPressEvent) => void
+    onFocus?: (event: FocusEvent) => void
+    onBlur?: (event: FocusEvent) => void
+}) {
     const elementRef = useRef<HTMLDivElement>(null)
     const { focused, path } = useFocusable({
         focusKey,
         elementRef,
         onFocus,
         onBlur,
-        onKeyPress,
+        onKeyDown,
     })
-    const { setFocus } = useSunbeam()
+    const focusManager = useFocusManager()
 
     // tap-to-focus
     const handleClick = useCallback(() => {
-        setFocus(path)
-    }, [path])
+        focusManager.setFocus(path)
+    }, [focusManager, path])
 
     return (
-        <div
+        <StyledFocusableItem
             ref={elementRef}
-            style={{
-                position: "relative",
-                border: `2px solid ${Colors.textBlack}`,
+            animate={{
+                transition: {
+                    duration: 0.15,
+                },
+                backgroundColor: focused ? color : theme.colors.lightGray.value,
+            }}
+            css={{
                 borderRadius: kind === "circle" ? "50%" : undefined,
-                transition: "background-color 150ms ease-out",
-                boxSizing: "border-box",
                 height,
                 width,
-                backgroundColor: focused ? color : Colors.lightGray,
             }}
             onClick={handleClick}
         >
-            <div
-                style={{
-                    position: "absolute",
-                    zIndex: -1,
+            <ShadowWrapper
+                css={{
                     width,
                     height,
-                    willChange: "transform",
-                    animation: focused ? "600ms linear infinite alternate hovering" : "none",
+                    animation: focused ? `600ms linear infinite alternate ${keyframes.hovering}` : "none",
                 }}
             >
-                <div
-                    style={{
-                        width: "100%",
-                        height: "100%",
-                        boxShadow: `8px 6px 0px 0px ${Colors.textBlack}`,
+                <Shadow
+                    css={{
                         borderRadius: kind === "circle" ? "50%" : undefined,
-                        willChange: "transform",
                         transform: focused ? "translate(-2px,-2px)" : "translate(-10px, -8px)",
-                        transition: "transform 150ms ease-out",
                     }}
                 />
-            </div>
-        </div>
+            </ShadowWrapper>
+        </StyledFocusableItem>
     )
 }

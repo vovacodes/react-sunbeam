@@ -2,26 +2,27 @@ import * as React from "react"
 import { useCallback } from "react"
 import { useHistory } from "react-router-dom"
 
-import { Direction, Focusable, FocusableTreeNode, FocusEvent, defaultGetPreferredChildOnFocus } from "react-sunbeam"
+import { defaultGetPreferredChildOnFocus, Direction, IFocusableNode, Focusable, FocusEvent } from "react-sunbeam"
 
-import { ProfilesMenu } from "./ProfilesMenu"
-import { GamesGallery } from "./GamesGallery"
-import { NavigationMenu } from "./NavigationMenu"
-import { Header } from "../../components/Header"
-import { Colors } from "../../styles"
-import { Hint } from "../../components/Hint"
+import { ProfilesMenu } from "./ProfilesMenu.js"
+import { GamesGallery } from "./GamesGallery.js"
+import { NavigationMenu } from "./NavigationMenu.js"
+import { Header } from "../../components/Header.js"
+import { Colors } from "../../styles.js"
+import { Hint } from "../../components/Hint.js"
+import { isCancel } from "../../keyPressUtils.js"
 
 export function ConsoleUI() {
-    const handleItemFocus = useCallback((event: FocusEvent) => {
+    const handleItemFocus = useCallback((_event: FocusEvent) => {
         // console.log(`onFocus: ${path}`)
     }, [])
-    const handleItemBlur = useCallback((event: FocusEvent) => {
+    const handleItemBlur = useCallback((_event: FocusEvent) => {
         // console.log(`onBlur: ${event.focusablePath.join("->")}`)
     }, [])
-    const handleContainerFocus = useCallback((event: FocusEvent) => {
+    const handleContainerFocus = useCallback((_event: FocusEvent) => {
         // console.log(`onFocus: ${event.focusablePath.join("->")}`)
     }, [])
-    const handleContainerBlur = useCallback((event: FocusEvent) => {
+    const handleContainerBlur = useCallback((_event: FocusEvent) => {
         // console.log(`onBlur: ${event.focusablePath.join("->")}`)
     }, [])
 
@@ -32,7 +33,7 @@ export function ConsoleUI() {
             <Header />
             <div
                 style={{
-                    height: "calc(100vh - 80px)",
+                    height: "100vh",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
@@ -41,18 +42,18 @@ export function ConsoleUI() {
                 }}
             >
                 <Focusable
-                    onKeyPress={(event) => {
-                        if (event.key !== "Backspace" && event.key !== "Escape") return
-
-                        history.goBack()
+                    onKeyDown={(event) => {
+                        if (isCancel(event)) {
+                            history.goBack()
+                        }
                     }}
                     getPreferredChildOnFocus={({
                         focusableChildren,
                         focusOrigin,
                         direction,
                     }: {
-                        focusableChildren: Map<string, FocusableTreeNode>
-                        focusOrigin?: FocusableTreeNode
+                        focusableChildren: Map<string, IFocusableNode>
+                        focusOrigin?: IFocusableNode
                         direction?: Direction
                     }) => {
                         if (!focusOrigin || !direction) {
