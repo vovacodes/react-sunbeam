@@ -46,11 +46,12 @@ export type GamepadKeyPressListener = (event: SyntheticGamepadKeyEvent) => void
  */
 export class GamepadKeyPressManager implements KeyPressManager<SyntheticGamepadKeyEvent> {
     /**
-     * List of the event keyDownListeners to notify when an event happens.
+     * List of the event key listeners to notify when an event happens.
      * We use `null` as the "uninitialized" state, meaning that the underlying gamepad event listener
      * hasn't been registered yet.
      */
     private keyDownListeners: GamepadKeyPressListener[] | null = null
+    private keyUpListeners: GamepadKeyPressListener[] | null = null
 
     public connected: boolean
 
@@ -61,6 +62,7 @@ export class GamepadKeyPressManager implements KeyPressManager<SyntheticGamepadK
         window.addEventListener("gamepaddisconnected", this.handleGamepadsUpdate)
     }
 
+    // keydown
     public addKeyDownListener(listener: GamepadKeyPressListener): void {
         let needsInitialization = false
 
@@ -101,6 +103,51 @@ export class GamepadKeyPressManager implements KeyPressManager<SyntheticGamepadK
         // go through the keyDownListeners as long as the event propagation is not cancelled
         for (const keyDownListener of this.keyDownListeners) {
             keyDownListener(event)
+            if (event.cancelBubble) break
+        }
+    }
+
+    // keyup
+    public addKeyUpListener(listener: GamepadKeyPressListener): void {
+        let needsInitialization = false
+
+        if (!this.keyUpListeners) {
+            this.keyUpListeners = []
+            needsInitialization = true
+        }
+
+        this.keyUpListeners.unshift(listener)
+
+        if (needsInitialization) {
+            this.startGamepadStatePolling()
+        }
+    }
+
+    public removeKeyUpListener(listener: GamepadKeyPressListener): void {
+        if (!this.keyUpListeners) return
+
+        const index = this.keyUpListeners.indexOf(listener)
+        if (index === -1) return
+
+        this.keyUpListeners.splice(index, 1)
+
+        if (this.keyUpListeners.length === 0) {
+            this.stopGamepadStatePolling()
+            this.keyUpListeners = null
+        }
+    }
+
+    public removeAllKeyUpListeners(): void {
+        this.stopGamepadStatePolling()
+        this.keyUpListeners = null
+    }
+
+    private notifyKeyUpListeners(event: SyntheticGamepadKeyEvent): void {
+        if (!this.keyUpListeners) return
+
+        // go through the keyUpListeners as long as the event propagation is not cancelled
+        for (const keyUpListener of this.keyUpListeners) {
+            keyUpListener(event)
             if (event.cancelBubble) break
         }
     }
@@ -180,8 +227,7 @@ export class GamepadKeyPressManager implements KeyPressManager<SyntheticGamepadK
 
             if (Math.abs(value) < PRESS_THRESHOLD && this.pressed.axes[index]) {
                 this.pressed.axes[index] = false
-                // TODO: trigger onKeyUp
-                // this.notifyKeyDownListeners(new SyntheticGamepadKeyEvent({ axis: index, value }))
+                this.notifyKeyUpListeners(new SyntheticGamepadKeyEvent({ gamepad, axis: index, value }))
                 return
             }
         })
@@ -195,8 +241,7 @@ export class GamepadKeyPressManager implements KeyPressManager<SyntheticGamepadK
 
             if (value < PRESS_THRESHOLD && this.pressed.buttons[index]) {
                 this.pressed.buttons[index] = false
-                // TODO: trigger onKeyUp
-                // this.notifyKeyDownListeners(new SyntheticGamepadKeyEvent({ button: index, value }))
+                this.notifyKeyUpListeners(new SyntheticGamepadKeyEvent({ gamepad, button: index, value }))
                 return
             }
         })

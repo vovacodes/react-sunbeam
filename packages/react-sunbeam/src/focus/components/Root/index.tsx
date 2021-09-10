@@ -25,9 +25,10 @@ type Props<E = KeyPressEvent> = {
     children: React.ReactNode
     onFocusUpdate?: (event: { focusPath: FocusPath }) => void
     onKeyDown?: (event: E extends KeyPressEvent ? E : unknown) => void
+    onKeyUp?: (event: E extends KeyPressEvent ? E : unknown) => void
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
     as?: keyof JSX.IntrinsicElements
-} & Omit<React.HTMLAttributes<any>, "onKeyDown">
+} & Omit<React.HTMLAttributes<unknown>, "onKeyDown" | "onKeyUp">
 
 export function Root<E = KeyPressEvent>({
     focusManager,
@@ -35,6 +36,7 @@ export function Root<E = KeyPressEvent>({
     children,
     onFocusUpdate,
     onKeyDown,
+    onKeyUp,
     getPreferredChildOnFocus,
     as = "div",
     ...htmlProps
@@ -72,13 +74,33 @@ export function Root<E = KeyPressEvent>({
         return new KeyboardKeyPressManager()
     }, [customKeyPressManager])
     useEffect(() => {
-        keyPressManager.addKeyDownListener(keyPressListener)
-        function keyPressListener(event: unknown) {
+        keyPressManager.addKeyDownListener(keyDownListener)
+
+        function keyDownListener(event: unknown) {
             // first build up the array of listeners from the root to the leaf
             const listeners: KeyPressListener[] = onKeyDown ? [onKeyDown as KeyPressListener] : []
             let keyPressTreeNode: KeyPressTreeNode | undefined = childKeyPressTreeNodeRef.current
             while (keyPressTreeNode) {
-                const listener = keyPressTreeNode.listenerRef.current
+                const listener = keyPressTreeNode.keyDownListenerRef.current
+                if (listener) listeners.push(listener)
+                keyPressTreeNode = keyPressTreeNode.childKeyPressTreeNodeRef.current
+            }
+            // then process this array from the leaf to the root
+            for (let i = listeners.length - 1; i >= 0; i--) {
+                const listener = listeners[i]
+                listener(event as KeyPressEvent)
+                if ((event as KeyPressEvent).cancelBubble) break
+            }
+        }
+
+        keyPressManager.addKeyUpListener(keyUpListener)
+
+        function keyUpListener(event: unknown) {
+            // first build up the array of listeners from the root to the leaf
+            const listeners: KeyPressListener[] = onKeyUp ? [onKeyUp as KeyPressListener] : []
+            let keyPressTreeNode: KeyPressTreeNode | undefined = childKeyPressTreeNodeRef.current
+            while (keyPressTreeNode) {
+                const listener = keyPressTreeNode.keyUpListenerRef.current
                 if (listener) listeners.push(listener)
                 keyPressTreeNode = keyPressTreeNode.childKeyPressTreeNodeRef.current
             }
@@ -91,9 +113,10 @@ export function Root<E = KeyPressEvent>({
         }
 
         return () => {
-            keyPressManager.removeKeyDownListener(keyPressListener)
+            keyPressManager.removeKeyDownListener(keyDownListener)
+            keyPressManager.removeKeyUpListener(keyUpListener)
         }
-    }, [onKeyDown, keyPressManager])
+    }, [onKeyDown, onKeyUp, keyPressManager])
     const childKeyPressTreeContextValue = useChildKeyPressTreeContextValue(childKeyPressTreeNodeRef)
 
     return (

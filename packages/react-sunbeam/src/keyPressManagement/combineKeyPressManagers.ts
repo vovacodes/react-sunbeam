@@ -17,5 +17,18 @@ export function combineKeyPressManagers<T1, T2>(
             manager1.removeAllKeyDownListeners()
             manager2.removeAllKeyDownListeners()
         },
+
+        addKeyUpListener(listener: KeyPressListener<T1 | T2>): void {
+            manager1.addKeyUpListener(listener)
+            manager2.addKeyUpListener(listener)
+        },
+        removeKeyUpListener(listener: KeyPressListener<T1 | T2>): void {
+            manager1.removeKeyUpListener(listener)
+            manager2.removeKeyUpListener(listener)
+        },
+        removeAllKeyUpListeners(): void {
+            manager1.removeAllKeyUpListeners()
+            manager2.removeAllKeyUpListeners()
+        },
     }
 }

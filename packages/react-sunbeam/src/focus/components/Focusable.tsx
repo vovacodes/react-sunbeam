@@ -12,11 +12,12 @@ type Props<E = KeyPressEvent> = {
     focusable?: boolean
     lock?: Direction | Direction[]
     onKeyDown?: (event: E extends KeyPressEvent ? E : unknown) => void
+    onKeyUp?: (event: E extends KeyPressEvent ? E : unknown) => void
     onFocus?: (event: FocusEvent) => void
     onBlur?: (event: FocusEvent) => void
     getPreferredChildOnFocus?: CustomGetPreferredChildFn
     as?: keyof JSX.IntrinsicElements
-} & Omit<React.HTMLAttributes<any>, "children" | "onKeyDown" | "onFocus" | "onBlur">
+} & Omit<React.HTMLAttributes<unknown>, "children" | "onKeyDown" | "onFocus" | "onBlur" | "onKeyUp">
 
 export function Focusable({
     children,
@@ -25,6 +26,7 @@ export function Focusable({
     lock = [],
     getPreferredChildOnFocus,
     onKeyDown,
+    onKeyUp,
     onFocus,
     onBlur,
     as = "div",
@@ -41,6 +43,7 @@ export function Focusable({
         focusable,
         lock,
         onKeyDown,
+        onKeyUp,
         onFocus,
         onBlur,
         getPreferredChildOnFocus,
